@@ -28,11 +28,6 @@ export function seasonFinishReward(season: SeasonResult): number {
   return reward;
 }
 
-// ---- Daily login reward (escalates with streak, capped) ----
-export function dailyLoginReward(streak: number): number {
-  return Math.min(50 + streak * 25, 300);
-}
-
 // ---- Tier upgrade cost (to upgrade FROM the given tier to the next one) ----
 const UPGRADE_COST: Record<Tier, number> = {
   Rising: 1200, // Rising -> Star

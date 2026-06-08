@@ -9,7 +9,7 @@ import { cn, formatCoins } from '@/lib/ui';
 const LINKS = [
   { href: '/', label: 'Home' },
   { href: '/shop', label: 'Shop' },
-  { href: '/collection', label: 'Collection' },
+  { href: '/collection', label: 'Cards' },
   { href: '/modes', label: 'Challenges' },
 ];
 

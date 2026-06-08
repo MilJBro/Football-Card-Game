@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { getCard, getNextTierCard, ALL_CARDS } from '@/data/players';
+import { getCard, getNextTierCard } from '@/data/players';
 import { discardValue, upgradeCost } from '@/lib/coinRewards';
 import { PlayerCard } from '@/components/cards/PlayerCard';
 import { Button } from '@/components/ui/Button';
@@ -64,12 +64,8 @@ export default function CollectionPage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-black">Collection</h1>
-          <p className="text-white/60">
-            {hydrated
-              ? `${Object.keys(ownedCards).length} of ${ALL_CARDS.length} unique cards owned`
-              : '—'}
-          </p>
+          <h1 className="text-3xl font-black">Your Cards</h1>
+          <p className="text-white/60">Upgrade, sell and manage your players.</p>
         </div>
       </header>
 

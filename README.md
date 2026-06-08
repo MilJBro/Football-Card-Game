@@ -71,7 +71,6 @@ persist.
 - **Season finish** — scaled by league position and trophies won (paid every run)
 - **Challenge bonus** — for meeting a challenge's win condition (first-clear bonus)
 - **Selling cards** — discard unwanted/duplicate cards for coins
-- **Daily login** — escalating streak reward
 
 ## Spending Coins
 

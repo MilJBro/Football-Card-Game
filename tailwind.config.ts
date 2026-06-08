@@ -9,10 +9,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Premier League brand palette.
+        pl: {
+          purple: '#37003c',
+          green: '#00ff85',
+          pink: '#e90052',
+          cyan: '#04f5ff',
+        },
+        // `pitch` = branded purple surfaces (panels, nav, modals, pitch).
         pitch: {
-          DEFAULT: '#0a3d1f',
-          dark: '#062813',
-          light: '#11592e',
+          DEFAULT: '#37003c',
+          dark: '#25002a',
+          light: '#4a0d52',
+        },
+        // `emerald` is overridden to the PL neon-green accent scale so all
+        // existing accent classes recolour at once. Dark shades double as the
+        // near-black purple used for button text and card backs.
+        emerald: {
+          300: '#5cffb0',
+          400: '#00ff85',
+          500: '#00ff87',
+          700: '#1f9d63',
+          900: '#2a0030',
+          950: '#16001a',
         },
         tier: {
           rising: '#cd7f32', // bronze

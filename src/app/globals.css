@@ -3,15 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --background: #07140d;
-  --foreground: #e8f5ee;
+  --background: #1a001d;
+  --foreground: #f4ecf6;
 }
 
 body {
   color: var(--foreground);
   background:
-    radial-gradient(1200px 600px at 50% -10%, #11592e22, transparent),
-    linear-gradient(180deg, #07140d 0%, #04100a 100%);
+    radial-gradient(1200px 600px at 50% -10%, rgba(0, 255, 133, 0.12), transparent),
+    radial-gradient(900px 500px at 85% 110%, rgba(233, 0, 82, 0.1), transparent),
+    linear-gradient(180deg, #37003c 0%, #1a001d 100%);
   min-height: 100vh;
 }
 

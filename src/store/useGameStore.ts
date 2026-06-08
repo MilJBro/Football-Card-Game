@@ -8,28 +8,13 @@ import type {
   ModeId,
 } from '@/store/types';
 import { getCard, getNextTierCard } from '@/data/players';
-import {
-  STARTING_COINS,
-  discardValue,
-  dailyLoginReward,
-  upgradeCost,
-} from '@/lib/coinRewards';
+import { STARTING_COINS, discardValue, upgradeCost } from '@/lib/coinRewards';
 
 export interface UpgradeResult {
   ok: boolean;
   reason?: string;
   newCardId?: string;
   foilUnlocked?: boolean;
-}
-
-function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function daysBetween(a: string, b: string): number {
-  const da = new Date(a + 'T00:00:00Z').getTime();
-  const db = new Date(b + 'T00:00:00Z').getTime();
-  return Math.round((db - da) / 86_400_000);
 }
 
 export interface GameState {
@@ -45,10 +30,6 @@ export interface GameState {
   completions: Record<string, ModeCompletion>;
   history: ModeRunResult[];
 
-  // ---- Daily login ----
-  lastLoginDate: string | null;
-  loginStreak: number;
-
   // ---- Actions: coins ----
   addCoins: (amount: number, reason: string) => void;
   spendCoins: (amount: number, reason: string) => boolean;
@@ -62,9 +43,6 @@ export interface GameState {
   // ---- Actions: modes ----
   recordRun: (result: ModeRunResult) => void;
 
-  // ---- Actions: daily login ----
-  claimDailyLogin: () => number | null; // returns reward, or null if already claimed
-
   // ---- Dev / reset ----
   resetProgress: () => void;
 }
@@ -76,8 +54,6 @@ const initialState = {
   ownedCards: {} as Record<string, OwnedCard>,
   completions: {} as Record<string, ModeCompletion>,
   history: [] as ModeRunResult[],
-  lastLoginDate: null as string | null,
-  loginStreak: 0,
 };
 
 export const useGameStore = create<GameState>()(
@@ -244,28 +220,6 @@ export const useGameStore = create<GameState>()(
           }
           return { history, completions };
         }),
-
-      claimDailyLogin: () => {
-        const s = get();
-        const today = todayISO();
-        if (s.lastLoginDate === today) return null;
-
-        const gap = s.lastLoginDate ? daysBetween(s.lastLoginDate, today) : null;
-        const newStreak = gap === 1 ? s.loginStreak + 1 : 1;
-        const reward = dailyLoginReward(newStreak);
-
-        set({
-          lastLoginDate: today,
-          loginStreak: newStreak,
-          coins: s.coins + reward,
-          totalEarned: s.totalEarned + reward,
-          transactions: [
-            { amount: reward, reason: `Daily login (streak ${newStreak})`, at: Date.now() },
-            ...s.transactions,
-          ].slice(0, 100),
-        });
-        return reward;
-      },
 
       resetProgress: () => set({ ...initialState }),
     }),

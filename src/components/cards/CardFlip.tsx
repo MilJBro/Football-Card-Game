@@ -47,7 +47,7 @@ export function CardFlip({ card, flipped, foil, isNew, onClick }: CardFlipProps)
           {foil && flipped && (
             <span
               className={cn(
-                'absolute -left-1 -top-1 rounded-full bg-sky-400 px-2 py-0.5 text-[10px] font-black text-sky-950'
+                'absolute -left-1 -top-1 rounded-full bg-pl-cyan px-2 py-0.5 text-[10px] font-black text-pl-purple'
               )}
             >
               FOIL

@@ -1,45 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { Button } from '@/components/ui/Button';
-import { ALL_CARDS } from '@/data/players';
 import { GAME_MODES } from '@/data/gameModes';
 import { formatCoins } from '@/lib/ui';
 
 const TILES = [
   { href: '/shop', emoji: '📦', title: 'Pack Shop', desc: 'Spend coins on packs' },
-  { href: '/collection', emoji: '🗂️', title: 'Collection', desc: 'View & sell your cards' },
+  { href: '/collection', emoji: '🗂️', title: 'Your Cards', desc: 'Upgrade & sell players' },
   { href: '/modes', emoji: '🏆', title: 'Challenges', desc: 'Build a squad, play a season' },
 ];
 
 export default function HomePage() {
   const hydrated = useHydrated();
   const coins = useGameStore((s) => s.coins);
-  const ownedCards = useGameStore((s) => s.ownedCards);
   const completions = useGameStore((s) => s.completions);
-  const loginStreak = useGameStore((s) => s.loginStreak);
-  const lastLoginDate = useGameStore((s) => s.lastLoginDate);
-  const claimDailyLogin = useGameStore((s) => s.claimDailyLogin);
 
-  const [claimed, setClaimed] = useState<number | null>(null);
-  const today = new Date().toISOString().slice(0, 10);
-  const alreadyClaimed = lastLoginDate === today;
-
-  // Auto-evaluate claim availability after hydration.
-  useEffect(() => {
-    if (hydrated && claimed === null && alreadyClaimed) setClaimed(0);
-  }, [hydrated, alreadyClaimed, claimed]);
-
-  const ownedCount = Object.keys(ownedCards).length;
   const completedModes = Object.keys(completions).length;
-
-  function handleClaim() {
-    const reward = claimDailyLogin();
-    if (reward !== null) setClaimed(reward);
-  }
 
   return (
     <div className="space-y-8">
@@ -48,42 +26,16 @@ export default function HomePage() {
           Welcome back, <span className="text-emerald-400">Gaffer</span>
         </h1>
         <p className="mt-2 max-w-xl text-white/70">
-          Collect Premier League greats across their careers, build the perfect squad, and
-          simulate a season to chase glory.
+          Build a squad from Premier League greats and simulate a season to complete the
+          challenges. Pick one up whenever you have a spare moment.
         </p>
 
-        <div className="mt-6 grid grid-cols-3 gap-3 sm:max-w-md">
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:max-w-sm">
           <Stat label="Coins" value={hydrated ? formatCoins(coins) : '—'} />
-          <Stat label="Cards" value={hydrated ? `${ownedCount}/${ALL_CARDS.length}` : '—'} />
           <Stat
             label="Challenges"
             value={hydrated ? `${completedModes}/${GAME_MODES.length}` : '—'}
           />
-        </div>
-      </section>
-
-      {/* Daily login */}
-      <section className="rounded-2xl border border-yellow-400/20 bg-yellow-400/5 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-yellow-300">Daily Reward</h2>
-            <p className="text-sm text-white/60">
-              {hydrated ? `Login streak: ${loginStreak} day${loginStreak === 1 ? '' : 's'}` : '—'}
-            </p>
-          </div>
-          {hydrated && (alreadyClaimed && claimed === 0) ? (
-            <span className="rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white/50">
-              ✓ Claimed today
-            </span>
-          ) : claimed && claimed > 0 ? (
-            <span className="animate-coin-pop rounded-lg bg-yellow-400/20 px-4 py-2 text-sm font-bold text-yellow-300">
-              +{formatCoins(claimed)} 🪙
-            </span>
-          ) : (
-            <Button onClick={handleClaim} disabled={!hydrated}>
-              Claim Daily Reward
-            </Button>
-          )}
         </div>
       </section>
 
