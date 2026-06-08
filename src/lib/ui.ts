@@ -36,6 +36,12 @@ export function formatCoins(n: number): string {
   return n.toLocaleString('en-GB');
 }
 
+/** Surname only — used on compact pitch tokens. */
+export function lastName(fullName: string): string {
+  const parts = fullName.trim().split(' ');
+  return parts[parts.length - 1];
+}
+
 /** Position/pack-based card background, border, ring, and position badge colours. */
 export const PACK_STYLES: Record<
   PackCategory,

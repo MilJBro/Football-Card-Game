@@ -11,6 +11,7 @@ import {
   penaltyForCardInSlot,
 } from '@/lib/squadUtils';
 import { PlayerCard } from '@/components/cards/PlayerCard';
+import { PitchToken, EmptyToken } from '@/components/squad/PitchToken';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/ui';
 
@@ -80,8 +81,38 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
 
   return (
     <div className="space-y-4">
-      {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      {/* Stat bar */}
+      <div className="flex items-stretch gap-2 rounded-2xl border border-white/10 bg-black/30 p-2">
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+          <div className="text-[9px] uppercase tracking-wide text-white/40">Rating</div>
+          <div className={cn('text-2xl font-black leading-none tabular-nums', ratingColor)}>
+            {summary.rating || '—'}
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+          <div className="text-[9px] uppercase tracking-wide text-white/40">Attack</div>
+          <div className="text-2xl font-black leading-none tabular-nums text-pl-pink">
+            {summary.attackRating || '—'}
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+          <div className="text-[9px] uppercase tracking-wide text-white/40">Defence</div>
+          <div className="text-2xl font-black leading-none tabular-nums text-pl-cyan">
+            {summary.defenceRating || '—'}
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+          <div className="text-[9px] uppercase tracking-wide text-white/40">Players</div>
+          <div className="text-2xl font-black leading-none tabular-nums text-white">
+            {summary.filledSlots}
+            <span className="text-sm text-white/40">/{summary.totalSlots}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Formation selector */}
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] uppercase tracking-wide text-white/40">Formation</span>
         <div className="flex gap-1">
           {FORMATION_LIST.map((f) => (
             <button
@@ -98,28 +129,27 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-3 rounded-xl bg-black/30 px-4 py-2">
-          <div className="text-right">
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Squad Rating</div>
-            <div className={cn('text-2xl font-black tabular-nums', ratingColor)}>
-              {summary.rating || '—'}
-            </div>
-          </div>
-          <div className="h-8 w-px bg-white/10" />
-          <div className="text-sm text-white/60">
-            {summary.filledSlots}/{summary.totalSlots} players
-          </div>
-        </div>
       </div>
 
       {/* Pitch */}
-      <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-2xl border border-emerald-700/40 bg-gradient-to-b from-pitch-light to-pitch-dark">
+      <div className="relative mx-auto aspect-[3/4.2] w-full max-w-sm overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-900/50 via-pitch to-pitch-dark shadow-2xl">
+        {/* mown-grass stripes */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-40"
+          style={{
+            background:
+              'repeating-linear-gradient(180deg,rgba(255,255,255,0.04) 0px,rgba(255,255,255,0.04) 32px,transparent 32px,transparent 64px)',
+          }}
+        />
         {/* pitch markings */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15" />
-          <div className="absolute left-0 right-0 top-1/2 h-px bg-white/15" />
-          <div className="absolute left-1/2 top-0 h-16 w-32 -translate-x-1/2 border border-t-0 border-white/15" />
-          <div className="absolute bottom-0 left-1/2 h-16 w-32 -translate-x-1/2 border border-b-0 border-white/15" />
+          <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20" />
+          <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/25" />
+          <div className="absolute left-0 right-0 top-1/2 h-px bg-white/20" />
+          <div className="absolute left-1/2 top-0 h-16 w-36 -translate-x-1/2 rounded-b-lg border border-t-0 border-white/20" />
+          <div className="absolute bottom-0 left-1/2 h-16 w-36 -translate-x-1/2 rounded-t-lg border border-b-0 border-white/20" />
+          <div className="absolute left-1/2 top-0 h-7 w-20 -translate-x-1/2 rounded-b border border-t-0 border-white/15" />
+          <div className="absolute bottom-0 left-1/2 h-7 w-20 -translate-x-1/2 rounded-t border border-b-0 border-white/15" />
         </div>
 
         {formation.slots.map((slot) => {
@@ -133,28 +163,14 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
               style={{ left: `${slot.x}%`, top: `${slot.y}%` }}
             >
               {card ? (
-                <button
+                <PitchToken
+                  card={card}
+                  slotLabel={slot.label}
+                  effectiveRating={evalForSlot?.effectiveRating}
                   onClick={() => setActiveSlot(slot.slotId)}
-                  className="flex w-16 flex-col items-center"
-                >
-                  <PlayerCard
-                    card={card}
-                    size="sm"
-                    displayRating={evalForSlot?.effectiveRating}
-                    className="!w-16 !p-1"
-                  />
-                  <span className="mt-0.5 rounded bg-black/60 px-1 text-[9px] font-bold">
-                    {slot.label}
-                  </span>
-                </button>
+                />
               ) : (
-                <button
-                  onClick={() => setActiveSlot(slot.slotId)}
-                  className="flex h-14 w-14 flex-col items-center justify-center rounded-full border-2 border-dashed border-white/40 bg-black/30 text-white/70 transition-colors hover:border-emerald-400 hover:text-emerald-300"
-                >
-                  <span className="text-lg">+</span>
-                  <span className="text-[9px] font-bold">{slot.label}</span>
-                </button>
+                <EmptyToken slotLabel={slot.label} onClick={() => setActiveSlot(slot.slotId)} />
               )}
             </div>
           );

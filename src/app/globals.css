@@ -40,3 +40,12 @@ body {
   background: #11592e;
   border-radius: 8px;
 }
+
+/* Hidden scrollbar for the Instagram-story pack carousels. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

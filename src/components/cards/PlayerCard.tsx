@@ -17,10 +17,13 @@ interface PlayerCardProps {
   className?: string;
 }
 
-const SIZES: Record<Size, { w: string; name: string; rating: string; pad: string }> = {
-  sm: { w: 'w-28', name: 'text-[11px]', rating: 'text-2xl', pad: 'p-2' },
-  md: { w: 'w-40', name: 'text-sm', rating: 'text-4xl', pad: 'p-3' },
-  lg: { w: 'w-52', name: 'text-base', rating: 'text-5xl', pad: 'p-4' },
+const SIZES: Record<
+  Size,
+  { w: string; name: string; meta: string; rating: string; pad: string }
+> = {
+  sm: { w: 'w-28', name: 'text-[9px]', meta: 'text-[8px]', rating: 'text-2xl', pad: 'p-2' },
+  md: { w: 'w-40', name: 'text-[11px]', meta: 'text-[9px]', rating: 'text-4xl', pad: 'p-3' },
+  lg: { w: 'w-52', name: 'text-xs', meta: 'text-[10px]', rating: 'text-5xl', pad: 'p-4' },
 };
 
 export function PlayerCard({
@@ -112,14 +115,15 @@ export function PlayerCard({
         <div className="my-0.5 border-t border-white/15" />
 
         {/* Player info */}
-        <div>
-          <div className={cn('truncate font-black uppercase tracking-tight text-white', s.name)}>
+        <div className="leading-tight">
+          <div className={cn('truncate font-bold uppercase tracking-tight text-white', s.name)}>
             {card.playerName}
           </div>
-          <div className="mt-0.5 truncate text-[10px] font-semibold text-white/70">
-            {card.nationality}
+          <div className={cn('mt-0.5 flex items-center gap-1 truncate text-white/55', s.meta)}>
+            <span className="truncate">{card.nationality}</span>
+            <span className="text-white/25">·</span>
+            <span className="truncate">{card.club}</span>
           </div>
-          <div className="truncate text-[10px] text-white/50">{card.club}</div>
         </div>
       </div>
     </button>
