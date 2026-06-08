@@ -18,6 +18,7 @@ interface TierSource {
 interface PlayerSource {
   playerId: string;
   playerName: string;
+  nationality: string;
   pack: PackCategory;
   tiers: Record<Tier, TierSource>;
 }
@@ -27,6 +28,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'schmeichel',
     playerName: 'Peter Schmeichel',
+    nationality: 'Denmark',
     pack: 'GK',
     tiers: {
       Rising: { era: 'Man Utd · 1991', positions: ['GK'], rating: 76 },
@@ -37,6 +39,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'cech',
     playerName: 'Petr Čech',
+    nationality: 'Czech Republic',
     pack: 'GK',
     tiers: {
       Rising: { era: 'Chelsea · 2004', positions: ['GK'], rating: 78 },
@@ -47,6 +50,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'vandersar',
     playerName: 'Edwin van der Sar',
+    nationality: 'Netherlands',
     pack: 'GK',
     tiers: {
       Rising: { era: 'Fulham · 2001', positions: ['GK'], rating: 75 },
@@ -57,6 +61,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'seaman',
     playerName: 'David Seaman',
+    nationality: 'England',
     pack: 'GK',
     tiers: {
       Rising: { era: 'Arsenal · 1991', positions: ['GK'], rating: 74 },
@@ -67,6 +72,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'ederson',
     playerName: 'Ederson',
+    nationality: 'Brazil',
     pack: 'GK',
     tiers: {
       Rising: { era: 'Man City · 2017', positions: ['GK'], rating: 79 },
@@ -77,6 +83,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'alisson',
     playerName: 'Alisson',
+    nationality: 'Brazil',
     pack: 'GK',
     tiers: {
       Rising: { era: 'Liverpool · 2018', positions: ['GK'], rating: 80 },
@@ -89,6 +96,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'ferdinand',
     playerName: 'Rio Ferdinand',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'West Ham · 1998', positions: ['CB'], rating: 74 },
@@ -99,6 +107,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'terry',
     playerName: 'John Terry',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Chelsea · 2001', positions: ['CB'], rating: 73 },
@@ -109,6 +118,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'vandijk',
     playerName: 'Virgil van Dijk',
+    nationality: 'Netherlands',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Southampton · 2015', positions: ['CB'], rating: 78 },
@@ -119,6 +129,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'vidic',
     playerName: 'Nemanja Vidić',
+    nationality: 'Serbia',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Man Utd · 2006', positions: ['CB'], rating: 75 },
@@ -129,6 +140,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'ashleycole',
     playerName: 'Ashley Cole',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Arsenal · 2002', positions: ['LB'], rating: 74 },
@@ -139,6 +151,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'gneville',
     playerName: 'Gary Neville',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Man Utd · 1995', positions: ['RB'], rating: 72 },
@@ -149,6 +162,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'taa',
     playerName: 'Trent Alexander-Arnold',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Liverpool · 2017', positions: ['RB'], rating: 76 },
@@ -160,6 +174,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'walker',
     playerName: 'Kyle Walker',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Tottenham · 2012', positions: ['RB'], rating: 74 },
@@ -172,6 +187,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'gerrard',
     playerName: 'Steven Gerrard',
+    nationality: 'England',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Liverpool · 2000', positions: ['CM'], rating: 76 },
@@ -182,6 +198,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'lampard',
     playerName: 'Frank Lampard',
+    nationality: 'England',
     pack: 'MID',
     tiers: {
       Rising: { era: 'West Ham · 2000', positions: ['CM'], rating: 74 },
@@ -192,6 +209,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'scholes',
     playerName: 'Paul Scholes',
+    nationality: 'England',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Man Utd · 1996', positions: ['CM'], rating: 75 },
@@ -202,6 +220,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'keane',
     playerName: 'Roy Keane',
+    nationality: 'Ireland',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Nottm Forest · 1992', positions: ['CM'], rating: 74 },
@@ -212,6 +231,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'vieira',
     playerName: 'Patrick Vieira',
+    nationality: 'France',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Arsenal · 1997', positions: ['CM'], rating: 75 },
@@ -222,6 +242,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'yayatoure',
     playerName: 'Yaya Touré',
+    nationality: 'Ivory Coast',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Man City · 2010', positions: ['CM'], rating: 78 },
@@ -232,6 +253,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'debruyne',
     playerName: 'Kevin De Bruyne',
+    nationality: 'Belgium',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Chelsea · 2013', positions: ['CM'], rating: 75 },
@@ -242,6 +264,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'kante',
     playerName: "N'Golo Kanté",
+    nationality: 'France',
     pack: 'MID',
     tiers: {
       Rising: { era: 'Leicester · 2016', positions: ['CM'], rating: 79 },
@@ -254,6 +277,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'rooney',
     playerName: 'Wayne Rooney',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Everton · 2002', positions: ['ST'], rating: 75 },
@@ -265,6 +289,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'henry',
     playerName: 'Thierry Henry',
+    nationality: 'France',
     pack: 'ATT',
     tiers: {
       // Started wide before being converted to a centre-forward.
@@ -276,6 +301,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'salah',
     playerName: 'Mohamed Salah',
+    nationality: 'Egypt',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Chelsea · 2014', positions: ['RW'], rating: 74 },
@@ -287,6 +313,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'ronaldo',
     playerName: 'Cristiano Ronaldo',
+    nationality: 'Portugal',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Man Utd · 2004', positions: ['RW'], rating: 79 },
@@ -297,6 +324,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'aguero',
     playerName: 'Sergio Agüero',
+    nationality: 'Argentina',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Man City · 2011', positions: ['ST'], rating: 80 },
@@ -307,6 +335,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'shearer',
     playerName: 'Alan Shearer',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Southampton · 1992', positions: ['ST'], rating: 77 },
@@ -317,6 +346,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'kane',
     playerName: 'Harry Kane',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Tottenham · 2014', positions: ['ST'], rating: 78 },
@@ -328,6 +358,7 @@ const PLAYERS: PlayerSource[] = [
   {
     playerId: 'son',
     playerName: 'Son Heung-min',
+    nationality: 'South Korea',
     pack: 'ATT',
     tiers: {
       Rising: { era: 'Tottenham · 2015', positions: ['LW'], rating: 77 },
@@ -350,6 +381,8 @@ export const ALL_CARDS: PlayerCardDef[] = PLAYERS.flatMap((p) =>
       id: `${p.playerId}-${tier.toLowerCase()}`,
       playerId: p.playerId,
       playerName: p.playerName,
+      nationality: p.nationality,
+      club: t.era.split(' · ')[0],
       era: t.era,
       pack: p.pack,
       tier,

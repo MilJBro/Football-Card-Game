@@ -56,7 +56,6 @@ export default function HomePage() {
                 <span>
                   <Stars n={mode.difficulty} />
                 </span>
-                <span className="text-white/50">Rec. rating {mode.recommendedRating}</span>
                 <span className="font-bold text-yellow-300">🪙 {formatCoins(mode.firstReward)}</span>
               </div>
             </Link>
