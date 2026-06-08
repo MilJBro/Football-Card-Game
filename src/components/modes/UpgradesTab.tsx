@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Link from 'next/link';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { getCard, getNextTierCard } from '@/data/players';
@@ -14,7 +13,7 @@ import type { PackCategory, PlayerCardDef, Tier } from '@/store/types';
 const CATEGORIES: (PackCategory | 'ALL')[] = ['ALL', 'GK', 'DEF', 'MID', 'ATT'];
 const TIERS: (Tier | 'ALL')[] = ['ALL', 'Rising', 'Star', 'Legend'];
 
-export default function CollectionPage() {
+export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   const hydrated = useHydrated();
   const coins = useGameStore((s) => s.coins);
   const ownedCards = useGameStore((s) => s.ownedCards);
@@ -52,9 +51,7 @@ export default function CollectionPage() {
     const next = getNextTierCard(upgrading.id);
     setUpgrading(null);
     if (result.ok && next) {
-      showToast(
-        `Upgraded to ${next.tier}!${result.foilUnlocked ? ' ✨ Foil unlocked!' : ''}`
-      );
+      showToast(`Upgraded to ${next.tier}!${result.foilUnlocked ? ' ✨ Foil unlocked!' : ''}`);
     } else if (result.reason) {
       showToast(result.reason);
     }
@@ -62,14 +59,11 @@ export default function CollectionPage() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-black">Your Cards</h1>
-          <p className="text-white/60">Upgrade, sell and manage your players.</p>
-        </div>
+      <header>
+        <h1 className="text-2xl font-black">Upgrades</h1>
+        <p className="text-white/60">Upgrade, sell and manage your players.</p>
       </header>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-4">
         <FilterRow label="Position" options={CATEGORIES} value={cat} onChange={setCat} />
         <FilterRow label="Tier" options={TIERS} value={tier} onChange={setTier} />
@@ -78,9 +72,9 @@ export default function CollectionPage() {
       {!hydrated ? null : owned.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-white/5 py-16 text-center">
           <p className="text-white/60">No cards yet.</p>
-          <Link href="/shop" className="mt-3 inline-block">
-            <Button>Open your first pack</Button>
-          </Link>
+          <Button className="mt-3" onClick={onGoToPacks}>
+            Open your first pack
+          </Button>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -129,50 +123,51 @@ export default function CollectionPage() {
       )}
 
       {/* Upgrade confirmation */}
-      {upgrading && (() => {
-        const next = getNextTierCard(upgrading.id);
-        const cost = upgradeCost(upgrading.tier);
-        if (!next) return null;
-        return (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-            onClick={() => setUpgrading(null)}
-          >
+      {upgrading &&
+        (() => {
+          const next = getNextTierCard(upgrading.id);
+          const cost = upgradeCost(upgrading.tier);
+          if (!next) return null;
+          return (
             <div
-              className="w-full max-w-md rounded-2xl border border-white/15 bg-pitch-dark p-6"
-              onClick={(e) => e.stopPropagation()}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+              onClick={() => setUpgrading(null)}
             >
-              <h3 className="text-lg font-bold">Upgrade Card</h3>
-              <p className="mt-1 text-sm text-white/60">
-                This consumes one <span className="font-bold">{upgrading.tier}</span> copy and
-                gives you the <span className="font-bold text-emerald-300">{next.tier}</span>{' '}
-                version.
-              </p>
-              <div className="my-5 flex items-center justify-center gap-3">
-                <PlayerCard card={upgrading} size="sm" />
-                <span className="text-2xl text-emerald-400">→</span>
-                <PlayerCard card={next} size="sm" />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-white/60">
-                  Cost: <span className="font-bold text-yellow-300">🪙 {formatCoins(cost)}</span>
-                </span>
-                <div className="flex gap-2">
-                  <Button variant="ghost" onClick={() => setUpgrading(null)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={confirmUpgrade} disabled={coins < cost}>
-                    Upgrade
-                  </Button>
+              <div
+                className="w-full max-w-md rounded-2xl border border-white/15 bg-pitch-dark p-6"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-lg font-bold">Upgrade Card</h3>
+                <p className="mt-1 text-sm text-white/60">
+                  This consumes one <span className="font-bold">{upgrading.tier}</span> copy and
+                  gives you the <span className="font-bold text-emerald-300">{next.tier}</span>{' '}
+                  version.
+                </p>
+                <div className="my-5 flex items-center justify-center gap-3">
+                  <PlayerCard card={upgrading} size="sm" />
+                  <span className="text-2xl text-emerald-400">→</span>
+                  <PlayerCard card={next} size="sm" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-white/60">
+                    Cost: <span className="font-bold text-yellow-300">🪙 {formatCoins(cost)}</span>
+                  </span>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" onClick={() => setUpgrading(null)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={confirmUpgrade} disabled={coins < cost}>
+                      Upgrade
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })()}
+          );
+        })()}
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-coin-pop rounded-lg bg-emerald-500 px-4 py-2 font-bold text-emerald-950 shadow-lg">
+        <div className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 animate-coin-pop rounded-lg bg-emerald-500 px-4 py-2 font-bold text-emerald-950 shadow-lg">
           {toast}
         </div>
       )}

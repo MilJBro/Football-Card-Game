@@ -99,10 +99,21 @@ Deploy the generated `out/` directory to any static host.
 
 ## Project Structure
 
+The app is challenge-first: the **home page is the challenge picker**, and
+selecting a challenge opens a tabbed view with a bottom tab bar —
+**Simulation · Squad · Packs · Upgrades**. The squad you build is shared between
+the Squad and Simulation tabs; packs open inline. Coins and cards are global, so
+anything you buy or upgrade carries across challenges.
+
 ```
 src/
-  app/            # routes (home, shop, collection, modes, pack opening)
-  components/     # cards, squad builder, pack opening, modes, ui
+  app/            # routes: home (challenge picker) + /modes/[modeId]
+  components/
+    modes/        # challenge shell, bottom tabs, simulation/packs/upgrades tabs
+    squad/        # squad builder (pitch, formations, player picker)
+    cards/        # player card + flip animation
+    opening/      # inline pack opening
+    layout/ ui/   # navbar, buttons, badges
   data/           # players, packs, game modes, formations (static content)
   lib/            # match engine, pack draws, squad utils, coin rewards
   store/          # Zustand store + shared types

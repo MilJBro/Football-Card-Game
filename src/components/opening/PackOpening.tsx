@@ -1,7 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
+import { useRef, useState } from 'react';
 import { getPack } from '@/data/packs';
 import { getCard } from '@/data/players';
 import { drawPack } from '@/lib/packSystem';
@@ -19,7 +18,15 @@ interface DrawnCard {
   isFoil: boolean;
 }
 
-export function PackOpening({ packId }: { packId: string }) {
+interface PackOpeningProps {
+  packId: string;
+  /** Close the opening view (back to the shop grid). */
+  onClose: () => void;
+  /** Jump to the Upgrades tab to view the new cards. */
+  onViewCards?: () => void;
+}
+
+export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) {
   const hydrated = useHydrated();
   const pack = getPack(packId);
 
@@ -39,9 +46,9 @@ export function PackOpening({ packId }: { packId: string }) {
     return (
       <div className="py-20 text-center">
         <p className="text-white/60">Unknown pack.</p>
-        <Link href="/shop" className="mt-4 inline-block text-emerald-400 underline">
-          Back to shop
-        </Link>
+        <button onClick={onClose} className="mt-4 inline-block text-emerald-400 underline">
+          Back
+        </button>
       </div>
     );
   }
@@ -107,11 +114,11 @@ export function PackOpening({ packId }: { packId: string }) {
         <p className="text-white/60">
           Cost: <span className="font-bold text-yellow-300">🪙 {formatCoins(pack.cost)}</span>
         </p>
-        {error && <p className="text-red-400">{error}</p>}
+        {error && <p className="text-pl-pink">{error}</p>}
         <div className="flex gap-3">
-          <Link href="/shop">
-            <Button variant="ghost">Back</Button>
-          </Link>
+          <Button variant="ghost" onClick={onClose}>
+            Back
+          </Button>
           <Button size="lg" onClick={openPack} disabled={!affordable}>
             {affordable ? 'Open Pack' : 'Not enough coins'}
           </Button>
@@ -151,12 +158,10 @@ export function PackOpening({ packId }: { packId: string }) {
           </Button>
         ) : (
           <>
-            <Link href="/shop">
-              <Button variant="ghost">Open Another</Button>
-            </Link>
-            <Link href="/collection">
-              <Button>Go to Collection</Button>
-            </Link>
+            <Button variant="ghost" onClick={onClose}>
+              Open Another
+            </Button>
+            {onViewCards && <Button onClick={onViewCards}>View Cards</Button>}
           </>
         )}
       </div>

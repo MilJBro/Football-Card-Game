@@ -1,67 +1,68 @@
 'use client';
 
 import Link from 'next/link';
+import { GAME_MODES } from '@/data/gameModes';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { GAME_MODES } from '@/data/gameModes';
-import { formatCoins } from '@/lib/ui';
+import { cn, formatCoins } from '@/lib/ui';
 
-const TILES = [
-  { href: '/shop', emoji: '📦', title: 'Pack Shop', desc: 'Spend coins on packs' },
-  { href: '/collection', emoji: '🗂️', title: 'Your Cards', desc: 'Upgrade & sell players' },
-  { href: '/modes', emoji: '🏆', title: 'Challenges', desc: 'Build a squad, play a season' },
-];
-
-export default function HomePage() {
-  const hydrated = useHydrated();
-  const coins = useGameStore((s) => s.coins);
-  const completions = useGameStore((s) => s.completions);
-
-  const completedModes = Object.keys(completions).length;
-
+function Stars({ n }: { n: number }) {
   return (
-    <div className="space-y-8">
-      <section className="rounded-2xl border border-white/10 bg-pitch/40 p-6 sm:p-8">
-        <h1 className="text-3xl font-black sm:text-4xl">
-          Welcome back, <span className="text-emerald-400">Gaffer</span>
-        </h1>
-        <p className="mt-2 max-w-xl text-white/70">
-          Build a squad from Premier League greats and simulate a season to complete the
-          challenges. Pick one up whenever you have a spare moment.
-        </p>
-
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:max-w-sm">
-          <Stat label="Coins" value={hydrated ? formatCoins(coins) : '—'} />
-          <Stat
-            label="Challenges"
-            value={hydrated ? `${completedModes}/${GAME_MODES.length}` : '—'}
-          />
-        </div>
-      </section>
-
-      {/* Nav tiles */}
-      <section className="grid gap-4 sm:grid-cols-3">
-        {TILES.map((t) => (
-          <Link
-            key={t.href}
-            href={t.href}
-            className="group rounded-2xl border border-white/10 bg-white/5 p-6 transition-colors hover:border-emerald-400/40 hover:bg-emerald-400/5"
-          >
-            <div className="text-4xl">{t.emoji}</div>
-            <h3 className="mt-3 text-lg font-bold group-hover:text-emerald-300">{t.title}</h3>
-            <p className="text-sm text-white/60">{t.desc}</p>
-          </Link>
-        ))}
-      </section>
-    </div>
+    <span className="text-yellow-400">
+      {'★'.repeat(n)}
+      <span className="text-white/20">{'★'.repeat(5 - n)}</span>
+    </span>
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+export default function HomePage() {
+  const hydrated = useHydrated();
+  const completions = useGameStore((s) => s.completions);
+
   return (
-    <div className="rounded-xl bg-black/30 p-3 text-center">
-      <div className="text-xl font-black tabular-nums text-emerald-300">{value}</div>
-      <div className="text-xs uppercase tracking-wide text-white/50">{label}</div>
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-3xl font-black sm:text-4xl">
+          Pick a <span className="text-emerald-400">Challenge</span>
+        </h1>
+        <p className="mt-1 max-w-xl text-white/70">
+          Choose a challenge, build a squad from Premier League greats, and simulate a season to
+          complete it. Each challenge is its own run.
+        </p>
+      </header>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {GAME_MODES.map((mode) => {
+          const done = hydrated ? completions[mode.id] : undefined;
+          return (
+            <Link
+              key={mode.id}
+              href={`/modes/${mode.id}/`}
+              className={cn(
+                'group rounded-2xl border bg-white/5 p-5 transition-colors hover:bg-emerald-400/5',
+                done ? 'border-emerald-400/40' : 'border-white/10 hover:border-emerald-400/40'
+              )}
+            >
+              <div className="flex items-start justify-between">
+                <h2 className="text-xl font-black group-hover:text-emerald-300">{mode.name}</h2>
+                {done && (
+                  <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-300">
+                    ✓ ×{done.timesCompleted}
+                  </span>
+                )}
+              </div>
+              <p className="mt-1 text-sm text-white/60">{mode.description}</p>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
+                <span>
+                  <Stars n={mode.difficulty} />
+                </span>
+                <span className="text-white/50">Rec. rating {mode.recommendedRating}</span>
+                <span className="font-bold text-yellow-300">🪙 {formatCoins(mode.firstReward)}</span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

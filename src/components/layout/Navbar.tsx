@@ -1,20 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { cn, formatCoins } from '@/lib/ui';
-
-const LINKS = [
-  { href: '/', label: 'Home' },
-  { href: '/shop', label: 'Shop' },
-  { href: '/collection', label: 'Cards' },
-  { href: '/modes', label: 'Challenges' },
-];
+import { formatCoins } from '@/lib/ui';
 
 export function Navbar() {
-  const pathname = usePathname();
   const coins = useGameStore((s) => s.coins);
   const hydrated = useHydrated();
 
@@ -25,24 +16,6 @@ export function Navbar() {
           <span className="text-emerald-400">⚽</span>
           <span>GAFFER</span>
         </Link>
-
-        <div className="flex items-center gap-1 sm:gap-2">
-          {LINKS.map((l) => {
-            const active = l.href === '/' ? pathname === '/' : pathname.startsWith(l.href);
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={cn(
-                  'rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors',
-                  active ? 'bg-emerald-500/20 text-emerald-300' : 'text-white/70 hover:bg-white/10'
-                )}
-              >
-                {l.label}
-              </Link>
-            );
-          })}
-        </div>
 
         <div className="flex items-center gap-1.5 rounded-full bg-yellow-400/10 px-3 py-1.5 text-sm font-bold text-yellow-300">
           <span>🪙</span>
