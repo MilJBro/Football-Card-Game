@@ -20,6 +20,9 @@ the harder challenges).
 - **Positions evolve with the career.** Rooney gains CM at Legend; Salah gains
   ST; Henry starts as a winger before becoming a striker.
 - **Foils** — owning a duplicate unlocks a cosmetic animated foil skin.
+- **Upgrading** — spend coins to convert a card to the next tier of the same
+  player (Rising→Star for 🪙1,200, Star→Legend for 🪙3,000). Consumes one copy
+  of the lower-tier card.
 
 ## Positions & Packs
 
@@ -69,6 +72,11 @@ persist.
 - **Challenge bonus** — for meeting a challenge's win condition (first-clear bonus)
 - **Selling cards** — discard unwanted/duplicate cards for coins
 - **Daily login** — escalating streak reward
+
+## Spending Coins
+
+- **Packs** — Rising 🪙500, Star 🪙1,200, Legend 🪙2,500
+- **Upgrades** — Rising→Star 🪙1,200, Star→Legend 🪙3,000
 
 ## Tech
 

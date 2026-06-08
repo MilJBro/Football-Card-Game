@@ -7,12 +7,20 @@ import type {
   ModeRunResult,
   ModeId,
 } from '@/store/types';
-import { getCard } from '@/data/players';
+import { getCard, getNextTierCard } from '@/data/players';
 import {
   STARTING_COINS,
   discardValue,
   dailyLoginReward,
+  upgradeCost,
 } from '@/lib/coinRewards';
+
+export interface UpgradeResult {
+  ok: boolean;
+  reason?: string;
+  newCardId?: string;
+  foilUnlocked?: boolean;
+}
 
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
@@ -49,6 +57,7 @@ export interface GameState {
   addCards: (cardIds: string[]) => { newCards: string[]; foilsUnlocked: string[] };
   discardCard: (cardId: string) => number; // returns coins gained, 0 if none
   toggleFoilEquipped: (cardId: string) => void;
+  upgradeCard: (cardId: string) => UpgradeResult;
 
   // ---- Actions: modes ----
   recordRun: (result: ModeRunResult) => void;
@@ -165,6 +174,60 @@ export const useGameStore = create<GameState>()(
             },
           };
         }),
+
+      upgradeCard: (cardId) => {
+        const s = get();
+        const card = getCard(cardId);
+        const next = getNextTierCard(cardId);
+        if (!card) return { ok: false, reason: 'Unknown card' };
+        if (!next) return { ok: false, reason: 'Already at max tier' };
+
+        const owned = s.ownedCards[cardId];
+        if (!owned || owned.quantity < 1) return { ok: false, reason: 'You do not own this card' };
+
+        const cost = upgradeCost(card.tier);
+        if (s.coins < cost) return { ok: false, reason: 'Not enough coins' };
+
+        // Consume one copy of the lower-tier card.
+        const nextOwned = { ...s.ownedCards };
+        if (owned.quantity <= 1) {
+          delete nextOwned[cardId];
+        } else {
+          nextOwned[cardId] = { ...owned, quantity: owned.quantity - 1 };
+        }
+
+        // Add the upgraded card (may stack / unlock a foil if already owned).
+        const existingNext = nextOwned[next.id];
+        let foilUnlocked = false;
+        if (!existingNext) {
+          nextOwned[next.id] = {
+            cardId: next.id,
+            quantity: 1,
+            isFoilUnlocked: false,
+            isFoilEquipped: false,
+            acquiredAt: Date.now(),
+          };
+        } else {
+          const quantity = existingNext.quantity + 1;
+          foilUnlocked = quantity >= 2 && !existingNext.isFoilUnlocked;
+          nextOwned[next.id] = {
+            ...existingNext,
+            quantity,
+            isFoilUnlocked: existingNext.isFoilUnlocked || quantity >= 2,
+          };
+        }
+
+        set({
+          ownedCards: nextOwned,
+          coins: s.coins - cost,
+          transactions: [
+            { amount: -cost, reason: `Upgraded ${card.playerName} to ${next.tier}`, at: Date.now() },
+            ...s.transactions,
+          ].slice(0, 100),
+        });
+
+        return { ok: true, newCardId: next.id, foilUnlocked };
+      },
 
       recordRun: (result) =>
         set((s) => {

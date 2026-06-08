@@ -32,3 +32,14 @@ export function seasonFinishReward(season: SeasonResult): number {
 export function dailyLoginReward(streak: number): number {
   return Math.min(50 + streak * 25, 300);
 }
+
+// ---- Tier upgrade cost (to upgrade FROM the given tier to the next one) ----
+const UPGRADE_COST: Record<Tier, number> = {
+  Rising: 1200, // Rising -> Star
+  Star: 3000, // Star -> Legend
+  Legend: 0, // already max tier
+};
+
+export function upgradeCost(fromTier: Tier): number {
+  return UPGRADE_COST[fromTier];
+}

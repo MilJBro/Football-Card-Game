@@ -372,3 +372,17 @@ export function getCard(cardId: string): PlayerCardDef | undefined {
 export function getPool(pack: PlayerCardDef['pack'], tier: Tier): PlayerCardDef[] {
   return ALL_CARDS.filter((c) => c.pack === pack && c.tier === tier);
 }
+
+const NEXT_TIER: Partial<Record<Tier, Tier>> = {
+  Rising: 'Star',
+  Star: 'Legend',
+};
+
+/** The same player's card one tier up, or undefined if already Legend. */
+export function getNextTierCard(cardId: string): PlayerCardDef | undefined {
+  const card = CARD_BY_ID[cardId];
+  if (!card) return undefined;
+  const next = NEXT_TIER[card.tier];
+  if (!next) return undefined;
+  return CARD_BY_ID[`${card.playerId}-${next.toLowerCase()}`];
+}
