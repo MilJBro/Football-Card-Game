@@ -1018,7 +1018,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2002', positions: ['LB'], rating: 75 },
       Star:   { era: 'Chelsea · 2007', positions: ['LB'], rating: 86 },
-      Legend: { era: 'Chelsea · 2010', positions: ['LB'], rating: 88 },
+      Legend: { era: 'Chelsea · 2010', positions: ['LB'], rating: 89 },
     },
   },
   {
@@ -1348,7 +1348,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2018', positions: ['LB'], rating: 76 },
       Star:   { era: 'Liverpool · 2020', positions: ['LB'], rating: 86 },
-      Legend: { era: 'Liverpool · 2022', positions: ['LB'], rating: 89 },
+      Legend: { era: 'Liverpool · 2022', positions: ['LB'], rating: 88 },
     },
   },
   {
