@@ -1282,7 +1282,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2004',  positions: ['CB'],        rating: 72 },
       Star:   { era: 'Man Utd · 2007',  positions: ['CB'],        rating: 80 },
-      Legend: { era: 'Man Utd · 2009',  positions: ['CB', 'RB'], rating: 83 },
+      Legend: { era: 'Man Utd · 2009',  positions: ['CB'],        rating: 83 },
     },
   },
   {
@@ -1291,9 +1291,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Man Utd · 2000',  positions: ['RB'],        rating: 72 },
-      Star:   { era: 'Man Utd · 2003',  positions: ['RB'],        rating: 80 },
-      Legend: { era: 'Man Utd · 2008',  positions: ['RB', 'CB'], rating: 83 },
+      Rising: { era: 'Man Utd · 2000',  positions: ['CB'], rating: 72 },
+      Star:   { era: 'Man Utd · 2003',  positions: ['CB'], rating: 80 },
+      Legend: { era: 'Man Utd · 2008',  positions: ['CB'], rating: 83 },
     },
   },
   {
@@ -2192,17 +2192,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'robjones',
-    playerName: 'Rob Jones',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Liverpool · 1992', positions: ['RB'], rating: 73 },
-      Star:   { era: 'Liverpool · 1995', positions: ['RB'], rating: 81 },
-      Legend: { era: 'Liverpool · 1997', positions: ['RB'], rating: 82 },
-    },
-  },
-  {
     playerId: 'gusto',
     playerName: 'Malo Gusto',
     nationality: 'France',
@@ -2233,28 +2222,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Brighton · 2021', positions: ['RB'], rating: 72 },
       Star:   { era: 'Brighton · 2023', positions: ['RB'], rating: 80 },
       Legend: { era: 'Brighton · 2024', positions: ['RB'], rating: 82 },
-    },
-  },
-  {
-    playerId: 'garykelly',
-    playerName: 'Gary Kelly',
-    nationality: 'Ireland',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Leeds · 1993', positions: ['RB'], rating: 72 },
-      Star:   { era: 'Leeds · 1997', positions: ['RB'], rating: 80 },
-      Legend: { era: 'Leeds · 2001', positions: ['RB'], rating: 81 },
-    },
-  },
-  {
-    playerId: 'barton_warren',
-    playerName: 'Warren Barton',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Wimbledon · 1993', positions: ['RB'], rating: 72 },
-      Star:   { era: 'Newcastle · 1996', positions: ['RB'], rating: 80 },
-      Legend: { era: 'Newcastle · 1998', positions: ['RB'], rating: 81 },
     },
   },
   {
@@ -2313,17 +2280,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'lukeyoung',
-    playerName: 'Luke Young',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Charlton · 2003',    positions: ['RB'], rating: 72 },
-      Star:   { era: 'Middlesbrough · 2007', positions: ['RB'], rating: 79 },
-      Legend: { era: 'Aston Villa · 2010',  positions: ['RB'], rating: 80 },
-    },
-  },
-  {
     playerId: 'hutton',
     playerName: 'Alan Hutton',
     nationality: 'Scotland',
@@ -2332,17 +2288,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Tottenham · 2008',   positions: ['RB'], rating: 71 },
       Star:   { era: 'Aston Villa · 2013', positions: ['RB'], rating: 77 },
       Legend: { era: 'Aston Villa · 2018', positions: ['RB'], rating: 79 },
-    },
-  },
-  {
-    playerId: 'joelward',
-    playerName: 'Joel Ward',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Crystal Palace · 2013', positions: ['RB'], rating: 71 },
-      Star:   { era: 'Crystal Palace · 2018', positions: ['RB'], rating: 77 },
-      Legend: { era: 'Crystal Palace · 2023', positions: ['RB'], rating: 79 },
     },
   },
   {
@@ -4055,7 +4000,7 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Aston Villa · 2008', positions: ['LW'],        rating: 74 },
       Star:   { era: 'Man Utd · 2012',     positions: ['LW'],        rating: 81 },
       // Reinvented as a right-back at Man Utd — iconic late-career switch.
-      Legend: { era: 'Man Utd · 2018',     positions: ['LW', 'RB'], rating: 84 },
+      Legend: { era: 'Man Utd · 2018',     positions: ['LW', 'LB'], rating: 84 },
     },
   },
   {
