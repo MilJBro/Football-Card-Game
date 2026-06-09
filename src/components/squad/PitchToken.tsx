@@ -1,7 +1,7 @@
 'use client';
 
 import type { PlayerCardDef } from '@/store/types';
-import { cn, PACK_STYLES, lastName } from '@/lib/ui';
+import { cn, PACK_STYLES, shortName } from '@/lib/ui';
 
 interface PitchTokenProps {
   card: PlayerCardDef;
@@ -34,8 +34,8 @@ export function PitchToken({ card, slotLabel, effectiveRating, onClick }: PitchT
         >
           {rating}
         </div>
-        <div className="mt-0.5 truncate text-[8px] font-bold uppercase leading-tight text-white/85">
-          {lastName(card.playerName)}
+        <div className="mt-0.5 w-full truncate text-[8px] font-bold uppercase leading-tight text-white/85">
+          {shortName(card.playerName)}
         </div>
         {oop && (
           <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white">

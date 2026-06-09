@@ -7,6 +7,7 @@ import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { PackOpening } from '@/components/opening/PackOpening';
+import { PackArt } from '@/components/opening/PackArt';
 import { cn, TIER_STYLES, TIER_BADGE, formatCoins } from '@/lib/ui';
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -169,7 +170,7 @@ function PackSlide({ pack, onOpen }: { pack: PackDef; onOpen: (id: string) => vo
           {pack.tier}
         </span>
 
-        <div className="relative text-7xl drop-shadow-lg">📦</div>
+        <PackArt category={pack.pack} className="relative h-32 w-32 drop-shadow-lg" />
 
         <div className="relative w-full">
           <h3 className="text-lg font-black leading-tight">{pack.name}</h3>

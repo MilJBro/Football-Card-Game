@@ -8,6 +8,7 @@ import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { CardFlip } from '@/components/cards/CardFlip';
+import { PackArt } from '@/components/opening/PackArt';
 import { cn, TIER_STYLES, formatCoins } from '@/lib/ui';
 
 type Phase = 'sealed' | 'revealing' | 'done';
@@ -103,13 +104,13 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
         <h1 className="text-2xl font-black">{pack.name}</h1>
         <div
           className={cn(
-            'flex h-72 w-52 items-center justify-center rounded-2xl border-4 bg-gradient-to-b text-7xl',
+            'flex h-72 w-52 items-center justify-center rounded-2xl border-4 bg-gradient-to-b',
             styles.border,
             styles.gradient,
             styles.glow
           )}
         >
-          📦
+          <PackArt category={pack.pack} className="h-40 w-40 drop-shadow-lg" />
         </div>
         <p className="text-white/60">
           Cost: <span className="font-bold text-yellow-300">🪙 {formatCoins(pack.cost)}</span>

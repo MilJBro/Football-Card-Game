@@ -42,6 +42,20 @@ export function lastName(fullName: string): string {
   return parts[parts.length - 1];
 }
 
+/**
+ * First initial + surname, keeping name particles intact.
+ *   "Virgil van Dijk"  -> "V. van Dijk"
+ *   "Kevin De Bruyne"  -> "K. De Bruyne"
+ *   "Wayne Rooney"     -> "W. Rooney"
+ *   "Ederson"          -> "Ederson"  (mononym)
+ */
+export function shortName(fullName: string): string {
+  const parts = fullName.trim().split(' ');
+  if (parts.length === 1) return parts[0];
+  const [first, ...rest] = parts;
+  return `${first[0]}. ${rest.join(' ')}`;
+}
+
 /** Position/pack-based card background, border, ring, and position badge colours. */
 export const PACK_STYLES: Record<
   PackCategory,
