@@ -9,9 +9,9 @@ import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { CardFlip } from '@/components/cards/CardFlip';
 import { PackArt } from '@/components/opening/PackArt';
-import { cn, RARITY_STYLES, formatCoins } from '@/lib/ui';
+import { cn, formatCoins } from '@/lib/ui';
 
-type Phase = 'sealed' | 'revealing' | 'done';
+type Phase = 'sealed' | 'revealing';
 
 interface DrawnCard {
   cardId: string;
@@ -37,11 +37,11 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
 
   const [phase, setPhase] = useState<Phase>('sealed');
   const [drawn, setDrawn] = useState<DrawnCard[]>([]);
-  const [flipped, setFlipped] = useState<boolean[]>([]);
+  const [revealed, setRevealed] = useState<boolean[]>([]);
+  const [active, setActive] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const openedRef = useRef(false);
-
-  const allFlipped = flipped.length > 0 && flipped.every(Boolean);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   if (!pack) {
     return (
@@ -53,8 +53,6 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
       </div>
     );
   }
-
-  const styles = RARITY_STYLES[pack.rarity];
 
   function openPack() {
     if (openedRef.current) return;
@@ -72,28 +70,41 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
     const newSet = new Set(result.newCards);
     const foilSet = new Set(result.foilsUnlocked);
 
+    // Reveal lowest-rated first, saving the best of the pack for last.
+    const ordered = [...ids].sort(
+      (a, b) => (getCard(a)?.rating ?? 0) - (getCard(b)?.rating ?? 0)
+    );
+
     setDrawn(
-      ids.map((cardId) => ({
+      ordered.map((cardId) => ({
         cardId,
         isNew: newSet.has(cardId),
         isFoil: foilSet.has(cardId),
       }))
     );
-    setFlipped(new Array(ids.length).fill(false));
+    // First card starts revealed.
+    setRevealed(ordered.map((_, i) => i === 0));
+    setActive(0);
     setPhase('revealing');
   }
 
-  function flip(i: number) {
-    setFlipped((f) => {
-      if (f[i]) return f;
-      const next = [...f];
+  function reveal(i: number) {
+    setRevealed((r) => {
+      if (r[i]) return r;
+      const next = [...r];
       next[i] = true;
       return next;
     });
   }
 
-  function revealAll() {
-    setFlipped((f) => f.map(() => true));
+  function onScroll() {
+    const el = scrollRef.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / el.clientWidth);
+    if (i !== active) {
+      setActive(i);
+      reveal(i);
+    }
   }
 
   // ---- Sealed ----
@@ -102,14 +113,7 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
     return (
       <div className="flex flex-col items-center gap-6 py-10 text-center">
         <h1 className="text-2xl font-black">{pack.name}</h1>
-        <div
-          className={cn(
-            'flex h-72 w-52 items-center justify-center rounded-2xl border-4 bg-gradient-to-b',
-            styles.border,
-            styles.gradient,
-            styles.glow
-          )}
-        >
+        <div className="flex h-80 w-56 items-center justify-center rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark shadow-xl">
           <PackArt category={pack.pack} className="h-40 w-40 drop-shadow-lg" />
         </div>
         <p className="text-white/60">
@@ -128,43 +132,58 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
     );
   }
 
-  // ---- Revealing / done ----
+  // ---- Revealing (Instagram-story style) ----
+  const allRevealed = revealed.every(Boolean);
   return (
-    <div className="flex flex-col items-center gap-6 py-6">
-      <h1 className="text-2xl font-black">{pack.name}</h1>
-      <p className="text-sm text-white/60">
-        {allFlipped ? 'All revealed!' : 'Tap each card to reveal'}
+    <div className="flex flex-col items-center gap-4 pb-4 pt-2">
+      <h1 className="text-xl font-black">{pack.name}</h1>
+
+      {/* Story progress segments */}
+      <div className="flex w-full max-w-xs gap-1.5">
+        {drawn.map((_, i) => (
+          <div key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-white/15">
+            <span
+              className={cn(
+                'block h-full rounded-full bg-emerald-400 transition-all',
+                revealed[i] ? 'w-full' : 'w-0',
+                i === active && 'bg-emerald-300'
+              )}
+            />
+          </div>
+        ))}
+      </div>
+
+      <p className="text-xs text-white/50">
+        {allRevealed ? 'All revealed!' : `Swipe to reveal · ${active + 1}/${drawn.length}`}
       </p>
 
-      <div className="flex flex-wrap items-center justify-center gap-4">
+      {/* Card carousel */}
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+      >
         {drawn.map((d, i) => {
           const card = getCard(d.cardId)!;
           return (
-            <CardFlip
-              key={i}
-              card={card}
-              flipped={flipped[i]}
-              foil={d.isFoil}
-              isNew={d.isNew}
-              onClick={() => flip(i)}
-            />
+            <div key={i} className="flex w-full min-w-full shrink-0 snap-center justify-center px-4 py-2">
+              <CardFlip
+                card={card}
+                flipped={revealed[i]}
+                foil={d.isFoil}
+                isNew={d.isNew}
+                onClick={() => reveal(i)}
+              />
+            </div>
           );
         })}
       </div>
 
       <div className="flex gap-3">
-        {!allFlipped ? (
-          <Button variant="secondary" onClick={revealAll}>
-            Reveal All
-          </Button>
-        ) : (
-          <>
-            <Button variant="ghost" onClick={onClose}>
-              Open Another
-            </Button>
-            {onViewCards && <Button onClick={onViewCards}>View Cards</Button>}
-          </>
-        )}
+        <Button variant="ghost" onClick={onClose}>
+          Open Another
+        </Button>
+        {onViewCards && <Button onClick={onViewCards}>View Cards</Button>}
       </div>
     </div>
   );

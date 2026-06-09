@@ -36,7 +36,7 @@ const CATEGORIES: { pack: PackCategory; label: string }[] = [
 
 const RARITIES: PackRarity[] = ['squad', 'firstteam', 'elite'];
 
-export const CARDS_PER_PACK = 5;
+export const CARDS_PER_PACK = 4;
 
 // 12 packs = 4 categories × 3 rarities.
 export const ALL_PACKS: PackDef[] = CATEGORIES.flatMap(({ pack, label }) =>

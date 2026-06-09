@@ -37,6 +37,8 @@ export interface PlayerCardDef {
   nationality: string;
   /** Club name at this tier, e.g. "Man Utd". */
   club: string;
+  /** Season / year this card represents, e.g. "2011". */
+  season: string;
   /** Club + year shown as the era subtitle, e.g. "Man Utd · 2011". */
   era: string;
   /** Pack category this card is sold under. */

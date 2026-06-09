@@ -383,6 +383,7 @@ export const ALL_CARDS: PlayerCardDef[] = PLAYERS.flatMap((p) =>
       playerName: p.playerName,
       nationality: p.nationality,
       club: t.era.split(' · ')[0],
+      season: t.era.split(' · ')[1] ?? '',
       era: t.era,
       pack: p.pack,
       tier,

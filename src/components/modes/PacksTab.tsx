@@ -10,7 +10,7 @@ import { PackOpening } from '@/components/opening/PackOpening';
 import { PackArt } from '@/components/opening/PackArt';
 import { GoalIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
 import { RARITY_LABEL } from '@/data/packs';
-import { cn, RARITY_STYLES, RARITY_BADGE, formatCoins } from '@/lib/ui';
+import { cn, RARITY_BADGE, formatCoins } from '@/lib/ui';
 
 const CATEGORY_LABEL: Record<PackCategory, string> = {
   GK: 'Goalkeepers',
@@ -49,7 +49,7 @@ export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
       <header>
         <h1 className="text-2xl font-black">Packs</h1>
         <p className="text-sm text-white/60">
-          Pick a position, then swipe through the tiers. Every pack holds 5 cards.
+          Pick a position, then swipe through the tiers. Every pack holds 4 cards.
         </p>
       </header>
 
@@ -150,30 +150,11 @@ function PackStory({
 function PackSlide({ pack, onOpen }: { pack: PackDef; onOpen: (id: string) => void }) {
   const hydrated = useHydrated();
   const coins = useGameStore((s) => s.coins);
-  const styles = RARITY_STYLES[pack.rarity];
   const affordable = hydrated && coins >= pack.cost;
-
-  const stripe =
-    pack.rarity === 'elite'
-      ? 'repeating-linear-gradient(135deg,rgba(255,210,0,0.16) 0px,rgba(255,210,0,0.16) 3px,transparent 3px,transparent 16px)'
-      : pack.rarity === 'firstteam'
-        ? 'repeating-linear-gradient(135deg,rgba(220,225,240,0.08) 0px,rgba(220,225,240,0.08) 2px,transparent 2px,transparent 15px)'
-        : undefined;
 
   return (
     <div className="w-full min-w-full shrink-0 snap-center">
-      <div
-        className={cn(
-          'relative flex h-72 flex-col items-center justify-between overflow-hidden rounded-3xl border-2 bg-gradient-to-b p-6 text-center',
-          styles.border,
-          styles.gradient,
-          styles.glow
-        )}
-      >
-        {stripe && (
-          <div className="pointer-events-none absolute inset-0" style={{ background: stripe }} />
-        )}
-
+      <div className="relative flex h-72 flex-col items-center justify-between overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark p-6 text-center shadow-xl">
         <span
           className={cn(
             'relative rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest',
