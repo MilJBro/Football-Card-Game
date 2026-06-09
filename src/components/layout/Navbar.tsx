@@ -14,7 +14,6 @@ export function Navbar() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="flex items-center gap-2 text-lg font-black tracking-tight">
           <span className="text-emerald-400">⚽</span>
-          <span>GAFFER</span>
         </Link>
 
         <div className="flex items-center gap-1.5 rounded-full bg-yellow-400/10 px-3 py-1.5 text-sm font-bold text-yellow-300">
