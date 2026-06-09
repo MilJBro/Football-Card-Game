@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import type { Formation, Squad } from '@/store/types';
 import { FORMATION_LIST, getFormation } from '@/data/formations';
-import { getCard } from '@/data/players';
+import { getCard, getEffectiveCardData } from '@/data/players';
 import { useGameStore } from '@/store/useGameStore';
 import {
   emptySquad,
@@ -23,7 +23,7 @@ interface SquadBuilderProps {
 export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
   const ownedCards = useGameStore((s) => s.ownedCards);
   const formation = getFormation(squad.formation);
-  const summary = useMemo(() => summariseSquad(squad), [squad]);
+  const summary = useMemo(() => summariseSquad(squad, ownedCards), [squad, ownedCards]);
 
   const [activeSlot, setActiveSlot] = useState<string | null>(null);
 
@@ -62,13 +62,16 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
   const pickerCards = useMemo(() => {
     if (!activeSlotDef) return [];
     return Object.values(ownedCards)
-      .map((o) => getCard(o.cardId)!)
-      .filter(Boolean)
-      .filter((c) => !usedCardIds.has(c.id))
-      .map((c) => {
-        const penalty = penaltyForCardInSlot(c.positions, activeSlotDef.naturalPosition);
-        return { card: c, penalty, effective: Math.max(1, c.rating - penalty) };
+      .map((o) => {
+        const card = getCard(o.cardId);
+        if (!card) return null;
+        const upgradeLevel = ((o.upgradeLevel) ?? 0) as 0 | 1 | 2;
+        const eff = getEffectiveCardData(card, upgradeLevel);
+        const penalty = penaltyForCardInSlot(eff.positions, activeSlotDef.naturalPosition);
+        return { card, upgradeLevel, penalty, effective: Math.max(1, eff.rating - penalty) };
       })
+      .filter((x): x is NonNullable<typeof x> => x !== null)
+      .filter((x) => !usedCardIds.has(x.card.id))
       .sort((a, b) => b.effective - a.effective);
   }, [ownedCards, usedCardIds, activeSlotDef]);
 
@@ -213,10 +216,11 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
               </p>
             ) : (
               <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                {pickerCards.map(({ card, penalty, effective }) => (
+                {pickerCards.map(({ card, upgradeLevel, penalty, effective }) => (
                   <div key={card.id} className="flex flex-col items-center gap-1">
                     <PlayerCard
                       card={card}
+                      upgradeLevel={upgradeLevel}
                       size="sm"
                       displayRating={effective}
                       onClick={() => assign(activeSlotDef.slotId, card.id)}

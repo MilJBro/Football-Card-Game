@@ -1,5 +1,5 @@
-import type { Position, PositionCategory, Squad } from '@/store/types';
-import { getCard } from '@/data/players';
+import type { OwnedCard, Position, PositionCategory, Squad } from '@/store/types';
+import { getCard, getEffectiveCardData } from '@/data/players';
 import { getFormation } from '@/data/formations';
 
 // ---------------------------------------------------------------------------
@@ -60,41 +60,25 @@ export interface SlotEvaluation {
 }
 
 /** Evaluate every slot of a squad, applying out-of-position penalties. */
-export function evaluateSquad(squad: Squad): SlotEvaluation[] {
+export function evaluateSquad(
+  squad: Squad,
+  ownedCards?: Record<string, OwnedCard>,
+): SlotEvaluation[] {
   const formation = getFormation(squad.formation);
   return formation.slots.map((slot) => {
     const cardId = squad.assignments[slot.slotId] ?? null;
     if (!cardId) {
-      return {
-        slotId: slot.slotId,
-        cardId: null,
-        baseRating: 0,
-        penalty: 0,
-        effectiveRating: 0,
-        outOfPosition: false,
-      };
+      return { slotId: slot.slotId, cardId: null, baseRating: 0, penalty: 0, effectiveRating: 0, outOfPosition: false };
     }
     const card = getCard(cardId);
     if (!card) {
-      return {
-        slotId: slot.slotId,
-        cardId,
-        baseRating: 0,
-        penalty: 0,
-        effectiveRating: 0,
-        outOfPosition: false,
-      };
+      return { slotId: slot.slotId, cardId, baseRating: 0, penalty: 0, effectiveRating: 0, outOfPosition: false };
     }
-    const penalty = penaltyForCardInSlot(card.positions, slot.naturalPosition);
-    const effectiveRating = Math.max(1, card.rating - penalty);
-    return {
-      slotId: slot.slotId,
-      cardId,
-      baseRating: card.rating,
-      penalty,
-      effectiveRating,
-      outOfPosition: penalty > 0,
-    };
+    const upgradeLevel = ((ownedCards?.[cardId]?.upgradeLevel) ?? 0) as 0 | 1 | 2;
+    const { rating: baseRating, positions } = getEffectiveCardData(card, upgradeLevel);
+    const penalty = penaltyForCardInSlot(positions, slot.naturalPosition);
+    const effectiveRating = Math.max(1, baseRating - penalty);
+    return { slotId: slot.slotId, cardId, baseRating, penalty, effectiveRating, outOfPosition: penalty > 0 };
   });
 }
 
@@ -116,8 +100,8 @@ export interface SquadSummary {
 }
 
 /** Average effective rating across the 11 slots, plus attack/defence splits. */
-export function summariseSquad(squad: Squad): SquadSummary {
-  const evaluations = evaluateSquad(squad);
+export function summariseSquad(squad: Squad, ownedCards?: Record<string, OwnedCard>): SquadSummary {
+  const evaluations = evaluateSquad(squad, ownedCards);
   const formation = getFormation(squad.formation);
   const totalSlots = formation.slots.length;
 

@@ -7,7 +7,7 @@ import type {
   ModeRunResult,
   ModeId,
 } from '@/store/types';
-import { getCard, getNextTierCard } from '@/data/players';
+import { getCard } from '@/data/players';
 import { STARTING_COINS, discardValue, upgradeCost } from '@/lib/coinRewards';
 
 export interface UpgradeResult {
@@ -92,6 +92,7 @@ export const useGameStore = create<GameState>()(
               owned[cardId] = {
                 cardId,
                 quantity: 1,
+                upgradeLevel: 0,
                 isFoilUnlocked: false,
                 isFoilEquipped: false,
                 acquiredAt: Date.now(),
@@ -118,7 +119,8 @@ export const useGameStore = create<GameState>()(
         const owned = s.ownedCards[cardId];
         const card = getCard(cardId);
         if (!owned || !card || owned.quantity < 1) return 0;
-        const value = discardValue(card);
+        const upgradeLevel = (owned.upgradeLevel ?? 0) as 0 | 1 | 2;
+        const value = discardValue(card, upgradeLevel);
 
         const nextOwned = { ...s.ownedCards };
         if (owned.quantity <= 1) {
@@ -132,7 +134,7 @@ export const useGameStore = create<GameState>()(
           coins: s.coins + value,
           totalEarned: s.totalEarned + value,
           transactions: [
-            { amount: value, reason: `Sold ${card.playerName} (${card.tier})`, at: Date.now() },
+            { amount: value, reason: `Sold ${card.playerName}`, at: Date.now() },
             ...s.transactions,
           ].slice(0, 100),
         });
@@ -154,55 +156,31 @@ export const useGameStore = create<GameState>()(
       upgradeCard: (cardId) => {
         const s = get();
         const card = getCard(cardId);
-        const next = getNextTierCard(cardId);
         if (!card) return { ok: false, reason: 'Unknown card' };
-        if (!next) return { ok: false, reason: 'Already at max tier' };
 
         const owned = s.ownedCards[cardId];
         if (!owned || owned.quantity < 1) return { ok: false, reason: 'You do not own this card' };
 
-        const cost = upgradeCost(card.tier);
+        const currentLevel = (owned.upgradeLevel ?? 0) as 0 | 1 | 2;
+        if (currentLevel >= 2) return { ok: false, reason: 'Already at max level' };
+
+        const cost = upgradeCost(currentLevel);
         if (s.coins < cost) return { ok: false, reason: 'Not enough coins' };
 
-        // Consume one copy of the lower-tier card.
-        const nextOwned = { ...s.ownedCards };
-        if (owned.quantity <= 1) {
-          delete nextOwned[cardId];
-        } else {
-          nextOwned[cardId] = { ...owned, quantity: owned.quantity - 1 };
-        }
-
-        // Add the upgraded card (may stack / unlock a foil if already owned).
-        const existingNext = nextOwned[next.id];
-        let foilUnlocked = false;
-        if (!existingNext) {
-          nextOwned[next.id] = {
-            cardId: next.id,
-            quantity: 1,
-            isFoilUnlocked: false,
-            isFoilEquipped: false,
-            acquiredAt: Date.now(),
-          };
-        } else {
-          const quantity = existingNext.quantity + 1;
-          foilUnlocked = quantity >= 2 && !existingNext.isFoilUnlocked;
-          nextOwned[next.id] = {
-            ...existingNext,
-            quantity,
-            isFoilUnlocked: existingNext.isFoilUnlocked || quantity >= 2,
-          };
-        }
-
+        const newLevel = (currentLevel + 1) as 0 | 1 | 2;
         set({
-          ownedCards: nextOwned,
+          ownedCards: {
+            ...s.ownedCards,
+            [cardId]: { ...owned, upgradeLevel: newLevel },
+          },
           coins: s.coins - cost,
           transactions: [
-            { amount: -cost, reason: `Upgraded ${card.playerName} to ${next.tier}`, at: Date.now() },
+            { amount: -cost, reason: `Upgraded ${card.playerName} to level ${newLevel}`, at: Date.now() },
             ...s.transactions,
           ].slice(0, 100),
         });
 
-        return { ok: true, newCardId: next.id, foilUnlocked };
+        return { ok: true };
       },
 
       recordRun: (result) =>
@@ -224,8 +202,8 @@ export const useGameStore = create<GameState>()(
       resetProgress: () => set({ ...initialState }),
     }),
     {
-      name: 'football-card-game-v1',
-      version: 1,
+      name: 'football-card-game-v2',
+      version: 2,
     }
   )
 );

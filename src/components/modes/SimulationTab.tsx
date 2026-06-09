@@ -72,16 +72,17 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
   const hydrated = useHydrated();
   const addCoins = useGameStore((s) => s.addCoins);
   const recordRun = useGameStore((s) => s.recordRun);
+  const ownedCards = useGameStore((s) => s.ownedCards);
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
 
-  const summary = summariseSquad(squad);
+  const summary = summariseSquad(squad, ownedCards);
 
   function runSeason() {
     setPhase('sim');
     setTimeout(() => {
-      const sum = summariseSquad(squad);
+      const sum = summariseSquad(squad, ownedCards);
       const season = simulateSeason(sum, mode);
       const success = evaluateWinCondition(mode, season);
 

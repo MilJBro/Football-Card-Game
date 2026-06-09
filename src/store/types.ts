@@ -26,34 +26,44 @@ export type ModeId =
 // Cards
 // ---------------------------------------------------------------------------
 
-/** A single card definition: one player at one career era (tier). */
+/** One upgrade step's worth of changed data. */
+export interface CardUpgrade {
+  rating: number;
+  club: string;
+  season: string;
+  era: string;
+  /** Only set when positions differ from the base card. */
+  positions?: Position[];
+}
+
+/** A single card definition — one entry per player, with upgrade data embedded. */
 export interface PlayerCardDef {
-  /** Unique card id, e.g. "rooney-legend". */
+  /** Unique card id — equals playerId. */
   id: string;
-  /** Stable player id shared across tiers, e.g. "rooney". */
   playerId: string;
   playerName: string;
-  /** Player's nationality, e.g. "England". */
   nationality: string;
-  /** Club name at this tier, e.g. "Man Utd". */
+  /** Base (level 0) club name. */
   club: string;
-  /** Season / year this card represents, e.g. "2011". */
+  /** Base (level 0) season year. */
   season: string;
-  /** Club + year shown as the era subtitle, e.g. "Man Utd · 2011". */
+  /** Base (level 0) era string, e.g. "Man Utd · 2011". */
   era: string;
-  /** Pack category this card is sold under. */
   pack: PackCategory;
-  tier: Tier;
-  /** One or two natural positions (historical). Max 2. */
+  /** Base (level 0) positions. */
   positions: Position[];
-  /** Single overall rating, 1-99. */
+  /** Base (level 0) rating. */
   rating: number;
+  /** [level-1 data, level-2 data] — two upgrade steps. */
+  upgrades: [CardUpgrade, CardUpgrade];
 }
 
 /** A card the player owns in their collection. */
 export interface OwnedCard {
   cardId: string;
   quantity: number;
+  /** How many times this card has been upgraded (0 = base, 2 = max). */
+  upgradeLevel: 0 | 1 | 2;
   /** True once a duplicate has been acquired (quantity >= 2). */
   isFoilUnlocked: boolean;
   /** Whether the user is displaying the foil skin. */

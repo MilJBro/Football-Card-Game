@@ -1,6 +1,7 @@
 'use client';
 
 import type { PlayerCardDef } from '@/store/types';
+import { getEffectiveCardData } from '@/data/players';
 import { cn, PACK_STYLES } from '@/lib/ui';
 
 export type Size = 'sm' | 'md' | 'lg';
@@ -8,10 +9,11 @@ export type Size = 'sm' | 'md' | 'lg';
 interface PlayerCardProps {
   card: PlayerCardDef;
   size?: Size;
+  upgradeLevel?: 0 | 1 | 2;
   foil?: boolean;
   selected?: boolean;
   dimmed?: boolean;
-  /** Optional rating override (e.g. effective rating in a squad slot). */
+  /** Rating override for out-of-position display in squad picker. */
   displayRating?: number;
   onClick?: () => void;
   className?: string;
@@ -22,15 +24,9 @@ const SIZES: Record<Size, {
   label: string; val: string; name: string;
   pad: string; dot: string; rowPy: string;
 }> = {
-  sm: { w: 'w-24',  rating: 'text-3xl', pos: 'text-[9px]',  label: 'text-[6px]',  val: 'text-[8px]',  name: 'text-[9px]',  pad: 'p-2',   dot: 'h-2.5 w-2.5', rowPy: 'py-0.5' },
-  md: { w: 'w-36',  rating: 'text-4xl', pos: 'text-[11px]', label: 'text-[7px]',  val: 'text-[10px]', name: 'text-[11px]', pad: 'p-2.5', dot: 'h-3 w-3',     rowPy: 'py-1'   },
-  lg: { w: 'w-44',  rating: 'text-5xl', pos: 'text-[13px]', label: 'text-[8px]',  val: 'text-[12px]', name: 'text-sm',     pad: 'p-3',   dot: 'h-3.5 w-3.5', rowPy: 'py-1.5' },
-};
-
-const TIER_DOT: Record<string, string> = {
-  Rising: 'bg-amber-400',
-  Star:   'bg-slate-300',
-  Legend: 'bg-red-500',
+  sm: { w: 'w-24',  rating: 'text-3xl', pos: 'text-[9px]',  label: 'text-[6px]',  val: 'text-[8px]',  name: 'text-[9px]',  pad: 'p-2',   dot: 'h-2 w-2',    rowPy: 'py-0.5' },
+  md: { w: 'w-36',  rating: 'text-4xl', pos: 'text-[11px]', label: 'text-[7px]',  val: 'text-[10px]', name: 'text-[11px]', pad: 'p-2.5', dot: 'h-2.5 w-2.5', rowPy: 'py-1'   },
+  lg: { w: 'w-44',  rating: 'text-5xl', pos: 'text-[13px]', label: 'text-[8px]',  val: 'text-[12px]', name: 'text-sm',     pad: 'p-3',   dot: 'h-3 w-3',    rowPy: 'py-1.5' },
 };
 
 /** "2008" → "2007/08", "1993" → "1992/93" */
@@ -41,13 +37,21 @@ function toSeason(year: string): string {
 }
 
 export function PlayerCard({
-  card, size = 'md', foil = false, selected = false,
-  dimmed = false, displayRating, onClick, className,
+  card,
+  size = 'md',
+  upgradeLevel = 0,
+  foil = false,
+  selected = false,
+  dimmed = false,
+  displayRating,
+  onClick,
+  className,
 }: PlayerCardProps) {
   const packStyle = PACK_STYLES[card.pack];
   const s = SIZES[size];
-  const rating = displayRating ?? card.rating;
-  const downgraded = displayRating !== undefined && displayRating < card.rating;
+  const eff = getEffectiveCardData(card, upgradeLevel);
+  const rating = displayRating ?? eff.rating;
+  const downgraded = displayRating !== undefined && displayRating < eff.rating;
 
   return (
     <button
@@ -69,7 +73,7 @@ export function PlayerCard({
     >
       {foil && <div className="foil-overlay absolute inset-0 animate-shimmer" />}
 
-      {/* Rating + tier dot */}
+      {/* Rating + upgrade dots */}
       <div className="relative flex items-start justify-between">
         <div>
           <div className={cn(
@@ -84,11 +88,23 @@ export function PlayerCard({
             s.pos,
             downgraded ? 'text-red-400' : 'text-amber-500/80',
           )}>
-            {card.positions[0]}
+            {eff.positions[0]}
             {downgraded && <span className="ml-1">▼</span>}
           </div>
         </div>
-        <div className={cn('rounded-full', s.dot, TIER_DOT[card.tier])} />
+        {/* Two dots = two upgrade steps */}
+        <div className="flex gap-0.5 pt-0.5">
+          {([0, 1] as const).map((i) => (
+            <div
+              key={i}
+              className={cn(
+                'rounded-full',
+                s.dot,
+                upgradeLevel > i ? 'bg-amber-400' : 'bg-white/20',
+              )}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="flex-1" />
@@ -96,9 +112,9 @@ export function PlayerCard({
       {/* SEASON / CLUB / NATION rows */}
       <div className="relative">
         {([
-          { label: 'SEASON', value: toSeason(card.season) },
-          { label: 'CLUB',   value: card.club             },
-          { label: 'NATION', value: card.nationality      },
+          { label: 'SEASON', value: toSeason(eff.season) },
+          { label: 'CLUB',   value: eff.club             },
+          { label: 'NATION', value: card.nationality     },
         ] as const).map(({ label, value }) => (
           <div key={label}>
             <div className="h-px w-full bg-white/10" />

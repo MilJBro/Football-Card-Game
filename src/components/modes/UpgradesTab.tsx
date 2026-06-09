@@ -3,16 +3,15 @@
 import { useMemo, useState } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { getCard, getNextTierCard } from '@/data/players';
+import { getCard } from '@/data/players';
 import { discardValue, upgradeCost } from '@/lib/coinRewards';
 import { PlayerCard } from '@/components/cards/PlayerCard';
 import { Button } from '@/components/ui/Button';
 import { cn, formatCoins } from '@/lib/ui';
-import type { PackCategory, PlayerCardDef, Tier } from '@/store/types';
+import type { PackCategory, PlayerCardDef } from '@/store/types';
 
 const CATEGORIES: (PackCategory | 'ALL')[] = ['ALL', 'GK', 'DEF', 'MID', 'ATT'];
-const TIERS: (Tier | 'ALL')[] = ['ALL', 'Rising', 'Star', 'Legend'];
-const TIER_ORDER: Tier[] = ['Rising', 'Star', 'Legend'];
+const LEVELS = ['ALL', '0', '1', '2'] as const;
 
 export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   const hydrated = useHydrated();
@@ -23,7 +22,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   const upgradeCard = useGameStore((s) => s.upgradeCard);
 
   const [cat, setCat] = useState<PackCategory | 'ALL'>('ALL');
-  const [tier, setTier] = useState<Tier | 'ALL'>('ALL');
+  const [levelFilter, setLevelFilter] = useState<'ALL' | '0' | '1' | '2'>('ALL');
   const [toast, setToast] = useState<string | null>(null);
   const [upgrading, setUpgrading] = useState<PlayerCardDef | null>(null);
 
@@ -32,9 +31,9 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
       .map((o) => ({ owned: o, card: getCard(o.cardId)! }))
       .filter((x) => x.card)
       .filter((x) => cat === 'ALL' || x.card.pack === cat)
-      .filter((x) => tier === 'ALL' || x.card.tier === tier)
-      .sort((a, b) => b.card.rating - a.card.rating);
-  }, [ownedCards, cat, tier]);
+      .filter((x) => levelFilter === 'ALL' || String(x.owned.upgradeLevel ?? 0) === levelFilter)
+      .sort((a, b) => b.card.upgrades[1].rating - a.card.upgrades[1].rating);
+  }, [ownedCards, cat, levelFilter]);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -49,10 +48,9 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   function confirmUpgrade() {
     if (!upgrading) return;
     const result = upgradeCard(upgrading.id);
-    const next = getNextTierCard(upgrading.id);
     setUpgrading(null);
-    if (result.ok && next) {
-      showToast(`Upgraded to ${next.tier}!${result.foilUnlocked ? ' ✨ Foil unlocked!' : ''}`);
+    if (result.ok) {
+      showToast('Upgraded!');
     } else if (result.reason) {
       showToast(result.reason);
     }
@@ -62,12 +60,12 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-black">Upgrades</h1>
-        <p className="text-white/60">Upgrade, sell and manage your players.</p>
+        <p className="text-white/60">Tap a card to upgrade or sell.</p>
       </header>
 
       <div className="flex flex-wrap gap-4">
         <FilterRow label="Position" options={CATEGORIES} value={cat} onChange={setCat} />
-        <FilterRow label="Tier" options={TIERS} value={tier} onChange={setTier} />
+        <FilterRow label="Level" options={LEVELS} value={levelFilter} onChange={setLevelFilter} />
       </div>
 
       {!hydrated ? null : owned.length === 0 ? (
@@ -79,32 +77,36 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {owned.map(({ owned: o, card }) => (
-            <div key={o.cardId} className="flex flex-col items-center">
-              <div className="relative">
-                <PlayerCard
-                  card={card}
-                  foil={o.isFoilEquipped}
-                  size="md"
-                  onClick={() => setUpgrading(card)}
-                />
-                {o.quantity > 1 && (
-                  <span className="absolute -right-2 -top-2 rounded-full bg-white px-2 py-0.5 text-xs font-black text-black">
-                    ×{o.quantity}
-                  </span>
-                )}
+          {owned.map(({ owned: o, card }) => {
+            const upgradeLevel = (o.upgradeLevel ?? 0) as 0 | 1 | 2;
+            return (
+              <div key={o.cardId} className="flex flex-col items-center">
+                <div className="relative">
+                  <PlayerCard
+                    card={card}
+                    upgradeLevel={upgradeLevel}
+                    foil={o.isFoilEquipped}
+                    size="md"
+                    onClick={() => setUpgrading(card)}
+                  />
+                  {o.quantity > 1 && (
+                    <span className="absolute -right-2 -top-2 rounded-full bg-white px-2 py-0.5 text-xs font-black text-black">
+                      ×{o.quantity}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {/* ── Upgrade / sell modal ─────────────────────────────────────── */}
       {upgrading && (() => {
-        const next = getNextTierCard(upgrading.id);
-        const cost = next ? upgradeCost(upgrading.tier) : 0;
         const ownedEntry = ownedCards[upgrading.id];
-        const currentTierIdx = TIER_ORDER.indexOf(upgrading.tier);
+        const currentLevel = ((ownedEntry?.upgradeLevel) ?? 0) as 0 | 1 | 2;
+        const canUpgrade = currentLevel < 2;
+        const cost = canUpgrade ? upgradeCost(currentLevel) : 0;
 
         return (
           <div
@@ -117,7 +119,9 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
             >
               {/* Header */}
               <div className="flex items-center justify-between px-5 pt-5 pb-4">
-                <h3 className="text-xl font-black uppercase text-white">Upgrade Card</h3>
+                <h3 className="text-xl font-black uppercase text-white">
+                  {canUpgrade ? 'Upgrade Card' : 'Card Info'}
+                </h3>
                 <button
                   onClick={() => setUpgrading(null)}
                   className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 text-white/60 hover:text-white"
@@ -128,7 +132,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
 
               {/* Card + player info */}
               <div className="flex items-center gap-4 px-5 pb-5">
-                <PlayerCard card={upgrading} foil={ownedEntry?.isFoilEquipped} size="md" />
+                <PlayerCard card={upgrading} upgradeLevel={currentLevel} foil={ownedEntry?.isFoilEquipped} size="md" />
                 <div className="flex flex-1 flex-col gap-3">
                   <div>
                     <div className="text-lg font-bold leading-tight text-white">
@@ -138,21 +142,21 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
                       {upgrading.club} · {upgrading.season}
                     </div>
                   </div>
-                  {/* Tier progress bar */}
+                  {/* Upgrade progress dots */}
                   <div className="flex gap-1.5">
-                    {TIER_ORDER.map((t, i) => (
+                    {([0, 1, 2] as const).map((lvl) => (
                       <div
-                        key={t}
+                        key={lvl}
                         className={cn(
                           'h-2 flex-1 rounded-full',
-                          i <= currentTierIdx ? 'bg-amber-400' : 'bg-white/15',
+                          lvl <= currentLevel ? 'bg-amber-400' : 'bg-white/15',
                         )}
                       />
                     ))}
                   </div>
                   {ownedEntry?.isFoilUnlocked && (
                     <button
-                      onClick={() => { toggleFoil(upgrading.id); }}
+                      onClick={() => toggleFoil(upgrading.id)}
                       className={cn(
                         'rounded-lg px-3 py-1.5 text-xs font-bold transition-colors',
                         ownedEntry.isFoilEquipped
@@ -168,7 +172,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
 
               {/* Action buttons */}
               <div className="space-y-2 px-5 pb-5">
-                {next && (
+                {canUpgrade && (
                   <button
                     onClick={confirmUpgrade}
                     disabled={coins < cost}
@@ -181,7 +185,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
                   onClick={() => { sell(upgrading.id); setUpgrading(null); }}
                   className="flex w-full items-center justify-center gap-2 rounded-2xl border border-purple-400/40 py-3.5 text-base font-bold text-purple-300 hover:bg-purple-400/10"
                 >
-                  Sell for 🪙 {formatCoins(discardValue(upgrading))}
+                  Sell for 🪙 {formatCoins(discardValue(upgrading, currentLevel))}
                 </button>
               </div>
             </div>
@@ -202,7 +206,7 @@ function FilterRow<T extends string>({
   label, options, value, onChange,
 }: {
   label: string;
-  options: T[];
+  options: readonly T[];
   value: T;
   onChange: (v: T) => void;
 }) {
@@ -219,7 +223,7 @@ function FilterRow<T extends string>({
               value === o ? 'bg-emerald-500 text-emerald-950' : 'bg-white/10 text-white/70 hover:bg-white/20',
             )}
           >
-            {o}
+            {o === '0' ? 'Base' : o === '1' ? 'Lvl 1' : o === '2' ? 'Max' : o}
           </button>
         ))}
       </div>
