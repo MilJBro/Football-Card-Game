@@ -1,4 +1,4 @@
-import type { Tier, PackCategory } from '@/store/types';
+import type { Tier, PackCategory, PackRarity } from '@/store/types';
 
 /** Concatenate class names, dropping falsy values. */
 export function cn(...classes: (string | false | null | undefined)[]): string {
@@ -30,6 +30,37 @@ export const TIER_STYLES: Record<
     ring: 'ring-tier-legend',
     gradient: 'from-yellow-500/40 to-amber-900/40',
   },
+};
+
+// Pack rarity visuals (bronze / silver / gold ramp, cheapest → priciest).
+export const RARITY_STYLES: Record<
+  PackRarity,
+  { glow: string; border: string; text: string; gradient: string }
+> = {
+  squad: {
+    glow: 'shadow-glow-rising',
+    border: 'border-tier-rising',
+    text: 'text-tier-rising',
+    gradient: 'from-amber-800/40 to-amber-950/40',
+  },
+  firstteam: {
+    glow: 'shadow-glow-star',
+    border: 'border-tier-star',
+    text: 'text-tier-star',
+    gradient: 'from-slate-400/30 to-slate-700/40',
+  },
+  elite: {
+    glow: 'shadow-glow-legend',
+    border: 'border-tier-legend',
+    text: 'text-tier-legend',
+    gradient: 'from-yellow-500/40 to-amber-900/40',
+  },
+};
+
+export const RARITY_BADGE: Record<PackRarity, string> = {
+  squad: 'bg-amber-700/90 text-amber-100',
+  firstteam: 'bg-slate-300/90 text-slate-900',
+  elite: 'bg-yellow-400/95 text-yellow-950',
 };
 
 export function formatCoins(n: number): string {

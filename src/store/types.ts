@@ -63,14 +63,19 @@ export interface OwnedCard {
 // Packs
 // ---------------------------------------------------------------------------
 
+/** Pack rarity buckets (cheapest → most expensive). */
+export type PackRarity = 'squad' | 'firstteam' | 'elite';
+
 export interface PackDef {
-  id: string; // e.g. "att-legend"
-  name: string; // e.g. "Attacker Legend Pack"
+  id: string; // e.g. "att-elite"
+  name: string; // e.g. "Attacker Elite Pack"
   pack: PackCategory;
-  tier: Tier;
+  rarity: PackRarity;
   cost: number;
   cardCount: number;
   description: string;
+  /** Draw odds across the three card grades (weights, need not sum to 100). */
+  weights: Record<Tier, number>;
 }
 
 // ---------------------------------------------------------------------------

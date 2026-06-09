@@ -9,7 +9,7 @@ import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { CardFlip } from '@/components/cards/CardFlip';
 import { PackArt } from '@/components/opening/PackArt';
-import { cn, TIER_STYLES, formatCoins } from '@/lib/ui';
+import { cn, RARITY_STYLES, formatCoins } from '@/lib/ui';
 
 type Phase = 'sealed' | 'revealing' | 'done';
 
@@ -54,7 +54,7 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
     );
   }
 
-  const styles = TIER_STYLES[pack.tier];
+  const styles = RARITY_STYLES[pack.rarity];
 
   function openPack() {
     if (openedRef.current) return;

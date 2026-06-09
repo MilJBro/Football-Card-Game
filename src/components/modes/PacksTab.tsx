@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { PackOpening } from '@/components/opening/PackOpening';
 import { PackArt } from '@/components/opening/PackArt';
 import { GoalIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
-import { cn, TIER_STYLES, TIER_BADGE, formatCoins } from '@/lib/ui';
+import { RARITY_LABEL } from '@/data/packs';
+import { cn, RARITY_STYLES, RARITY_BADGE, formatCoins } from '@/lib/ui';
 
 const CATEGORY_LABEL: Record<PackCategory, string> = {
   GK: 'Goalkeepers',
@@ -120,7 +121,7 @@ function PackStory({
             key={p.id}
             onClick={() => goTo(i)}
             className="h-1 flex-1 overflow-hidden rounded-full bg-white/15"
-            aria-label={`Go to ${p.tier}`}
+            aria-label={`Go to ${RARITY_LABEL[p.rarity]}`}
           >
             <span
               className={cn(
@@ -149,13 +150,13 @@ function PackStory({
 function PackSlide({ pack, onOpen }: { pack: PackDef; onOpen: (id: string) => void }) {
   const hydrated = useHydrated();
   const coins = useGameStore((s) => s.coins);
-  const styles = TIER_STYLES[pack.tier];
+  const styles = RARITY_STYLES[pack.rarity];
   const affordable = hydrated && coins >= pack.cost;
 
   const stripe =
-    pack.tier === 'Legend'
+    pack.rarity === 'elite'
       ? 'repeating-linear-gradient(135deg,rgba(255,210,0,0.16) 0px,rgba(255,210,0,0.16) 3px,transparent 3px,transparent 16px)'
-      : pack.tier === 'Star'
+      : pack.rarity === 'firstteam'
         ? 'repeating-linear-gradient(135deg,rgba(220,225,240,0.08) 0px,rgba(220,225,240,0.08) 2px,transparent 2px,transparent 15px)'
         : undefined;
 
@@ -176,10 +177,10 @@ function PackSlide({ pack, onOpen }: { pack: PackDef; onOpen: (id: string) => vo
         <span
           className={cn(
             'relative rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest',
-            TIER_BADGE[pack.tier]
+            RARITY_BADGE[pack.rarity]
           )}
         >
-          {pack.tier}
+          {RARITY_LABEL[pack.rarity]}
         </span>
 
         <PackArt category={pack.pack} className="relative h-32 w-32 drop-shadow-lg" />
