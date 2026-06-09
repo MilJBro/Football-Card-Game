@@ -2346,6 +2346,39 @@ const PLAYERS: PlayerSource[] = [
       Legend: { era: 'Tottenham · 2008',  positions: ['RB'], rating: 81 },
     },
   },
+  {
+    playerId: 'mattycash',
+    playerName: 'Matty Cash',
+    nationality: 'Poland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2021', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Aston Villa · 2023', positions: ['RB'], rating: 81 },
+      Legend: { era: 'Aston Villa · 2025', positions: ['RB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'timber',
+    playerName: 'Jurriën Timber',
+    nationality: 'Netherlands',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2023',    positions: ['RB'],        rating: 75 },
+      Star:   { era: 'Arsenal · 2024',    positions: ['RB'],        rating: 82 },
+      Legend: { era: 'Arsenal · 2025',    positions: ['RB', 'CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'connorbradley',
+    playerName: 'Connor Bradley',
+    nationality: 'Northern Ireland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2024', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Liverpool · 2025', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Liverpool · 2026', positions: ['RB'], rating: 82 },
+    },
+  },
 
   // ---- MID (89) -------------------------------------------------------------
 
