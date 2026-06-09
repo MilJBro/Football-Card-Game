@@ -1970,6 +1970,161 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  {
+    playerId: 'robinson_antonee',
+    playerName: 'Antonee Robinson',
+    nationality: 'USA',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Fulham · 2021', positions: ['LB'], rating: 74 },
+      Star:   { era: 'Fulham · 2023', positions: ['LB'], rating: 82 },
+      Legend: { era: 'Fulham · 2025', positions: ['LB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'udogie',
+    playerName: 'Destiny Udogie',
+    nationality: 'Italy',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2023', positions: ['LB'], rating: 74 },
+      Star:   { era: 'Tottenham · 2024', positions: ['LB'], rating: 82 },
+      Legend: { era: 'Tottenham · 2025', positions: ['LB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'kerkez',
+    playerName: 'Milos Kerkez',
+    nationality: 'Hungary',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Bournemouth · 2023', positions: ['LB'], rating: 73 },
+      Star:   { era: 'Bournemouth · 2024', positions: ['LB'], rating: 81 },
+      Legend: { era: 'Bournemouth · 2025', positions: ['LB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'cresswell',
+    playerName: 'Aaron Cresswell',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'West Ham · 2015', positions: ['LB'], rating: 73 },
+      Star:   { era: 'West Ham · 2018', positions: ['LB'], rating: 81 },
+      Legend: { era: 'West Ham · 2022', positions: ['LB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'emersonpalmieri',
+    playerName: 'Emerson Palmieri',
+    nationality: 'Italy',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2018',  positions: ['LB'], rating: 73 },
+      Star:   { era: 'Chelsea · 2021',  positions: ['LB'], rating: 80 },
+      Legend: { era: 'West Ham · 2023', positions: ['LB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'alexmoreno',
+    playerName: 'Alex Moreno',
+    nationality: 'Spain',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2023',  positions: ['LB'], rating: 72 },
+      Star:   { era: 'Aston Villa · 2024',  positions: ['LB'], rating: 79 },
+      Legend: { era: 'Nottm Forest · 2025', positions: ['LB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'silvestre',
+    playerName: 'Mikael Silvestre',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man Utd · 1999', positions: ['LB'], rating: 73 },
+      Star:   { era: 'Man Utd · 2003', positions: ['LB'], rating: 80 },
+      Legend: { era: 'Man Utd · 2006', positions: ['LB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'gibbs',
+    playerName: 'Kieran Gibbs',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2010', positions: ['LB'], rating: 73 },
+      Star:   { era: 'Arsenal · 2014', positions: ['LB'], rating: 81 },
+      Legend: { era: 'Arsenal · 2016', positions: ['LB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'sylvinho',
+    playerName: 'Sylvinho',
+    nationality: 'Brazil',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 1999',  positions: ['LB'], rating: 74 },
+      Star:   { era: 'Arsenal · 2001',  positions: ['LB'], rating: 81 },
+      Legend: { era: 'Man City · 2004', positions: ['LB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'babayaro',
+    playerName: 'Celestine Babayaro',
+    nationality: 'Nigeria',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 1997', positions: ['LB'], rating: 73 },
+      Star:   { era: 'Chelsea · 2000', positions: ['LB'], rating: 80 },
+      Legend: { era: 'Chelsea · 2003', positions: ['LB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'tsimikas',
+    playerName: 'Konstantinos Tsimikas',
+    nationality: 'Greece',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2020', positions: ['LB'], rating: 72 },
+      Star:   { era: 'Liverpool · 2022', positions: ['LB'], rating: 79 },
+      Legend: { era: 'Liverpool · 2024', positions: ['LB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'warnock',
+    playerName: 'Stephen Warnock',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2005',  positions: ['LB'], rating: 71 },
+      Star:   { era: 'Blackburn · 2008',  positions: ['LB'], rating: 78 },
+      Legend: { era: 'Aston Villa · 2010', positions: ['LB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'powell',
+    playerName: 'Chris Powell',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Charlton · 1998', positions: ['LB'], rating: 72 },
+      Star:   { era: 'Charlton · 2001', positions: ['LB'], rating: 79 },
+      Legend: { era: 'Charlton · 2004', positions: ['LB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'hinchcliffe',
+    playerName: 'Andy Hinchcliffe',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Everton · 1992',      positions: ['LB'], rating: 72 },
+      Star:   { era: 'Everton · 1995',      positions: ['LB'], rating: 79 },
+      Legend: { era: 'Sheffield Wed · 1999', positions: ['LB'], rating: 80 },
+    },
+  },
+
   // ---- MID (89) -------------------------------------------------------------
 
   {
