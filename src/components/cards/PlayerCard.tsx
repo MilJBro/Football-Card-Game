@@ -88,7 +88,7 @@ export function PlayerCard({
             s.pos,
             downgraded ? 'text-red-400' : 'text-amber-500/80',
           )}>
-            {eff.positions[0]}
+            {eff.positions.join(' · ')}
             {downgraded && <span className="ml-1">▼</span>}
           </div>
         </div>
