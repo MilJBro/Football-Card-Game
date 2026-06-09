@@ -1051,7 +1051,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2012', positions: ['RB'], rating: 74 },
       Star:   { era: 'Tottenham · 2016', positions: ['RB'], rating: 83 },
-      Legend: { era: 'Man City · 2019',  positions: ['RB'], rating: 86 },
+      Legend: { era: 'Man City · 2019',  positions: ['RB'], rating: 87 },
     },
   },
   {
@@ -1502,7 +1502,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Everton · 2012', positions: ['RB'], rating: 73 },
       Star:   { era: 'Everton · 2015', positions: ['RB'], rating: 82 },
-      Legend: { era: 'Everton · 2018', positions: ['RB'], rating: 85 },
+      Legend: { era: 'Everton · 2018', positions: ['RB'], rating: 83 },
     },
   },
   {
@@ -2122,7 +2122,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2022', positions: ['RB'], rating: 74 },
       Star:   { era: 'Arsenal · 2023', positions: ['RB'], rating: 83 },
-      Legend: { era: 'Arsenal · 2024', positions: ['RB'], rating: 83 },
+      Legend: { era: 'Arsenal · 2024', positions: ['RB'], rating: 84 },
     },
   },
   {
@@ -2254,7 +2254,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 2014', positions: ['RB'], rating: 72 },
       Star:   { era: 'Leicester · 2016', positions: ['RB'], rating: 79 },
-      Legend: { era: 'Leicester · 2017', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Leicester · 2017', positions: ['RB'], rating: 81 },
     },
   },
   {
