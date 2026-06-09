@@ -2302,6 +2302,51 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  {
+    playerId: 'livramento',
+    playerName: 'Tino Livramento',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Southampton · 2022', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Newcastle · 2024',   positions: ['RB'], rating: 81 },
+      Legend: { era: 'Newcastle · 2025',   positions: ['RB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'walkerpeters',
+    playerName: 'Kyle Walker-Peters',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Southampton · 2020', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Southampton · 2022', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Southampton · 2024', positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'aina',
+    playerName: 'Ola Aina',
+    nationality: 'Nigeria',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Fulham · 2023',        positions: ['RB'], rating: 72 },
+      Star:   { era: 'Nottm Forest · 2024',  positions: ['RB'], rating: 79 },
+      Legend: { era: 'Nottm Forest · 2025',  positions: ['RB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'chimbonda',
+    playerName: 'Pascal Chimbonda',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Wigan · 2006',      positions: ['RB'], rating: 73 },
+      Star:   { era: 'Tottenham · 2007',  positions: ['RB'], rating: 80 },
+      Legend: { era: 'Tottenham · 2008',  positions: ['RB'], rating: 81 },
+    },
+  },
+
   // ---- MID (89) -------------------------------------------------------------
 
   {
