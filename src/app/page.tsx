@@ -126,8 +126,7 @@ function ChallengeCard({ mode, done }: { mode: GameModeDef; done?: ModeCompletio
             <span className="font-bold text-emerald-300">Goal: </span>
             <span className="text-white/70">{mode.winConditionText}</span>
           </div>
-          <p className="mx-auto mt-2 max-w-[18rem] text-[11px] text-white/40">{mode.focus}</p>
-          <span className="mt-3 inline-block rounded-full bg-emerald-500 px-6 py-2 text-sm font-black text-emerald-950 transition-transform group-hover:scale-105">
+          <span className="mt-4 inline-block rounded-full bg-emerald-500 px-6 py-2 text-sm font-black text-emerald-950 transition-transform group-hover:scale-105">
             Start Challenge
           </span>
         </div>

@@ -116,8 +116,6 @@ export interface GameModeDef {
   description: string;
   /** Human-readable win condition. */
   winConditionText: string;
-  /** Squad-building tip — what to invest upgrades in for the best odds. */
-  focus: string;
 }
 
 /** A simulated season's results. */

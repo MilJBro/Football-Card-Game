@@ -155,10 +155,6 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4 text-sm">
         <span className="font-bold text-emerald-300">Win condition: </span>
         {mode.winConditionText}.
-        <div className="mt-2 text-white/50">
-          <span className="font-bold text-white/70">Tip: </span>
-          {mode.focus}
-        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
