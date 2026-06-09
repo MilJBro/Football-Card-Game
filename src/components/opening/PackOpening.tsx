@@ -97,6 +97,18 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
     });
   }
 
+  function goNext() {
+    const nextIdx = active + 1;
+    if (nextIdx < drawn.length) {
+      const el = scrollRef.current;
+      if (el) el.scrollTo({ left: nextIdx * el.clientWidth, behavior: 'smooth' });
+      setActive(nextIdx);
+      reveal(nextIdx);
+    } else if (onViewCards) {
+      onViewCards();
+    }
+  }
+
   function onScroll() {
     const el = scrollRef.current;
     if (!el) return;
@@ -179,11 +191,13 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
         })}
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         <Button variant="ghost" onClick={onClose}>
           Open Another
         </Button>
-        {onViewCards && <Button onClick={onViewCards}>View Cards</Button>}
+        <Button onClick={goNext}>
+          {active < drawn.length - 1 ? 'Next →' : 'View Cards →'}
+        </Button>
       </div>
     </div>
   );

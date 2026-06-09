@@ -114,23 +114,41 @@ function PackStory({
 
   return (
     <section className="space-y-2">
-      {/* Story progress segments */}
-      <div className="flex gap-1.5">
-        {packs.map((p, i) => (
-          <button
-            key={p.id}
-            onClick={() => goTo(i)}
-            className="h-1 flex-1 overflow-hidden rounded-full bg-white/15"
-            aria-label={`Go to ${RARITY_LABEL[p.rarity]}`}
-          >
-            <span
-              className={cn(
-                'block h-full rounded-full transition-all',
-                i === active ? 'w-full bg-emerald-400' : 'w-0 bg-emerald-400'
-              )}
-            />
-          </button>
-        ))}
+      {/* Story progress segments + arrow nav */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => goTo(active - 1)}
+          disabled={active === 0}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-lg font-bold text-white/70 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-20"
+          aria-label="Previous pack"
+        >
+          ‹
+        </button>
+        <div className="flex flex-1 gap-1.5">
+          {packs.map((p, i) => (
+            <button
+              key={p.id}
+              onClick={() => goTo(i)}
+              className="h-1 flex-1 overflow-hidden rounded-full bg-white/15"
+              aria-label={`Go to ${RARITY_LABEL[p.rarity]}`}
+            >
+              <span
+                className={cn(
+                  'block h-full rounded-full transition-all',
+                  i === active ? 'w-full bg-emerald-400' : 'w-0 bg-emerald-400'
+                )}
+              />
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => goTo(active + 1)}
+          disabled={active === packs.length - 1}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-lg font-bold text-white/70 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-20"
+          aria-label="Next pack"
+        >
+          ›
+        </button>
       </div>
 
       {/* Horizontal snap carousel */}

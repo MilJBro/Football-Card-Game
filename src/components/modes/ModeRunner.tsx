@@ -11,6 +11,14 @@ import { PacksTab } from '@/components/modes/PacksTab';
 import { UpgradesTab } from '@/components/modes/UpgradesTab';
 import { BottomTabs, type ChallengeTab } from '@/components/modes/BottomTabs';
 
+const TAB_ORDER: ChallengeTab[] = ['simulation', 'squad', 'packs', 'upgrades'];
+const TAB_LABELS: Record<ChallengeTab, string> = {
+  simulation: 'Simulate',
+  squad: 'Squad',
+  packs: 'Packs',
+  upgrades: 'Upgrades',
+};
+
 export function ModeRunner({ modeId }: { modeId: string }) {
   const mode = getMode(modeId);
 
@@ -29,14 +37,41 @@ export function ModeRunner({ modeId }: { modeId: string }) {
     );
   }
 
+  const tabIdx = TAB_ORDER.indexOf(tab);
+  const hasPrev = tabIdx > 0;
+  const hasNext = tabIdx < TAB_ORDER.length - 1;
+
   return (
     <div className="pb-4">
       {/* Slim challenge header */}
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <Link href="/" className="text-sm font-semibold text-emerald-400 hover:underline">
           ← Challenges
         </Link>
         <span className="truncate text-sm font-bold text-white/70">{mode.name}</span>
+      </div>
+
+      {/* Tab navigation arrows */}
+      <div className="mb-4 flex items-center gap-2 rounded-xl bg-white/5 px-2 py-1.5">
+        <button
+          onClick={() => hasPrev && setTab(TAB_ORDER[tabIdx - 1])}
+          disabled={!hasPrev}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-xl font-bold text-white/70 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-20"
+          aria-label="Previous section"
+        >
+          ‹
+        </button>
+        <span className="flex-1 text-center text-sm font-bold text-white">
+          {TAB_LABELS[tab]}
+        </span>
+        <button
+          onClick={() => hasNext && setTab(TAB_ORDER[tabIdx + 1])}
+          disabled={!hasNext}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-xl font-bold text-white/70 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-20"
+          aria-label="Next section"
+        >
+          ›
+        </button>
       </div>
 
       {tab === 'simulation' && (
