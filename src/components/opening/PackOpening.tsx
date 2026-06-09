@@ -34,6 +34,7 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
   const coins = useGameStore((s) => s.coins);
   const spendCoins = useGameStore((s) => s.spendCoins);
   const addCards = useGameStore((s) => s.addCards);
+  const ownedCards = useGameStore((s) => s.ownedCards);
 
   const [phase, setPhase] = useState<Phase>('sealed');
   const [drawn, setDrawn] = useState<DrawnCard[]>([]);
@@ -65,7 +66,7 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
       return;
     }
 
-    const ids = drawPack(pack!);
+    const ids = drawPack(pack!, new Set(Object.keys(ownedCards)));
     const result = addCards(ids);
     const newSet = new Set(result.newCards);
     const foilSet = new Set(result.foilsUnlocked);
