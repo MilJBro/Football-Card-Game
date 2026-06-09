@@ -25,86 +25,62 @@ const POSITION_SLOTS: Partial<Record<PackDef['pack'], (Position | null)[]>> = {
   ATT: ['LW', 'ST', 'ST', 'RW'],
 };
 
-/**
- * Draw one card for a given slot.
- *
- * Priority order:
- *   1. Correct tier + correct position + not yet owned + not drawn this pack
- *   2. Any tier  + correct position + not yet owned + not drawn this pack
- *   3. Correct tier + correct position + not drawn this pack (allow owned)
- *   4. Any tier  + correct position + not drawn this pack
- *   5. Any tier  + correct position (allow intra-pack duplicate as last resort)
- *   6. Any tier  + any position    (fallback if position pool is completely empty)
- */
+/** Draw one card, excluding cards already drawn in this same pack. */
 function drawOneCard(
   pack: PackDef,
   position: Position | null,
-  ownedIds: Set<string>,
   drawnThisPack: Set<string>,
 ): string | null {
   const tier = pickTier(pack.weights);
 
-  // Returns candidates from a tier matching position, with optional exclusion sets.
-  const candidates = (t: Tier, excludeOwned: boolean, excludeDrawn: boolean) => {
+  const pool = (t: Tier) => {
     const base = getPool(pack.pack, t);
-    let pool = position ? base.filter((c) => c.positions.includes(position)) : base;
-    if (excludeOwned) pool = pool.filter((c) => !ownedIds.has(c.id));
-    if (excludeDrawn) pool = pool.filter((c) => !drawnThisPack.has(c.id));
-    return pool;
+    const pos = position ? base.filter((c) => c.positions.includes(position)) : base;
+    return pos.filter((c) => !drawnThisPack.has(c.id));
   };
 
-  // Try each fallback level in priority order.
-  const attempts: Array<[Tier | null, boolean, boolean]> = [
-    [tier, true,  true ],  // rolled tier, unowned, not drawn this pack
-    [null, true,  true ],  // any tier,    unowned, not drawn this pack
-    [tier, false, true ],  // rolled tier, allow owned, not drawn this pack
-    [null, false, true ],  // any tier,    allow owned, not drawn this pack
-    [null, false, false],  // allow anything (intra-pack dupe — last resort)
-  ];
-
-  for (const [t, exOwned, exDrawn] of attempts) {
-    const pool = t !== null
-      ? candidates(t, exOwned, exDrawn)
-      : TIERS.flatMap((x) => candidates(x, exOwned, exDrawn));
-
-    if (pool.length === 0) continue;
-
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    drawnThisPack.add(pick.id);
-    return pick.id;
-  }
-
-  // Final safety: any card in this pack category.
-  for (const t of TIERS) {
-    const fallback = getPool(pack.pack, t);
-    if (fallback.length > 0) {
-      const pick = fallback[Math.floor(Math.random() * fallback.length)];
-      drawnThisPack.add(pick.id);
-      return pick.id;
+  // Try rolled tier first, then fall back through others.
+  let candidates = pool(tier);
+  if (candidates.length === 0) {
+    for (const t of TIERS) {
+      candidates = pool(t);
+      if (candidates.length > 0) break;
     }
   }
 
-  return null;
+  // Last resort: allow intra-pack duplicate if position pool is tiny.
+  if (candidates.length === 0) {
+    const base = getPool(pack.pack, tier);
+    candidates = position ? base.filter((c) => c.positions.includes(position)) : base;
+    for (const t of TIERS) {
+      if (candidates.length > 0) break;
+      const alt = getPool(pack.pack, t);
+      candidates = position ? alt.filter((c) => c.positions.includes(position)) : alt;
+    }
+  }
+
+  if (candidates.length === 0) return null;
+  const pick = candidates[Math.floor(Math.random() * candidates.length)];
+  drawnThisPack.add(pick.id);
+  return pick.id;
 }
 
 /**
  * Draw cards for a pack.
- *
- * Pass the player's current owned-card IDs so the draw prefers cards they
- * don't already have. Cards already owned can still appear (which unlocks
- * foils) but only once other options are exhausted.
+ * No player appears twice in the same pack, but the same player can
+ * show up in different packs — duplicates unlock foils.
  *
  * DEF packs guarantee RB · CB · CB · LB.
  * ATT packs guarantee LW · ST · ST · RW.
  * GK and MID packs draw freely within their category.
  */
-export function drawPack(pack: PackDef, ownedCardIds: Set<string> = new Set()): string[] {
+export function drawPack(pack: PackDef): string[] {
   const slots: (Position | null)[] =
     POSITION_SLOTS[pack.pack] ?? Array<Position | null>(pack.cardCount).fill(null);
 
   const drawnThisPack = new Set<string>();
 
   return slots
-    .map((pos) => drawOneCard(pack, pos, ownedCardIds, drawnThisPack))
+    .map((pos) => drawOneCard(pack, pos, drawnThisPack))
     .filter((id): id is string => id !== null);
 }
