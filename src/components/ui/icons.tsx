@@ -67,13 +67,22 @@ export function GlovesIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <g fill="currentColor">
-        <rect x="7.4" y="5" width="2.5" height="9" rx="1.25" />
-        <rect x="10.4" y="4" width="2.5" height="10" rx="1.25" />
-        <rect x="13.4" y="4.5" width="2.5" height="9.5" rx="1.25" />
-        <rect x="16.1" y="6.5" width="2.4" height="7.5" rx="1.2" />
-        <rect x="4" y="11" width="2.4" height="5.2" rx="1.2" transform="rotate(-35 5.2 13.6)" />
-        <path d="M6.6 11h11.7v4a4 4 0 0 1-4 4h-3.7a4 4 0 0 1-4-4Z" />
-        <rect x="8.4" y="17.6" width="8" height="2.6" rx="1.1" />
+        {/* Thumb */}
+        <rect
+          x="3.6"
+          y="10.5"
+          width="2.6"
+          height="6"
+          rx="1.3"
+          transform="rotate(-35 4.9 13.5)"
+        />
+        {/* Four fingers */}
+        <rect x="6.8" y="6.5" width="2.6" height="8.5" rx="1.3" />
+        <rect x="9.7" y="5.2" width="2.6" height="9.8" rx="1.3" />
+        <rect x="12.6" y="6" width="2.6" height="9" rx="1.3" />
+        <rect x="15.5" y="7.8" width="2.5" height="7.2" rx="1.25" />
+        {/* Palm with rounded base */}
+        <path d="M6.5 12h12v3.5a3.5 3.5 0 0 1-3.5 3.5h-5A3.5 3.5 0 0 1 6.5 15.5Z" />
       </g>
     </svg>
   );
