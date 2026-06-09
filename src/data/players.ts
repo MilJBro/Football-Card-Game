@@ -6,7 +6,7 @@ import type { PlayerCardDef, Position, Tier, PackCategory } from '@/store/types'
 //   Rising  = debut / breakthrough era
 //   Star    = establishing greatness
 //   Legend  = peak years (highest rating; 2nd position unlocked if applicable)
-// Expanded into 660 PlayerCardDef cards below (220 players × 3 tiers).
+// Expanded into 960 PlayerCardDef cards below (320 players × 3 tiers).
 // ============================================================================
 
 interface TierSource {
@@ -25,7 +25,7 @@ interface PlayerSource {
 
 const PLAYERS: PlayerSource[] = [
 
-  // ---- GK (23) ---------------------------------------------------------------
+  // ---- GK (31) ---------------------------------------------------------------
 
   {
     playerId: 'schmeichel',
@@ -280,8 +280,96 @@ const PLAYERS: PlayerSource[] = [
       Legend: { era: 'Liverpool · 2017',  positions: ['GK'], rating: 83 },
     },
   },
+  {
+    playerId: 'nevilles',
+    playerName: 'Neville Southall',
+    nationality: 'Wales',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Everton · 1985', positions: ['GK'], rating: 78 },
+      Star:   { era: 'Everton · 1987', positions: ['GK'], rating: 84 },
+      Legend: { era: 'Everton · 1995', positions: ['GK'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'robgreen',
+    playerName: 'Rob Green',
+    nationality: 'England',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'West Ham · 2007', positions: ['GK'], rating: 72 },
+      Star:   { era: 'West Ham · 2010', positions: ['GK'], rating: 79 },
+      Legend: { era: 'QPR · 2013',      positions: ['GK'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'scottcarson',
+    playerName: 'Scott Carson',
+    nationality: 'England',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Blackburn · 2006', positions: ['GK'], rating: 71 },
+      Star:   { era: 'Derby · 2008',     positions: ['GK'], rating: 77 },
+      Legend: { era: 'Wigan · 2012',     positions: ['GK'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'deanhenderson',
+    playerName: 'Dean Henderson',
+    nationality: 'England',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Sheffield Utd · 2019', positions: ['GK'], rating: 73 },
+      Star:   { era: 'Man Utd · 2020',       positions: ['GK'], rating: 80 },
+      Legend: { era: 'Nottm Forest · 2023',  positions: ['GK'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'fabianski',
+    playerName: 'Łukasz Fabiański',
+    nationality: 'Poland',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Arsenal · 2009',  positions: ['GK'], rating: 73 },
+      Star:   { era: 'Swansea · 2015',  positions: ['GK'], rating: 81 },
+      Legend: { era: 'West Ham · 2019', positions: ['GK'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'begovic',
+    playerName: 'Asmir Begović',
+    nationality: 'Bosnia and Herzegovina',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Stoke · 2012',   positions: ['GK'], rating: 73 },
+      Star:   { era: 'Stoke · 2015',   positions: ['GK'], rating: 79 },
+      Legend: { era: 'Chelsea · 2016', positions: ['GK'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'timkrul',
+    playerName: 'Tim Krul',
+    nationality: 'Netherlands',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Newcastle · 2011', positions: ['GK'], rating: 73 },
+      Star:   { era: 'Newcastle · 2013', positions: ['GK'], rating: 80 },
+      Legend: { era: 'Brighton · 2020',  positions: ['GK'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'josereina',
+    playerName: 'José Reina',
+    nationality: 'Spain',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Liverpool · 2006', positions: ['GK'], rating: 76 },
+      Star:   { era: 'Liverpool · 2009', positions: ['GK'], rating: 85 },
+      Legend: { era: 'Liverpool · 2012', positions: ['GK'], rating: 88 },
+    },
+  },
 
-  // ---- DEF (58) -------------------------------------------------------------
+  // ---- DEF (78) -------------------------------------------------------------
 
   {
     playerId: 'ferdinand',
@@ -923,8 +1011,228 @@ const PLAYERS: PlayerSource[] = [
       Legend: { era: 'Blackburn · 1997', positions: ['CB'], rating: 85 },
     },
   },
+  {
+    playerId: 'stuartpearce',
+    playerName: 'Stuart Pearce',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Nottm Forest · 1990', positions: ['LB'], rating: 74 },
+      Star:   { era: 'Nottm Forest · 1993', positions: ['LB'], rating: 82 },
+      Legend: { era: 'Man City · 2002',     positions: ['LB'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'southgate',
+    playerName: 'Gareth Southgate',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 1994',     positions: ['CB'], rating: 73 },
+      Star:   { era: 'Aston Villa · 1996',     positions: ['CB'], rating: 81 },
+      Legend: { era: 'Middlesbrough · 2001',   positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'skrtel',
+    playerName: 'Martin Škrtel',
+    nationality: 'Slovakia',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2009', positions: ['CB'], rating: 74 },
+      Star:   { era: 'Liverpool · 2012', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Liverpool · 2014', positions: ['CB'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'agger',
+    playerName: 'Daniel Agger',
+    nationality: 'Denmark',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2007',     positions: ['CB'],         rating: 73 },
+      Star:   { era: 'Liverpool · 2010',     positions: ['CB'],         rating: 82 },
+      Legend: { era: 'Liverpool · 2012',     positions: ['CB', 'LB'],   rating: 85 },
+    },
+  },
+  {
+    playerId: 'lindelof',
+    playerName: 'Victor Lindelöf',
+    nationality: 'Sweden',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man Utd · 2018', positions: ['CB'], rating: 74 },
+      Star:   { era: 'Man Utd · 2019', positions: ['CB'], rating: 81 },
+      Legend: { era: 'Man Utd · 2021', positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'maguire',
+    playerName: 'Harry Maguire',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leicester · 2018', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Man Utd · 2020',   positions: ['CB'], rating: 83 },
+      Legend: { era: 'Leicester · 2019', positions: ['CB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'matip',
+    playerName: 'Joel Matip',
+    nationality: 'Cameroon',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2017', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Liverpool · 2019', positions: ['CB'], rating: 81 },
+      Legend: { era: 'Liverpool · 2020', positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'trippier',
+    playerName: 'Kieran Trippier',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Burnley · 2014',    positions: ['RB'], rating: 74 },
+      Star:   { era: 'Tottenham · 2018',  positions: ['RB'], rating: 83 },
+      Legend: { era: 'Newcastle · 2023',  positions: ['RB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'waynebridge',
+    playerName: 'Wayne Bridge',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Southampton · 2002', positions: ['LB'], rating: 73 },
+      Star:   { era: 'Chelsea · 2005',     positions: ['LB'], rating: 81 },
+      Legend: { era: 'Man City · 2010',    positions: ['LB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'distin',
+    playerName: 'Sylvain Distin',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man City · 2003',    positions: ['CB'], rating: 73 },
+      Star:   { era: 'Portsmouth · 2008',  positions: ['CB'], rating: 81 },
+      Legend: { era: 'Everton · 2012',     positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'ehiogu',
+    playerName: 'Ugo Ehiogu',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 1993',     positions: ['CB'], rating: 73 },
+      Star:   { era: 'Aston Villa · 1996',     positions: ['CB'], rating: 80 },
+      Legend: { era: 'Middlesbrough · 2002',   positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'stevehowey',
+    playerName: 'Steve Howey',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Newcastle · 1993', positions: ['CB'], rating: 72 },
+      Star:   { era: 'Newcastle · 1996', positions: ['CB'], rating: 79 },
+      Legend: { era: 'Man City · 2001',  positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'michaeldawson',
+    playerName: 'Michael Dawson',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2006', positions: ['CB'], rating: 72 },
+      Star:   { era: 'Tottenham · 2010', positions: ['CB'], rating: 80 },
+      Legend: { era: 'Hull · 2015',      positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'doherty',
+    playerName: 'Matt Doherty',
+    nationality: 'Ireland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Wolves · 2018',     positions: ['RB'], rating: 73 },
+      Star:   { era: 'Wolves · 2019',     positions: ['RB'], rating: 81 },
+      Legend: { era: 'Tottenham · 2021',  positions: ['RB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'staunton',
+    playerName: 'Steve Staunton',
+    nationality: 'Ireland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 1993',   positions: ['LB'], rating: 73 },
+      Star:   { era: 'Aston Villa · 1995', positions: ['LB'], rating: 80 },
+      Legend: { era: 'Liverpool · 1998',   positions: ['LB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'corluka',
+    playerName: 'Vedran Ćorluka',
+    nationality: 'Croatia',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man City · 2008',   positions: ['CB'],         rating: 73 },
+      Star:   { era: 'Tottenham · 2010',  positions: ['CB'],         rating: 80 },
+      Legend: { era: 'Tottenham · 2012',  positions: ['CB', 'RB'],   rating: 83 },
+    },
+  },
+  {
+    playerId: 'henchoz',
+    playerName: 'Stéphane Henchoz',
+    nationality: 'Switzerland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Blackburn · 1997',  positions: ['CB'], rating: 72 },
+      Star:   { era: 'Liverpool · 2001',  positions: ['CB'], rating: 80 },
+      Legend: { era: 'Liverpool · 2003',  positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'davidluiz',
+    playerName: 'David Luiz',
+    nationality: 'Brazil',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2012', positions: ['CB'], rating: 76 },
+      Star:   { era: 'Chelsea · 2015', positions: ['CB'], rating: 83 },
+      Legend: { era: 'Arsenal · 2019', positions: ['CB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'yobo',
+    playerName: 'Joseph Yobo',
+    nationality: 'Nigeria',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Everton · 2003', positions: ['CB'], rating: 72 },
+      Star:   { era: 'Everton · 2006', positions: ['CB'], rating: 79 },
+      Legend: { era: 'Everton · 2009', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'upson',
+    playerName: 'Matthew Upson',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Birmingham · 2004', positions: ['CB'], rating: 72 },
+      Star:   { era: 'West Ham · 2008',   positions: ['CB'], rating: 79 },
+      Legend: { era: 'West Ham · 2010',   positions: ['CB'], rating: 82 },
+    },
+  },
 
-  // ---- MID (64) -------------------------------------------------------------
+  // ---- MID (89) -------------------------------------------------------------
 
   {
     playerId: 'gerrard',
@@ -1631,8 +1939,283 @@ const PLAYERS: PlayerSource[] = [
       Legend: { era: 'Newcastle · 2004', positions: ['CM', 'RW'], rating: 83 },
     },
   },
+  {
+    playerId: 'paulince',
+    playerName: 'Paul Ince',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man Utd · 1991',   positions: ['CM'], rating: 75 },
+      Star:   { era: 'Man Utd · 1994',   positions: ['CM'], rating: 84 },
+      Legend: { era: 'Liverpool · 1998', positions: ['CM'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'jamieredknapp',
+    playerName: 'Jamie Redknapp',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Liverpool · 1993',  positions: ['CM'], rating: 73 },
+      Star:   { era: 'Liverpool · 1996',  positions: ['CM'], rating: 81 },
+      Legend: { era: 'Tottenham · 2002',  positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'garyspeed',
+    playerName: 'Gary Speed',
+    nationality: 'Wales',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Leeds · 1993',     positions: ['CM'], rating: 74 },
+      Star:   { era: 'Newcastle · 1999', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Newcastle · 2002', positions: ['CM'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'jjenas',
+    playerName: 'Jermaine Jenas',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Newcastle · 2003',  positions: ['CM'], rating: 73 },
+      Star:   { era: 'Tottenham · 2007',  positions: ['CM'], rating: 80 },
+      Legend: { era: 'Tottenham · 2010',  positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'boateng',
+    playerName: 'George Boateng',
+    nationality: 'Netherlands',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2001',     positions: ['CM'], rating: 72 },
+      Star:   { era: 'Aston Villa · 2003',     positions: ['CM'], rating: 79 },
+      Legend: { era: 'Middlesbrough · 2005',   positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'sissoko',
+    playerName: 'Moussa Sissoko',
+    nationality: 'France',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Newcastle · 2014',  positions: ['CM'], rating: 73 },
+      Star:   { era: 'Tottenham · 2017',  positions: ['CM'], rating: 80 },
+      Legend: { era: 'Tottenham · 2019',  positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'wanyama',
+    playerName: 'Victor Wanyama',
+    nationality: 'Kenya',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Southampton · 2014', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Tottenham · 2016',   positions: ['CM'], rating: 80 },
+      Legend: { era: 'Tottenham · 2018',   positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'ndidi',
+    playerName: 'Wilfred Ndidi',
+    nationality: 'Nigeria',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Leicester · 2017', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Leicester · 2019', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Leicester · 2021', positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'cabaye',
+    playerName: 'Yohan Cabaye',
+    nationality: 'France',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Newcastle · 2012',     positions: ['CM'], rating: 74 },
+      Star:   { era: 'Newcastle · 2013',     positions: ['CM'], rating: 82 },
+      Legend: { era: 'Crystal Palace · 2016', positions: ['CM'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'huddlestone',
+    playerName: 'Tom Huddlestone',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Tottenham · 2008', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Tottenham · 2011', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Hull · 2015',      positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'carltonpalmer',
+    playerName: 'Carlton Palmer',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Sheffield Wed · 1992', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Sheffield Wed · 1994', positions: ['CM'], rating: 78 },
+      Legend: { era: 'Leeds · 1997',         positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'robbieearle',
+    playerName: 'Robbie Earle',
+    nationality: 'Jamaica',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Wimbledon · 1993', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Wimbledon · 1996', positions: ['CM'], rating: 78 },
+      Legend: { era: 'Wimbledon · 1999', positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'hargreaves',
+    playerName: 'Owen Hargreaves',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Bayern Munich · 2003', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Man Utd · 2007',       positions: ['CM'], rating: 80 },
+      Legend: { era: 'Man Utd · 2008',       positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'joeallen',
+    playerName: 'Joe Allen',
+    nationality: 'Wales',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Swansea · 2012',   positions: ['CM'], rating: 72 },
+      Star:   { era: 'Liverpool · 2014', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Stoke · 2018',     positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'stevendavis',
+    playerName: 'Steven Davis',
+    nationality: 'Northern Ireland',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2006',  positions: ['CM'], rating: 73 },
+      Star:   { era: 'Southampton · 2015',  positions: ['CM'], rating: 79 },
+      Legend: { era: 'Southampton · 2017',  positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'marknoble',
+    playerName: 'Mark Noble',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'West Ham · 2008', positions: ['CM'], rating: 73 },
+      Star:   { era: 'West Ham · 2013', positions: ['CM'], rating: 80 },
+      Legend: { era: 'West Ham · 2018', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'cleverley',
+    playerName: 'Tom Cleverley',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man Utd · 2011',  positions: ['CM'], rating: 72 },
+      Star:   { era: 'Everton · 2015',  positions: ['CM'], rating: 78 },
+      Legend: { era: 'Watford · 2018',  positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'shelvey',
+    playerName: 'Jonjo Shelvey',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Liverpool · 2013',  positions: ['CM'], rating: 73 },
+      Star:   { era: 'Newcastle · 2017',  positions: ['CM'], rating: 79 },
+      Legend: { era: 'Newcastle · 2019',  positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'davidplatt',
+    playerName: 'David Platt',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Aston Villa · 1990', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Sampdoria · 1993',   positions: ['CM'], rating: 81 },
+      Legend: { era: 'Arsenal · 1996',     positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'mcateer',
+    playerName: 'Jason McAteer',
+    nationality: 'Ireland',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Bolton · 1995',      positions: ['CM'], rating: 72 },
+      Star:   { era: 'Liverpool · 1997',   positions: ['CM'], rating: 79 },
+      Legend: { era: 'Blackburn · 2001',   positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'capoue',
+    playerName: 'Etienne Capoue',
+    nationality: 'France',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Tottenham · 2014', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Watford · 2016',   positions: ['CM'], rating: 79 },
+      Legend: { era: 'Watford · 2018',   positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'coutinho',
+    playerName: 'Philippe Coutinho',
+    nationality: 'Brazil',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Liverpool · 2014',     positions: ['CM'],         rating: 77 },
+      Star:   { era: 'Liverpool · 2016',     positions: ['CM'],         rating: 86 },
+      Legend: { era: 'Liverpool · 2018',     positions: ['CM', 'LW'],   rating: 89 },
+    },
+  },
+  {
+    playerId: 'malbranque',
+    playerName: 'Steed Malbranque',
+    nationality: 'France',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Fulham · 2003',     positions: ['CM'], rating: 73 },
+      Star:   { era: 'Tottenham · 2007',  positions: ['CM'], rating: 80 },
+      Legend: { era: 'Sunderland · 2009', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'kevinnolan',
+    playerName: 'Kevin Nolan',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Bolton · 2004',    positions: ['CM'], rating: 72 },
+      Star:   { era: 'Newcastle · 2010', positions: ['CM'], rating: 79 },
+      Legend: { era: 'West Ham · 2013',  positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'stephenireland',
+    playerName: 'Stephen Ireland',
+    nationality: 'Ireland',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man City · 2007', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Man City · 2009', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Aston Villa · 2011', positions: ['CM'], rating: 82 },
+    },
+  },
 
-  // ---- ATT (75) -------------------------------------------------------------
+  // ---- ATT (122) -------------------------------------------------------------
 
   {
     playerId: 'rooney',
@@ -2460,11 +3043,528 @@ const PLAYERS: PlayerSource[] = [
       Legend: { era: 'Man Utd · 1996', positions: ['LW'], rating: 82 },
     },
   },
+  {
+    playerId: 'bale',
+    playerName: 'Gareth Bale',
+    nationality: 'Wales',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Tottenham · 2010', positions: ['LW'],         rating: 79 },
+      Star:   { era: 'Tottenham · 2012', positions: ['LW'],         rating: 87 },
+      Legend: { era: 'Tottenham · 2013', positions: ['LW', 'RW'],   rating: 91 },
+    },
+  },
+  {
+    playerId: 'tevez',
+    playerName: 'Carlos Tevez',
+    nationality: 'Argentina',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'West Ham · 2007',  positions: ['ST'],         rating: 79 },
+      Star:   { era: 'Man Utd · 2009',   positions: ['ST'],         rating: 87 },
+      Legend: { era: 'Man City · 2012',  positions: ['ST', 'LW'],   rating: 90 },
+    },
+  },
+  {
+    playerId: 'berbatov',
+    playerName: 'Dimitar Berbatov',
+    nationality: 'Bulgaria',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Tottenham · 2006', positions: ['ST'], rating: 76 },
+      Star:   { era: 'Man Utd · 2009',   positions: ['ST'], rating: 84 },
+      Legend: { era: 'Man Utd · 2011',   positions: ['ST'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'firmino',
+    playerName: 'Roberto Firmino',
+    nationality: 'Brazil',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Liverpool · 2016', positions: ['ST'], rating: 77 },
+      Star:   { era: 'Liverpool · 2018', positions: ['ST'], rating: 85 },
+      Legend: { era: 'Liverpool · 2020', positions: ['ST'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'chicharito',
+    playerName: 'Javier Hernández',
+    nationality: 'Mexico',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Man Utd · 2011',  positions: ['ST'], rating: 75 },
+      Star:   { era: 'Man Utd · 2012',  positions: ['ST'], rating: 81 },
+      Legend: { era: 'West Ham · 2016', positions: ['ST'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'origi',
+    playerName: 'Divock Origi',
+    nationality: 'Belgium',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Liverpool · 2016', positions: ['ST'], rating: 71 },
+      Star:   { era: 'Liverpool · 2018', positions: ['ST'], rating: 76 },
+      Legend: { era: 'Liverpool · 2019', positions: ['ST'], rating: 79 },
+    },
+  },
+  {
+    playerId: 'collymore',
+    playerName: 'Stan Collymore',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Nottm Forest · 1993', positions: ['ST'], rating: 76 },
+      Star:   { era: 'Liverpool · 1995',    positions: ['ST'], rating: 83 },
+      Legend: { era: 'Liverpool · 1996',    positions: ['ST'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'johnbarnes',
+    playerName: 'John Barnes',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Liverpool · 1990', positions: ['LW'], rating: 75 },
+      Star:   { era: 'Liverpool · 1992', positions: ['LW'], rating: 82 },
+      Legend: { era: 'Liverpool · 1994', positions: ['LW'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'paulmerson',
+    playerName: 'Paul Merson',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Arsenal · 1991',      positions: ['LW'],         rating: 74 },
+      Star:   { era: 'Arsenal · 1993',      positions: ['LW'],         rating: 82 },
+      Legend: { era: 'Aston Villa · 1998',  positions: ['LW', 'CM'],   rating: 85 },
+    },
+  },
+  {
+    playerId: 'swrightphillips',
+    playerName: 'Shaun Wright-Phillips',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Man City · 2004',  positions: ['RW'], rating: 74 },
+      Star:   { era: 'Chelsea · 2006',   positions: ['RW'], rating: 81 },
+      Legend: { era: 'Man City · 2009',  positions: ['RW'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'jpennant',
+    playerName: 'Jermaine Pennant',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Leeds · 2003',      positions: ['RW'], rating: 72 },
+      Star:   { era: 'Liverpool · 2006',  positions: ['RW'], rating: 78 },
+      Legend: { era: 'Stoke · 2009',      positions: ['RW'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'hartson',
+    playerName: 'John Hartson',
+    nationality: 'Wales',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Arsenal · 1995',   positions: ['ST'], rating: 73 },
+      Star:   { era: 'West Ham · 1997',  positions: ['ST'], rating: 79 },
+      Legend: { era: 'Celtic · 2003',    positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'zamora',
+    playerName: 'Bobby Zamora',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Brighton · 2003', positions: ['ST'], rating: 72 },
+      Star:   { era: 'Fulham · 2007',   positions: ['ST'], rating: 78 },
+      Legend: { era: 'Fulham · 2010',   positions: ['ST'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'flot',
+    playerName: 'Tore André Flo',
+    nationality: 'Norway',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Chelsea · 1997',    positions: ['ST'], rating: 73 },
+      Star:   { era: 'Chelsea · 1999',    positions: ['ST'], rating: 79 },
+      Legend: { era: 'Sunderland · 2003', positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'chrisarmstrong',
+    playerName: 'Chris Armstrong',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Crystal Palace · 1993', positions: ['ST'], rating: 72 },
+      Star:   { era: 'Tottenham · 1997',      positions: ['ST'], rating: 78 },
+      Legend: { era: 'Tottenham · 1999',      positions: ['ST'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'kanoute',
+    playerName: 'Frédéric Kanouté',
+    nationality: 'France',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'West Ham · 2001',   positions: ['ST'], rating: 74 },
+      Star:   { era: 'Tottenham · 2003',  positions: ['ST'], rating: 81 },
+      Legend: { era: 'Sevilla · 2007',    positions: ['ST'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'mantonio',
+    playerName: 'Michail Antonio',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'West Ham · 2016', positions: ['ST'], rating: 73 },
+      Star:   { era: 'West Ham · 2018', positions: ['ST'], rating: 81 },
+      Legend: { era: 'West Ham · 2021', positions: ['ST'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'albrighton',
+    playerName: 'Marc Albrighton',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2013', positions: ['RW'], rating: 72 },
+      Star:   { era: 'Leicester · 2016',   positions: ['RW'], rating: 80 },
+      Legend: { era: 'Leicester · 2018',   positions: ['RW'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'louissaha',
+    playerName: 'Louis Saha',
+    nationality: 'France',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Fulham · 2003',   positions: ['ST'], rating: 74 },
+      Star:   { era: 'Man Utd · 2006',  positions: ['ST'], rating: 81 },
+      Legend: { era: 'Everton · 2009',  positions: ['ST'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'samueletoo',
+    playerName: "Samuel Eto'o",
+    nationality: 'Cameroon',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Mallorca · 2002',  positions: ['ST'], rating: 76 },
+      Star:   { era: 'Barcelona · 2006', positions: ['ST'], rating: 83 },
+      Legend: { era: 'Chelsea · 2013',   positions: ['ST'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'ighalo',
+    playerName: 'Odion Ighalo',
+    nationality: 'Nigeria',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Watford · 2015',  positions: ['ST'], rating: 72 },
+      Star:   { era: 'Watford · 2016',  positions: ['ST'], rating: 78 },
+      Legend: { era: 'Man Utd · 2020',  positions: ['ST'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'wanchope',
+    playerName: 'Paulo Wanchope',
+    nationality: 'Costa Rica',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Derby · 1998',    positions: ['ST'], rating: 73 },
+      Star:   { era: 'Man City · 2001', positions: ['ST'], rating: 79 },
+      Legend: { era: 'Man City · 2003', positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'dicanio',
+    playerName: 'Paolo Di Canio',
+    nationality: 'Italy',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Sheffield Wed · 1998', positions: ['ST'], rating: 75 },
+      Star:   { era: 'West Ham · 2000',      positions: ['ST'], rating: 82 },
+      Legend: { era: 'West Ham · 2003',      positions: ['ST'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'rlambert',
+    playerName: 'Rickie Lambert',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Southampton · 2012', positions: ['ST'], rating: 73 },
+      Star:   { era: 'Southampton · 2013', positions: ['ST'], rating: 80 },
+      Legend: { era: 'Liverpool · 2014',   positions: ['ST'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'benteke',
+    playerName: 'Christian Benteke',
+    nationality: 'Belgium',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2013',  positions: ['ST'], rating: 74 },
+      Star:   { era: 'Liverpool · 2015',    positions: ['ST'], rating: 82 },
+      Legend: { era: 'Crystal Palace · 2018', positions: ['ST'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'ings',
+    playerName: 'Danny Ings',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Burnley · 2015',      positions: ['ST'], rating: 74 },
+      Star:   { era: 'Southampton · 2020',  positions: ['ST'], rating: 81 },
+      Legend: { era: 'Aston Villa · 2022',  positions: ['ST'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'lacazette',
+    playerName: 'Alexandre Lacazette',
+    nationality: 'France',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Arsenal · 2018', positions: ['ST'], rating: 76 },
+      Star:   { era: 'Arsenal · 2019', positions: ['ST'], rating: 83 },
+      Legend: { era: 'Arsenal · 2021', positions: ['ST'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'aubameyang',
+    playerName: 'Pierre-Emerick Aubameyang',
+    nationality: 'Gabon',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Arsenal · 2018',      positions: ['ST'],         rating: 77 },
+      Star:   { era: 'Arsenal · 2019',      positions: ['ST'],         rating: 85 },
+      Legend: { era: 'Arsenal · 2020',      positions: ['ST', 'LW'],   rating: 88 },
+    },
+  },
+  {
+    playerId: 'willian',
+    playerName: 'Willian',
+    nationality: 'Brazil',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Chelsea · 2014', positions: ['RW'], rating: 75 },
+      Star:   { era: 'Chelsea · 2017', positions: ['RW'], rating: 82 },
+      Legend: { era: 'Chelsea · 2019', positions: ['RW'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'leroysane',
+    playerName: 'Leroy Sané',
+    nationality: 'Germany',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Man City · 2017',     positions: ['LW'],         rating: 77 },
+      Star:   { era: 'Man City · 2018',     positions: ['LW'],         rating: 84 },
+      Legend: { era: 'Man City · 2019',     positions: ['LW', 'RW'],   rating: 87 },
+    },
+  },
+  {
+    playerId: 'jimenez',
+    playerName: 'Raúl Jiménez',
+    nationality: 'Mexico',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Wolves · 2018', positions: ['ST'], rating: 74 },
+      Star:   { era: 'Wolves · 2019', positions: ['ST'], rating: 82 },
+      Legend: { era: 'Wolves · 2020', positions: ['ST'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'adamatraore',
+    playerName: 'Adama Traoré',
+    nationality: 'Spain',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Wolves · 2018', positions: ['RW'], rating: 73 },
+      Star:   { era: 'Wolves · 2019', positions: ['RW'], rating: 80 },
+      Legend: { era: 'Wolves · 2020', positions: ['RW'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'joshuaking',
+    playerName: 'Joshua King',
+    nationality: 'Norway',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Bournemouth · 2016', positions: ['ST'], rating: 73 },
+      Star:   { era: 'Bournemouth · 2018', positions: ['ST'], rating: 80 },
+      Legend: { era: 'Watford · 2021',     positions: ['ST'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'deanashton',
+    playerName: 'Dean Ashton',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Crewe · 2005',    positions: ['ST'], rating: 73 },
+      Star:   { era: 'West Ham · 2007', positions: ['ST'], rating: 79 },
+      Legend: { era: 'West Ham · 2008', positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'bamford',
+    playerName: 'Patrick Bamford',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Leeds · 2019', positions: ['ST'], rating: 73 },
+      Star:   { era: 'Leeds · 2020', positions: ['ST'], rating: 80 },
+      Legend: { era: 'Leeds · 2021', positions: ['ST'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'goater',
+    playerName: 'Shaun Goater',
+    nationality: 'Bermuda',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Man City · 2000', positions: ['ST'], rating: 72 },
+      Star:   { era: 'Man City · 2002', positions: ['ST'], rating: 78 },
+      Legend: { era: 'Man City · 2003', positions: ['ST'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'deanwindass',
+    playerName: 'Dean Windass',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Bradford · 1999', positions: ['ST'], rating: 72 },
+      Star:   { era: 'Middlesbrough · 2003', positions: ['ST'], rating: 78 },
+      Legend: { era: 'Hull · 2008',     positions: ['ST'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'nathanredmond',
+    playerName: 'Nathan Redmond',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Norwich · 2014',     positions: ['LW'], rating: 72 },
+      Star:   { era: 'Southampton · 2018', positions: ['LW'], rating: 78 },
+      Legend: { era: 'Southampton · 2020', positions: ['LW'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'smithrowe',
+    playerName: 'Emile Smith Rowe',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Arsenal · 2021', positions: ['LW'], rating: 73 },
+      Star:   { era: 'Arsenal · 2022', positions: ['LW'], rating: 79 },
+      Legend: { era: 'Arsenal · 2023', positions: ['LW'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'michaelricketts',
+    playerName: 'Michael Ricketts',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Bolton · 2002',       positions: ['ST'], rating: 71 },
+      Star:   { era: 'Middlesbrough · 2003', positions: ['ST'], rating: 76 },
+      Legend: { era: 'Bolton · 2002',        positions: ['ST'], rating: 79 },
+    },
+  },
+  {
+    playerId: 'jordanayew',
+    playerName: 'Jordan Ayew',
+    nationality: 'Ghana',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Swansea · 2016',      positions: ['ST'], rating: 72 },
+      Star:   { era: 'Crystal Palace · 2019', positions: ['ST'], rating: 78 },
+      Legend: { era: 'Crystal Palace · 2020', positions: ['ST'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'iheanacho',
+    playerName: 'Kelechi Iheanacho',
+    nationality: 'Nigeria',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Man City · 2016',   positions: ['ST'], rating: 72 },
+      Star:   { era: 'Leicester · 2019',  positions: ['ST'], rating: 79 },
+      Legend: { era: 'Leicester · 2021',  positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'androstownsend',
+    playerName: 'Andros Townsend',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Tottenham · 2013',    positions: ['RW'], rating: 72 },
+      Star:   { era: 'Crystal Palace · 2018', positions: ['RW'], rating: 78 },
+      Legend: { era: 'Everton · 2022',       positions: ['RW'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'niallquinn',
+    playerName: 'Niall Quinn',
+    nationality: 'Ireland',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Man City · 1993',   positions: ['ST'], rating: 72 },
+      Star:   { era: 'Sunderland · 1999', positions: ['ST'], rating: 79 },
+      Legend: { era: 'Sunderland · 2002', positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'vassell',
+    playerName: 'Darius Vassell',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2002', positions: ['ST'], rating: 72 },
+      Star:   { era: 'Aston Villa · 2004', positions: ['ST'], rating: 79 },
+      Legend: { era: 'Man City · 2006',    positions: ['ST'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'elhadji',
+    playerName: 'El-Hadji Diouf',
+    nationality: 'Senegal',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Liverpool · 2002',  positions: ['RW'], rating: 72 },
+      Star:   { era: 'Blackburn · 2006',  positions: ['RW'], rating: 78 },
+      Legend: { era: 'Bolton · 2009',     positions: ['RW'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'francisjeffers',
+    playerName: 'Francis Jeffers',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Everton · 2001',  positions: ['ST'], rating: 71 },
+      Star:   { era: 'Arsenal · 2002',  positions: ['ST'], rating: 76 },
+      Legend: { era: 'Charlton · 2004', positions: ['ST'], rating: 79 },
+    },
+  },
 
 ];
 
 // ---------------------------------------------------------------------------
-// Expand the source into the flat card list (660 cards).
+// Expand the source into the flat card list (960 cards).
 // ---------------------------------------------------------------------------
 
 const TIER_ORDER: Tier[] = ['Rising', 'Star', 'Legend'];
