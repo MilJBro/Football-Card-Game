@@ -16,7 +16,8 @@ import type { SquadSummary } from '@/lib/squadUtils';
 
 const LEAGUE_GAMES = 38;
 const OPP_BASE = 74; // fixed league-average opponent strength
-const SCALE = 13; // larger = less swingy results
+const SCALE_ATT = 22; // slower growth for goals scored — prevents elite squads scoring 200+
+const SCALE_DEF = 13; // tighter curve for goals conceded — keeps Iron Defence achievable
 const GOAL_BASE = 1.3; // baseline expected goals per side
 const TITLE_THRESHOLD = 88; // points needed to be champions
 
@@ -48,8 +49,8 @@ function simulateMatch(
   oppStrength: number,
   homeAdv: number
 ): MatchScore {
-  const expFor = GOAL_BASE * Math.exp((attack + homeAdv - oppStrength) / SCALE);
-  const expAgainst = GOAL_BASE * Math.exp((oppStrength - defence - homeAdv * 0.5) / SCALE);
+  const expFor = GOAL_BASE * Math.exp((attack + homeAdv - oppStrength) / SCALE_ATT);
+  const expAgainst = GOAL_BASE * Math.exp((oppStrength - defence - homeAdv * 0.5) / SCALE_DEF);
 
   return {
     gf: Math.min(poisson(expFor), 9),
