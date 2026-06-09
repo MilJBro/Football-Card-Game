@@ -3,8 +3,8 @@ import type { PackDef, PackCategory } from '@/store/types';
 export const CARDS_PER_PACK = 4;
 
 // One pack per position category. 600 coins each.
-// Odds: 60% Rising · 35% Star · 5% Legend per card slot.
-const WEIGHTS = { Rising: 60, Star: 35, Legend: 5 };
+// Odds: 62% Rising · 35% Star · 3% Legend per card slot.
+const WEIGHTS = { Rising: 62, Star: 35, Legend: 3 };
 
 const CATEGORIES: { pack: PackCategory; name: string; description: string }[] = [
   {
