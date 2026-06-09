@@ -75,14 +75,10 @@ export interface OwnedCard {
 // Packs
 // ---------------------------------------------------------------------------
 
-/** Pack rarity buckets (cheapest → most expensive). */
-export type PackRarity = 'squad' | 'firstteam' | 'elite';
-
 export interface PackDef {
-  id: string; // e.g. "att-elite"
-  name: string; // e.g. "Attacker Elite Pack"
+  id: string; // e.g. "att"
+  name: string; // e.g. "Attacker Pack"
   pack: PackCategory;
-  rarity: PackRarity;
   cost: number;
   cardCount: number;
   description: string;
