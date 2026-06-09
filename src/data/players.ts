@@ -962,6 +962,116 @@ const PLAYERS: PlayerSource[] = [
       Legend: { era: 'Leeds · 2013',         positions: ['GK'], rating: 80 },
     },
   },
+  {
+    playerId: 'donnarumma',
+    playerName: 'Gianluigi Donnarumma',
+    nationality: 'Italy',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'AC Milan · 2019', positions: ['GK'], rating: 82 },
+      Star:   { era: 'PSG · 2022',      positions: ['GK'], rating: 89 },
+      Legend: { era: 'Man City · 2025', positions: ['GK'], rating: 91 },
+    },
+  },
+  {
+    playerId: 'emimartinez',
+    playerName: 'Emiliano Martínez',
+    nationality: 'Argentina',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2020', positions: ['GK'], rating: 78 },
+      Star:   { era: 'Aston Villa · 2022', positions: ['GK'], rating: 87 },
+      Legend: { era: 'Aston Villa · 2024', positions: ['GK'], rating: 90 },
+    },
+  },
+  {
+    playerId: 'raya',
+    playerName: 'David Raya',
+    nationality: 'Spain',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Brentford · 2021', positions: ['GK'], rating: 76 },
+      Star:   { era: 'Arsenal · 2023',   positions: ['GK'], rating: 84 },
+      Legend: { era: 'Arsenal · 2025',   positions: ['GK'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'sels',
+    playerName: 'Matz Sels',
+    nationality: 'Belgium',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Nottm Forest · 2024', positions: ['GK'], rating: 76 },
+      Star:   { era: 'Nottm Forest · 2025', positions: ['GK'], rating: 83 },
+      Legend: { era: 'Nottm Forest · 2026', positions: ['GK'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'verbruggen',
+    playerName: 'Bart Verbruggen',
+    nationality: 'Netherlands',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Brighton · 2023', positions: ['GK'], rating: 75 },
+      Star:   { era: 'Brighton · 2024', positions: ['GK'], rating: 82 },
+      Legend: { era: 'Brighton · 2025', positions: ['GK'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'onana',
+    playerName: 'André Onana',
+    nationality: 'Cameroon',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Man Utd · 2023', positions: ['GK'], rating: 77 },
+      Star:   { era: 'Man Utd · 2024', positions: ['GK'], rating: 82 },
+      Legend: { era: 'Man Utd · 2025', positions: ['GK'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'kepa',
+    playerName: 'Kepa Arrizabalaga',
+    nationality: 'Spain',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Chelsea · 2018',      positions: ['GK'], rating: 77 },
+      Star:   { era: 'Chelsea · 2020',      positions: ['GK'], rating: 81 },
+      Legend: { era: 'Bournemouth · 2026',  positions: ['GK'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'flekken',
+    playerName: 'Mark Flekken',
+    nationality: 'Netherlands',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Brentford · 2023', positions: ['GK'], rating: 74 },
+      Star:   { era: 'Brentford · 2024', positions: ['GK'], rating: 81 },
+      Legend: { era: 'Brentford · 2025', positions: ['GK'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'trafford',
+    playerName: 'James Trafford',
+    nationality: 'England',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Burnley · 2023',  positions: ['GK'], rating: 73 },
+      Star:   { era: 'Burnley · 2024',  positions: ['GK'], rating: 79 },
+      Legend: { era: 'Man City · 2025', positions: ['GK'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'bazunu',
+    playerName: 'Gavin Bazunu',
+    nationality: 'Ireland',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Southampton · 2022', positions: ['GK'], rating: 73 },
+      Star:   { era: 'Southampton · 2024', positions: ['GK'], rating: 79 },
+      Legend: { era: 'Southampton · 2025', positions: ['GK'], rating: 81 },
+    },
+  },
 
   // ---- DEF (78) -------------------------------------------------------------
 
