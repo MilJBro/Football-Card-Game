@@ -57,7 +57,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Fulham · 2001',   positions: ['GK'], rating: 75 },
       Star:   { era: 'Man Utd · 2006',  positions: ['GK'], rating: 85 },
-      Legend: { era: 'Man Utd · 2009',  positions: ['GK'], rating: 90 },
+      Legend: { era: 'Man Utd · 2009',  positions: ['GK'], rating: 88 },
     },
   },
   {
@@ -110,9 +110,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Ireland',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Newcastle · 1998', positions: ['GK'], rating: 74 },
-      Star:   { era: 'Newcastle · 2002', positions: ['GK'], rating: 82 },
-      Legend: { era: 'Newcastle · 2006', positions: ['GK'], rating: 84 },
+      Rising: { era: 'Newcastle · 1998', positions: ['GK'], rating: 75 },
+      Star:   { era: 'Newcastle · 2002', positions: ['GK'], rating: 84 },
+      Legend: { era: 'Newcastle · 2006', positions: ['GK'], rating: 87 },
     },
   },
   {
@@ -122,8 +122,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Tottenham · 2012', positions: ['GK'], rating: 76 },
-      Star:   { era: 'Tottenham · 2015', positions: ['GK'], rating: 85 },
-      Legend: { era: 'Tottenham · 2019', positions: ['GK'], rating: 88 },
+      Star:   { era: 'Tottenham · 2015', positions: ['GK'], rating: 84 },
+      Legend: { era: 'Tottenham · 2019', positions: ['GK'], rating: 86 },
     },
   },
   {
@@ -155,8 +155,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Everton · 2007', positions: ['GK'], rating: 75 },
-      Star:   { era: 'Everton · 2011', positions: ['GK'], rating: 83 },
-      Legend: { era: 'Everton · 2014', positions: ['GK'], rating: 86 },
+      Star:   { era: 'Everton · 2011', positions: ['GK'], rating: 82 },
+      Legend: { era: 'Everton · 2014', positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -165,9 +165,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Everton · 2017', positions: ['GK'], rating: 76 },
-      Star:   { era: 'Everton · 2020', positions: ['GK'], rating: 83 },
-      Legend: { era: 'Everton · 2023', positions: ['GK'], rating: 86 },
+      Rising: { era: 'Everton · 2017', positions: ['GK'], rating: 75 },
+      Star:   { era: 'Everton · 2020', positions: ['GK'], rating: 81 },
+      Legend: { era: 'Everton · 2023', positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -231,9 +231,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Leeds · 2002',     positions: ['GK'], rating: 74 },
-      Star:   { era: 'Tottenham · 2006', positions: ['GK'], rating: 83 },
-      Legend: { era: 'Tottenham · 2008', positions: ['GK'], rating: 85 },
+      Rising: { era: 'Leeds · 2002',     positions: ['GK'], rating: 73 },
+      Star:   { era: 'Tottenham · 2006', positions: ['GK'], rating: 81 },
+      Legend: { era: 'Tottenham · 2008', positions: ['GK'], rating: 83 },
     },
   },
   {
@@ -254,8 +254,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Wolves · 2018', positions: ['GK'], rating: 74 },
-      Star:   { era: 'Wolves · 2020', positions: ['GK'], rating: 83 },
-      Legend: { era: 'Wolves · 2022', positions: ['GK'], rating: 86 },
+      Star:   { era: 'Wolves · 2020', positions: ['GK'], rating: 81 },
+      Legend: { era: 'Wolves · 2022', positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -275,9 +275,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Belgium',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Sunderland · 2011', positions: ['GK'], rating: 73 },
-      Star:   { era: 'Liverpool · 2015',  positions: ['GK'], rating: 80 },
-      Legend: { era: 'Liverpool · 2017',  positions: ['GK'], rating: 83 },
+      Rising: { era: 'Sunderland · 2011', positions: ['GK'], rating: 72 },
+      Star:   { era: 'Liverpool · 2015',  positions: ['GK'], rating: 79 },
+      Legend: { era: 'Liverpool · 2017',  positions: ['GK'], rating: 81 },
     },
   },
   {
@@ -286,9 +286,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Wales',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Everton · 1985', positions: ['GK'], rating: 78 },
-      Star:   { era: 'Everton · 1987', positions: ['GK'], rating: 84 },
-      Legend: { era: 'Everton · 1995', positions: ['GK'], rating: 87 },
+      Rising: { era: 'Everton · 1985', positions: ['GK'], rating: 80 },
+      Star:   { era: 'Everton · 1987', positions: ['GK'], rating: 87 },
+      Legend: { era: 'Everton · 1995', positions: ['GK'], rating: 90 },
     },
   },
   {
@@ -319,9 +319,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Sheffield Utd · 2019', positions: ['GK'], rating: 73 },
-      Star:   { era: 'Man Utd · 2020',       positions: ['GK'], rating: 80 },
-      Legend: { era: 'Nottm Forest · 2023',  positions: ['GK'], rating: 83 },
+      Rising: { era: 'Sheffield Utd · 2019', positions: ['GK'], rating: 72 },
+      Star:   { era: 'Man Utd · 2020',       positions: ['GK'], rating: 78 },
+      Legend: { era: 'Nottm Forest · 2023',  positions: ['GK'], rating: 81 },
     },
   },
   {
@@ -352,9 +352,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Netherlands',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Newcastle · 2011', positions: ['GK'], rating: 73 },
-      Star:   { era: 'Newcastle · 2013', positions: ['GK'], rating: 80 },
-      Legend: { era: 'Brighton · 2020',  positions: ['GK'], rating: 83 },
+      Rising: { era: 'Newcastle · 2011', positions: ['GK'], rating: 72 },
+      Star:   { era: 'Newcastle · 2013', positions: ['GK'], rating: 79 },
+      Legend: { era: 'Brighton · 2020',  positions: ['GK'], rating: 81 },
     },
   },
   {
@@ -364,8 +364,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Liverpool · 2006', positions: ['GK'], rating: 76 },
-      Star:   { era: 'Liverpool · 2009', positions: ['GK'], rating: 85 },
-      Legend: { era: 'Liverpool · 2012', positions: ['GK'], rating: 88 },
+      Star:   { era: 'Liverpool · 2009', positions: ['GK'], rating: 84 },
+      Legend: { era: 'Liverpool · 2012', positions: ['GK'], rating: 86 },
     },
   },
 
