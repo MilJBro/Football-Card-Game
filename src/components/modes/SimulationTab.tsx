@@ -9,13 +9,14 @@ import { seasonFinishReward } from '@/lib/coinRewards';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/ui';
+import { cn, formatCoins } from '@/lib/ui';
 
 type Phase = 'ready' | 'sim' | 'result';
 
 interface RunOutcome {
   season: SeasonResult;
   success: boolean;
+  reward: number;
 }
 
 interface SimulationTabProps {
@@ -26,8 +27,6 @@ interface SimulationTabProps {
   onGoToUpgrades: () => void;
 }
 
-/** What specifically fell short — shown on a failed result so the player
- *  knows exactly what to work on before trying again. */
 function shortfallText(mode: GameModeDef, s: SeasonResult): string {
   switch (mode.id) {
     case 'domestic-double': {
@@ -70,7 +69,9 @@ function shortfallText(mode: GameModeDef, s: SeasonResult): string {
 
 export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpgrades }: SimulationTabProps) {
   const hydrated = useHydrated();
+  const coins = useGameStore((s) => s.coins);
   const addCoins = useGameStore((s) => s.addCoins);
+  const spendCoins = useGameStore((s) => s.spendCoins);
   const recordRun = useGameStore((s) => s.recordRun);
   const ownedCards = useGameStore((s) => s.ownedCards);
 
@@ -78,8 +79,10 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
 
   const summary = summariseSquad(squad, ownedCards);
+  const canAfford = coins >= mode.entryCost;
 
   function runSeason() {
+    if (!spendCoins(mode.entryCost, `Entry fee: ${mode.name}`)) return;
     setPhase('sim');
     setTimeout(() => {
       const sum = summariseSquad(squad, ownedCards);
@@ -87,19 +90,20 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
       const success = evaluateWinCondition(mode, season);
 
       const reward = seasonFinishReward(season);
-      addCoins(reward, `Season: ${mode.name}`);
+      addCoins(reward, `Season payout: ${mode.name}`);
 
       const runResult: ModeRunResult = {
         modeId: mode.id,
         season,
         success,
         reward,
+        entryCost: mode.entryCost,
         squadRating: sum.rating,
         playedAt: Date.now(),
       };
       recordRun(runResult);
 
-      setOutcome({ season, success });
+      setOutcome({ season, success, reward });
       setPhase('result');
     }, 1400);
   }
@@ -129,6 +133,7 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
   if (phase === 'result' && outcome) {
     const o = outcome;
     const s = o.season;
+    const net = o.reward - mode.entryCost;
     return (
       <div className="space-y-5">
         {/* Win / keep going header */}
@@ -148,6 +153,25 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
             </p>
           </div>
         )}
+
+        {/* Coin summary */}
+        <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm">
+          <span className="text-white/50">Entry fee paid</span>
+          <span className="font-bold text-red-400">−🪙 {formatCoins(mode.entryCost)}</span>
+        </div>
+        <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm">
+          <span className="text-white/50">Season payout</span>
+          <span className="font-bold text-emerald-300">+🪙 {formatCoins(o.reward)}</span>
+        </div>
+        <div className={cn(
+          'flex items-center justify-between rounded-xl border px-5 py-3 text-sm font-black',
+          net >= 0
+            ? 'border-emerald-400/30 bg-emerald-400/5 text-emerald-300'
+            : 'border-red-400/30 bg-red-400/5 text-red-400',
+        )}>
+          <span>Net</span>
+          <span>{net >= 0 ? '+' : ''}🪙 {formatCoins(net)}</span>
+        </div>
 
         {/* Season stats */}
         <div className="grid gap-4 sm:grid-cols-2">
@@ -231,10 +255,47 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
         </Button>
       </div>
 
+      {/* Entry cost panel */}
+      <div className={cn(
+        'rounded-2xl border p-5',
+        canAfford
+          ? 'border-amber-400/20 bg-amber-400/5'
+          : 'border-red-400/20 bg-red-400/5',
+      )}>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Entry Fee</div>
+            <div className={cn('text-2xl font-black tabular-nums', canAfford ? 'text-amber-300' : 'text-red-400')}>
+              🪙 {formatCoins(mode.entryCost)}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Your Coins</div>
+            <div className={cn('text-2xl font-black tabular-nums', canAfford ? 'text-white' : 'text-red-400')}>
+              🪙 {formatCoins(coins)}
+            </div>
+          </div>
+        </div>
+        {!canAfford && (
+          <div className="mt-4 rounded-xl border border-red-400/20 bg-red-400/10 p-3 text-center text-sm">
+            <p className="font-bold text-red-300">Not enough coins to enter</p>
+            <p className="mt-1 text-xs text-white/50">
+              Need 🪙 {formatCoins(mode.entryCost - coins)} more — sell cards to raise funds
+            </p>
+            <button
+              onClick={onGoToUpgrades}
+              className="mt-3 rounded-lg bg-white/10 px-4 py-2 text-xs font-bold text-white hover:bg-white/20"
+            >
+              Sell Cards →
+            </button>
+          </div>
+        )}
+      </div>
+
       {summary.isComplete ? (
         <div className="flex justify-center">
-          <Button size="lg" onClick={runSeason} disabled={!hydrated}>
-            Simulate Season
+          <Button size="lg" onClick={runSeason} disabled={!hydrated || !canAfford}>
+            Simulate Season · 🪙 {formatCoins(mode.entryCost)}
           </Button>
         </div>
       ) : (

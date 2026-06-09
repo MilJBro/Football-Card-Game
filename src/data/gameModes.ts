@@ -9,6 +9,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Back-to-back knockout runs in a single season. Go the distance in both domestic cups and lift two trophies.',
     winConditionText: 'Win the FA Cup and the League Cup',
+    entryCost: 500,
   },
   {
     id: 'european-glory',
@@ -16,6 +17,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Take on the best clubs on the continent. Navigate the knockout stages and bring the Champions League trophy home.',
     winConditionText: 'Win the Champions League',
+    entryCost: 600,
   },
   {
     id: 'iron-defence',
@@ -23,6 +25,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Build an impenetrable backline and rule the league. Concede fewer than 15 goals across the season and win the title.',
     winConditionText: 'Concede under 15 goals and win the Premier League',
+    entryCost: 500,
   },
   {
     id: 'centurions',
@@ -30,6 +33,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Record-breaking dominance. Reach 100 points or more and win the Premier League.',
     winConditionText: 'Reach 100+ points and win the Premier League',
+    entryCost: 600,
   },
   {
     id: 'invincibles',
@@ -37,6 +41,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Go the entire league season unbeaten and win the title. No defeats allowed.',
     winConditionText: 'Go unbeaten and win the Premier League',
+    entryCost: 700,
   },
   {
     id: 'quadruple',
@@ -44,6 +49,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Football immortality. Win the Premier League, FA Cup, League Cup and Champions League in one season.',
     winConditionText: 'Win the Premier League, FA Cup, League Cup and Champions League',
+    entryCost: 1000,
   },
 ];
 

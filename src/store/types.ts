@@ -126,6 +126,8 @@ export interface GameModeDef {
   description: string;
   /** Human-readable win condition. */
   winConditionText: string;
+  /** Coins deducted upfront to run this simulation. */
+  entryCost: number;
 }
 
 /** A simulated season's results. */
@@ -151,6 +153,7 @@ export interface ModeRunResult {
   season: SeasonResult;
   success: boolean;
   reward: number;
+  entryCost: number;
   squadRating: number;
   playedAt: number;
 }
