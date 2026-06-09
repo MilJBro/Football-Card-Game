@@ -22,9 +22,53 @@ interface SimulationTabProps {
   mode: GameModeDef;
   squad: Squad;
   onGoToSquad: () => void;
+  onGoToPacks: () => void;
+  onGoToUpgrades: () => void;
 }
 
-export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) {
+/** What specifically fell short — shown on a failed result so the player
+ *  knows exactly what to work on before trying again. */
+function shortfallText(mode: GameModeDef, s: SeasonResult): string {
+  switch (mode.id) {
+    case 'domestic-double': {
+      const missing = [!s.wonFaCup && 'FA Cup', !s.wonLeagueCup && 'League Cup'].filter(Boolean);
+      return `Didn't win: ${missing.join(' or ')}`;
+    }
+    case 'european-glory':
+      return 'Knocked out of the Champions League';
+    case 'iron-defence': {
+      const parts: string[] = [];
+      if (s.goalsAgainst >= 15) parts.push(`Conceded ${s.goalsAgainst} goals — need fewer than 15`);
+      if (!s.wonLeague) parts.push(`${s.points} pts — title not won`);
+      return parts.join(' · ');
+    }
+    case 'centurions': {
+      const parts: string[] = [];
+      if (s.points < 100) parts.push(`${s.points} pts — need 100+`);
+      if (!s.wonLeague) parts.push('Title not won');
+      return parts.join(' · ');
+    }
+    case 'invincibles': {
+      const parts: string[] = [];
+      if (!s.unbeaten) parts.push(`${s.losses} defeat${s.losses !== 1 ? 's' : ''} — need to go unbeaten`);
+      if (!s.wonLeague) parts.push('Title not won');
+      return parts.join(' · ');
+    }
+    case 'quadruple': {
+      const missing = [
+        !s.wonLeague && 'Premier League',
+        !s.wonFaCup && 'FA Cup',
+        !s.wonLeagueCup && 'League Cup',
+        !s.wonChampionsLeague && 'Champions League',
+      ].filter(Boolean);
+      return `Missed: ${missing.join(', ')}`;
+    }
+    default:
+      return 'Challenge not completed this time';
+  }
+}
+
+export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpgrades }: SimulationTabProps) {
   const hydrated = useHydrated();
   const addCoins = useGameStore((s) => s.addCoins);
   const recordRun = useGameStore((s) => s.recordRun);
@@ -59,6 +103,11 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     }, 1400);
   }
 
+  function tryAgain() {
+    setOutcome(null);
+    setPhase('ready');
+  }
+
   // ---------------------------------------------------------------- Simulating
   if (phase === 'sim') {
     return (
@@ -80,23 +129,29 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     const o = outcome;
     const s = o.season;
     return (
-      <div className="space-y-6">
-        <div
-          className={cn(
-            'rounded-2xl border-2 p-6 text-center',
-            o.success ? 'border-emerald-400 bg-emerald-400/10' : 'border-orange-400/60 bg-orange-400/5'
-          )}
-        >
-          <div className="text-5xl">{o.success ? '🏆' : '😔'}</div>
-          <h1 className="mt-2 text-2xl font-black">
-            {o.success ? 'Challenge Complete!' : 'Challenge Failed'}
-          </h1>
-          <p className="mt-1 text-white/60">{mode.winConditionText}</p>
-        </div>
+      <div className="space-y-5">
+        {/* Win / keep going header */}
+        {o.success ? (
+          <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-400/10 p-6 text-center">
+            <div className="text-5xl">🏆</div>
+            <h1 className="mt-2 text-2xl font-black">Challenge Complete!</h1>
+            <p className="mt-1 text-sm text-white/60">{mode.winConditionText}</p>
+          </div>
+        ) : (
+          <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-6 text-center">
+            <div className="text-5xl">💪</div>
+            <h1 className="mt-2 text-2xl font-black">Keep Going</h1>
+            <p className="mt-1 text-sm text-white/50">{shortfallText(mode, s)}</p>
+            <p className="mt-3 text-xs text-white/30">
+              Open more packs or upgrade your squad — then simulate again
+            </p>
+          </div>
+        )}
 
+        {/* Season stats */}
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 className="mb-3 text-lg font-bold">Premier League</h2>
+            <h2 className="mb-3 text-base font-bold">Premier League</h2>
             <dl className="space-y-1.5 text-sm">
               <Row k="Final position" v={ordinal(s.leaguePosition)} highlight={s.wonLeague} />
               <Row k="Points" v={`${s.points}`} highlight={s.points >= 100} />
@@ -110,7 +165,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             </dl>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 className="mb-3 text-lg font-bold">Trophies</h2>
+            <h2 className="mb-3 text-base font-bold">Trophies</h2>
             <ul className="space-y-1.5 text-sm">
               <Trophy won={s.wonLeague} name="Premier League" />
               <Trophy won={s.wonFaCup} name="FA Cup" />
@@ -120,19 +175,19 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
           </div>
         </div>
 
-        <div className="flex justify-center gap-3">
-          <Button variant="secondary" onClick={onGoToSquad}>
-            Adjust Squad
-          </Button>
-          <Button
-            onClick={() => {
-              setOutcome(null);
-              setPhase('ready');
-            }}
-          >
-            Simulate Again
-          </Button>
-        </div>
+        {/* Actions */}
+        {o.success ? (
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button variant="secondary" onClick={onGoToSquad}>Adjust Squad</Button>
+            <Button onClick={tryAgain}>Simulate Again</Button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button onClick={onGoToPacks}>Open Packs</Button>
+            <Button onClick={onGoToUpgrades}>Upgrade Squad</Button>
+            <Button variant="ghost" onClick={tryAgain}>Try Again</Button>
+          </div>
+        )}
       </div>
     );
   }

@@ -40,7 +40,13 @@ export function ModeRunner({ modeId }: { modeId: string }) {
       </div>
 
       {tab === 'simulation' && (
-        <SimulationTab mode={mode} squad={squad} onGoToSquad={() => setTab('squad')} />
+        <SimulationTab
+          mode={mode}
+          squad={squad}
+          onGoToSquad={() => setTab('squad')}
+          onGoToPacks={() => setTab('packs')}
+          onGoToUpgrades={() => setTab('upgrades')}
+        />
       )}
       {tab === 'squad' && (
         <div className="space-y-4">
