@@ -62,28 +62,16 @@ export function UpgradeIcon({ className }: IconProps) {
   );
 }
 
-/** Goalkeeper glove — GK packs. */
-export function GlovesIcon({ className }: IconProps) {
+/** Football goal — GK packs. */
+export function GoalIcon({ className }: IconProps) {
+  const net = { fill: 'none', stroke: 'currentColor', strokeWidth: 1, strokeLinecap: 'round' as const };
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <g fill="currentColor">
-        {/* Thumb */}
-        <rect
-          x="3.6"
-          y="10.5"
-          width="2.6"
-          height="6"
-          rx="1.3"
-          transform="rotate(-35 4.9 13.5)"
-        />
-        {/* Four fingers */}
-        <rect x="6.8" y="6.5" width="2.6" height="8.5" rx="1.3" />
-        <rect x="9.7" y="5.2" width="2.6" height="9.8" rx="1.3" />
-        <rect x="12.6" y="6" width="2.6" height="9" rx="1.3" />
-        <rect x="15.5" y="7.8" width="2.5" height="7.2" rx="1.25" />
-        {/* Palm with rounded base */}
-        <path d="M6.5 12h12v3.5a3.5 3.5 0 0 1-3.5 3.5h-5A3.5 3.5 0 0 1 6.5 15.5Z" />
-      </g>
+      {/* Net mesh */}
+      <path {...net} d="M8 6v12M12 6v12M16 6v12M4 10h16M4 14h16" />
+      {/* Goal frame + ground line */}
+      <path {...stroke} d="M4 18V6h16v12" />
+      <path {...stroke} d="M2 18h20" />
     </svg>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import type { PackCategory } from '@/store/types';
-import { GlovesIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
+import { GoalIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
 
 // Per-category accent used for the glow + ring behind the emblem.
 const ACCENT: Record<PackCategory, string> = {
@@ -12,7 +12,7 @@ const ACCENT: Record<PackCategory, string> = {
 };
 
 const ICON: Record<PackCategory, (props: { className?: string }) => JSX.Element> = {
-  GK: GlovesIcon,
+  GK: GoalIcon,
   DEF: WallIcon,
   MID: CompassStarIcon,
   ATT: TargetIcon,

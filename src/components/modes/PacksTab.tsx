@@ -8,7 +8,7 @@ import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { PackOpening } from '@/components/opening/PackOpening';
 import { PackArt } from '@/components/opening/PackArt';
-import { GlovesIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
+import { GoalIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
 import { cn, TIER_STYLES, TIER_BADGE, formatCoins } from '@/lib/ui';
 
 const CATEGORY_LABEL: Record<PackCategory, string> = {
@@ -18,7 +18,7 @@ const CATEGORY_LABEL: Record<PackCategory, string> = {
   ATT: 'Attackers',
 };
 const CATEGORY_ICON: Record<PackCategory, (props: { className?: string }) => JSX.Element> = {
-  GK: GlovesIcon,
+  GK: GoalIcon,
   DEF: WallIcon,
   MID: CompassStarIcon,
   ATT: TargetIcon,
