@@ -2070,6 +2070,293 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  {
+    playerId: 'reecejames',
+    playerName: 'Reece James',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2020', positions: ['RB'], rating: 76 },
+      Star:   { era: 'Chelsea · 2021', positions: ['RB'], rating: 85 },
+      Legend: { era: 'Chelsea · 2023', positions: ['RB'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'azpilicueta',
+    playerName: 'César Azpilicueta',
+    nationality: 'Spain',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2013', positions: ['RB'], rating: 75 },
+      Star:   { era: 'Chelsea · 2015', positions: ['RB'], rating: 83 },
+      Legend: { era: 'Chelsea · 2021', positions: ['RB'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'cancelo',
+    playerName: 'João Cancelo',
+    nationality: 'Portugal',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man City · 2020', positions: ['RB'], rating: 76 },
+      Star:   { era: 'Man City · 2021', positions: ['RB'], rating: 85 },
+      Legend: { era: 'Man City · 2022', positions: ['RB'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'dixonlee',
+    playerName: 'Lee Dixon',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 1992', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Arsenal · 1998', positions: ['RB'], rating: 82 },
+      Legend: { era: 'Arsenal · 2001', positions: ['RB'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'benwhite',
+    playerName: 'Ben White',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2022', positions: ['RB'], rating: 74 },
+      Star:   { era: 'Arsenal · 2023', positions: ['RB'], rating: 83 },
+      Legend: { era: 'Arsenal · 2024', positions: ['RB'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'sagna',
+    playerName: 'Bacary Sagna',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2008', positions: ['RB'], rating: 74 },
+      Star:   { era: 'Arsenal · 2011', positions: ['RB'], rating: 82 },
+      Legend: { era: 'Arsenal · 2013', positions: ['RB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'ricardopereira',
+    playerName: 'Ricardo Pereira',
+    nationality: 'Portugal',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leicester · 2019', positions: ['RB'], rating: 74 },
+      Star:   { era: 'Leicester · 2020', positions: ['RB'], rating: 82 },
+      Legend: { era: 'Leicester · 2021', positions: ['RB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'bellerin',
+    playerName: 'Héctor Bellerín',
+    nationality: 'Spain',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2015', positions: ['RB'], rating: 74 },
+      Star:   { era: 'Arsenal · 2018', positions: ['RB'], rating: 82 },
+      Legend: { era: 'Arsenal · 2020', positions: ['RB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'dalot',
+    playerName: 'Diogo Dalot',
+    nationality: 'Portugal',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man Utd · 2019', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Man Utd · 2022', positions: ['RB'], rating: 81 },
+      Legend: { era: 'Man Utd · 2024', positions: ['RB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'porro',
+    playerName: 'Pedro Porro',
+    nationality: 'Portugal',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2023', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Tottenham · 2024', positions: ['RB'], rating: 81 },
+      Legend: { era: 'Tottenham · 2025', positions: ['RB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'paulparker',
+    playerName: 'Paul Parker',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man Utd · 1992', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Man Utd · 1993', positions: ['RB'], rating: 81 },
+      Legend: { era: 'Man Utd · 1994', positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'robjones',
+    playerName: 'Rob Jones',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 1992', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Liverpool · 1995', positions: ['RB'], rating: 81 },
+      Legend: { era: 'Liverpool · 1997', positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'gusto',
+    playerName: 'Malo Gusto',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2023', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Chelsea · 2024', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Chelsea · 2025', positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'castagne',
+    playerName: 'Timothy Castagne',
+    nationality: 'Belgium',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leicester · 2021', positions: ['RB'], rating: 73 },
+      Star:   { era: 'Leicester · 2022', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Fulham · 2024',   positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'lamptey',
+    playerName: 'Tariq Lamptey',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Brighton · 2021', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Brighton · 2023', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Brighton · 2024', positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'garykelly',
+    playerName: 'Gary Kelly',
+    nationality: 'Ireland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leeds · 1993', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Leeds · 1997', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Leeds · 2001', positions: ['RB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'barton_warren',
+    playerName: 'Warren Barton',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Wimbledon · 1993', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Newcastle · 1996', positions: ['RB'], rating: 80 },
+      Legend: { era: 'Newcastle · 1998', positions: ['RB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'ayling',
+    playerName: 'Luke Ayling',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leeds · 2018', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Leeds · 2021', positions: ['RB'], rating: 79 },
+      Legend: { era: 'Leeds · 2022', positions: ['RB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'emersonroyal',
+    playerName: 'Emerson Royal',
+    nationality: 'Brazil',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2022', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Tottenham · 2023', positions: ['RB'], rating: 79 },
+      Legend: { era: 'Tottenham · 2024', positions: ['RB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'dannysimpson',
+    playerName: 'Danny Simpson',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leicester · 2014', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Leicester · 2016', positions: ['RB'], rating: 79 },
+      Legend: { era: 'Leicester · 2017', positions: ['RB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'dannymills',
+    playerName: 'Danny Mills',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leeds · 2001',    positions: ['RB'], rating: 72 },
+      Star:   { era: 'Leeds · 2002',    positions: ['RB'], rating: 79 },
+      Legend: { era: 'Man City · 2005', positions: ['RB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'nickyshorey',
+    playerName: 'Nicky Shorey',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Reading · 2006', positions: ['RB'], rating: 72 },
+      Star:   { era: 'Reading · 2007', positions: ['RB'], rating: 79 },
+      Legend: { era: 'Reading · 2008', positions: ['RB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'lukeyoung',
+    playerName: 'Luke Young',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Charlton · 2003',    positions: ['RB'], rating: 72 },
+      Star:   { era: 'Middlesbrough · 2007', positions: ['RB'], rating: 79 },
+      Legend: { era: 'Aston Villa · 2010',  positions: ['RB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'hutton',
+    playerName: 'Alan Hutton',
+    nationality: 'Scotland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2008',   positions: ['RB'], rating: 71 },
+      Star:   { era: 'Aston Villa · 2013', positions: ['RB'], rating: 77 },
+      Legend: { era: 'Aston Villa · 2018', positions: ['RB'], rating: 79 },
+    },
+  },
+  {
+    playerId: 'joelward',
+    playerName: 'Joel Ward',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Crystal Palace · 2013', positions: ['RB'], rating: 71 },
+      Star:   { era: 'Crystal Palace · 2018', positions: ['RB'], rating: 77 },
+      Legend: { era: 'Crystal Palace · 2023', positions: ['RB'], rating: 79 },
+    },
+  },
+  {
+    playerId: 'jamesjustin',
+    playerName: 'James Justin',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leicester · 2020', positions: ['RB'], rating: 71 },
+      Star:   { era: 'Leicester · 2022', positions: ['RB'], rating: 78 },
+      Legend: { era: 'Leicester · 2024', positions: ['RB'], rating: 80 },
+    },
+  },
+
   // ---- MID (89) -------------------------------------------------------------
 
   {
