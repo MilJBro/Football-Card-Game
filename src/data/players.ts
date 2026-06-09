@@ -1370,7 +1370,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2011', positions: ['CB'], rating: 75 },
       Star:   { era: 'Arsenal · 2014', positions: ['CB'], rating: 84 },
-      Legend: { era: 'Arsenal · 2017', positions: ['CB'], rating: 87 },
+      Legend: { era: 'Arsenal · 2017', positions: ['CB'], rating: 86 },
     },
   },
   {
@@ -1602,7 +1602,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Aston Villa · 1994',     positions: ['CB'], rating: 73 },
       Star:   { era: 'Aston Villa · 1996',     positions: ['CB'], rating: 81 },
-      Legend: { era: 'Middlesbrough · 2001',   positions: ['CB'], rating: 84 },
+      Legend: { era: 'Middlesbrough · 2001',   positions: ['CB'], rating: 83 },
     },
   },
   {
@@ -1624,7 +1624,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2007',     positions: ['CB'],         rating: 73 },
       Star:   { era: 'Liverpool · 2010',     positions: ['CB'],         rating: 82 },
-      Legend: { era: 'Liverpool · 2012',     positions: ['CB'],         rating: 85 },
+      Legend: { era: 'Liverpool · 2012',     positions: ['CB'],         rating: 84 },
     },
   },
   {
@@ -2379,7 +2379,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2022', positions: ['CB'], rating: 79 },
       Star:   { era: 'Arsenal · 2024', positions: ['CB'], rating: 86 },
-      Legend: { era: 'Arsenal · 2025', positions: ['CB'], rating: 88 },
+      Legend: { era: 'Arsenal · 2025', positions: ['CB'], rating: 87 },
     },
   },
   {
