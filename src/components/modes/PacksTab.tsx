@@ -8,6 +8,7 @@ import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { PackOpening } from '@/components/opening/PackOpening';
 import { PackArt } from '@/components/opening/PackArt';
+import { GlovesIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
 import { cn, TIER_STYLES, TIER_BADGE, formatCoins } from '@/lib/ui';
 
 const CATEGORY_LABEL: Record<PackCategory, string> = {
@@ -16,11 +17,11 @@ const CATEGORY_LABEL: Record<PackCategory, string> = {
   MID: 'Midfielders',
   ATT: 'Attackers',
 };
-const CATEGORY_ICON: Record<PackCategory, string> = {
-  GK: '🧤',
-  DEF: '🛡️',
-  MID: '🎯',
-  ATT: '⚡',
+const CATEGORY_ICON: Record<PackCategory, (props: { className?: string }) => JSX.Element> = {
+  GK: GlovesIcon,
+  DEF: WallIcon,
+  MID: CompassStarIcon,
+  ATT: TargetIcon,
 };
 const CATEGORY_ORDER: PackCategory[] = ['GK', 'DEF', 'MID', 'ATT'];
 
@@ -55,18 +56,19 @@ export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
       <div className="grid grid-cols-4 gap-1.5 rounded-2xl bg-black/30 p-1.5">
         {CATEGORY_ORDER.map((cat) => {
           const isActive = cat === category;
+          const Icon = CATEGORY_ICON[cat];
           return (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
               className={cn(
-                'flex flex-col items-center gap-0.5 rounded-xl py-2 text-[11px] font-bold transition-colors',
+                'flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-bold transition-colors',
                 isActive
                   ? 'bg-emerald-500 text-emerald-950'
                   : 'text-white/60 hover:bg-white/10 hover:text-white'
               )}
             >
-              <span className="text-base">{CATEGORY_ICON[cat]}</span>
+              <Icon className="h-5 w-5" />
               <span>{CATEGORY_LABEL[cat]}</span>
             </button>
           );

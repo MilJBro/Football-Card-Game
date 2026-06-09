@@ -1,14 +1,19 @@
 'use client';
 
 import { cn } from '@/lib/ui';
+import { WhistleIcon, BenchIcon, CardIcon, UpgradeIcon } from '@/components/ui/icons';
 
 export type ChallengeTab = 'simulation' | 'squad' | 'packs' | 'upgrades';
 
-const TABS: { id: ChallengeTab; label: string; icon: string }[] = [
-  { id: 'simulation', label: 'Simulation', icon: '▶' },
-  { id: 'squad', label: 'Squad', icon: '⚽' },
-  { id: 'packs', label: 'Packs', icon: '📦' },
-  { id: 'upgrades', label: 'Upgrades', icon: '⬆' },
+const TABS: {
+  id: ChallengeTab;
+  label: string;
+  Icon: (props: { className?: string }) => JSX.Element;
+}[] = [
+  { id: 'simulation', label: 'Simulation', Icon: WhistleIcon },
+  { id: 'squad', label: 'Squad', Icon: BenchIcon },
+  { id: 'packs', label: 'Packs', Icon: CardIcon },
+  { id: 'upgrades', label: 'Upgrades', Icon: UpgradeIcon },
 ];
 
 export function BottomTabs({
@@ -32,9 +37,12 @@ export function BottomTabs({
                 isActive ? 'text-emerald-400' : 'text-white/50 hover:text-white/80'
               )}
             >
-              <span className={cn('text-lg', isActive && 'drop-shadow-[0_0_6px_rgba(0,255,133,0.7)]')}>
-                {t.icon}
-              </span>
+              <t.Icon
+                className={cn(
+                  'h-5 w-5',
+                  isActive && 'drop-shadow-[0_0_6px_rgba(0,255,133,0.7)]'
+                )}
+              />
               <span>{t.label}</span>
             </button>
           );

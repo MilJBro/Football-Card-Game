@@ -2,6 +2,7 @@
 
 import { useId } from 'react';
 import type { PackCategory } from '@/store/types';
+import { GlovesIcon, WallIcon, TargetIcon, CompassStarIcon } from '@/components/ui/icons';
 
 // Per-category accent used for the glow behind the ball.
 const GLOW: Record<PackCategory, string> = {
@@ -11,11 +12,11 @@ const GLOW: Record<PackCategory, string> = {
   ATT: '#e90052',
 };
 
-const ICON: Record<PackCategory, string> = {
-  GK: '🧤',
-  DEF: '🛡️',
-  MID: '🎯',
-  ATT: '⚡',
+const ICON: Record<PackCategory, (props: { className?: string }) => JSX.Element> = {
+  GK: GlovesIcon,
+  DEF: WallIcon,
+  MID: CompassStarIcon,
+  ATT: TargetIcon,
 };
 
 function pentagon(cx: number, cy: number, r: number, rotDeg: number): string {
@@ -35,6 +36,7 @@ export function PackArt({
 }) {
   const uid = useId();
   const glow = GLOW[category];
+  const Emblem = ICON[category];
   const C = 32;
   const BALL_R = 22;
 
@@ -100,8 +102,8 @@ export function PackArt({
 
       {/* Category emblem */}
       <div className="pointer-events-none -mt-6 flex justify-center">
-        <span className="rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-base backdrop-blur">
-          {ICON[category]}
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur">
+          <Emblem className="h-5 w-5" />
         </span>
       </div>
     </div>
