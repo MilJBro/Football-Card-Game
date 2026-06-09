@@ -12,6 +12,7 @@ import type { PackCategory, PlayerCardDef, Tier } from '@/store/types';
 
 const CATEGORIES: (PackCategory | 'ALL')[] = ['ALL', 'GK', 'DEF', 'MID', 'ATT'];
 const TIERS: (Tier | 'ALL')[] = ['ALL', 'Rising', 'Star', 'Legend'];
+const TIER_ORDER: Tier[] = ['Rising', 'Star', 'Legend'];
 
 export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   const hydrated = useHydrated();
@@ -79,92 +80,114 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {owned.map(({ owned: o, card }) => (
-            <div key={o.cardId} className="flex flex-col items-center gap-2">
+            <div key={o.cardId} className="flex flex-col items-center">
               <div className="relative">
-                <PlayerCard card={card} foil={o.isFoilEquipped} size="md" />
+                <PlayerCard
+                  card={card}
+                  foil={o.isFoilEquipped}
+                  size="md"
+                  onClick={() => setUpgrading(card)}
+                />
                 {o.quantity > 1 && (
                   <span className="absolute -right-2 -top-2 rounded-full bg-white px-2 py-0.5 text-xs font-black text-black">
                     ×{o.quantity}
                   </span>
                 )}
               </div>
-              <div className="flex w-40 flex-col gap-1">
-                {(() => {
-                  const next = getNextTierCard(card.id);
-                  if (!next) return null;
-                  const cost = upgradeCost(card.tier);
-                  return (
-                    <Button
-                      size="sm"
-                      variant="primary"
-                      disabled={coins < cost}
-                      onClick={() => setUpgrading(card)}
-                    >
-                      ⬆ {next.tier} · 🪙 {formatCoins(cost)}
-                    </Button>
-                  );
-                })()}
-                {o.isFoilUnlocked && (
-                  <Button
-                    size="sm"
-                    variant={o.isFoilEquipped ? 'primary' : 'secondary'}
-                    onClick={() => toggleFoil(o.cardId)}
-                  >
-                    {o.isFoilEquipped ? '✨ Foil On' : 'Foil Off'}
-                  </Button>
-                )}
-                <Button size="sm" variant="danger" onClick={() => sell(o.cardId)}>
-                  Sell 🪙 {formatCoins(discardValue(card))}
-                </Button>
-              </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Upgrade confirmation */}
-      {upgrading &&
-        (() => {
-          const next = getNextTierCard(upgrading.id);
-          const cost = upgradeCost(upgrading.tier);
-          if (!next) return null;
-          return (
+      {/* ── Upgrade / sell modal ─────────────────────────────────────── */}
+      {upgrading && (() => {
+        const next = getNextTierCard(upgrading.id);
+        const cost = next ? upgradeCost(upgrading.tier) : 0;
+        const ownedEntry = ownedCards[upgrading.id];
+        const currentTierIdx = TIER_ORDER.indexOf(upgrading.tier);
+
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-4 sm:items-center"
+            onClick={() => setUpgrading(null)}
+          >
             <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
-              onClick={() => setUpgrading(null)}
+              className="w-full max-w-md overflow-hidden rounded-3xl bg-[#1a0a2e]"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div
-                className="w-full max-w-md rounded-2xl border border-white/15 bg-pitch-dark p-6"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="text-lg font-bold">Upgrade Card</h3>
-                <p className="mt-1 text-sm text-white/60">
-                  This consumes one <span className="font-bold">{upgrading.tier}</span> copy and
-                  gives you the <span className="font-bold text-emerald-300">{next.tier}</span>{' '}
-                  version.
-                </p>
-                <div className="my-5 flex items-center justify-center gap-3">
-                  <PlayerCard card={upgrading} size="sm" />
-                  <span className="text-2xl text-emerald-400">→</span>
-                  <PlayerCard card={next} size="sm" />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-white/60">
-                    Cost: <span className="font-bold text-yellow-300">🪙 {formatCoins(cost)}</span>
-                  </span>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" onClick={() => setUpgrading(null)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={confirmUpgrade} disabled={coins < cost}>
-                      Upgrade
-                    </Button>
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 pt-5 pb-4">
+                <h3 className="text-xl font-black uppercase text-white">Upgrade Card</h3>
+                <button
+                  onClick={() => setUpgrading(null)}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/20 text-white/60 hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Card + player info */}
+              <div className="flex items-center gap-4 px-5 pb-5">
+                <PlayerCard card={upgrading} foil={ownedEntry?.isFoilEquipped} size="md" />
+                <div className="flex flex-1 flex-col gap-3">
+                  <div>
+                    <div className="text-lg font-bold leading-tight text-white">
+                      {upgrading.playerName}
+                    </div>
+                    <div className="mt-0.5 text-sm text-white/50">
+                      {upgrading.club} · {upgrading.season}
+                    </div>
                   </div>
+                  {/* Tier progress bar */}
+                  <div className="flex gap-1.5">
+                    {TIER_ORDER.map((t, i) => (
+                      <div
+                        key={t}
+                        className={cn(
+                          'h-2 flex-1 rounded-full',
+                          i <= currentTierIdx ? 'bg-amber-400' : 'bg-white/15',
+                        )}
+                      />
+                    ))}
+                  </div>
+                  {ownedEntry?.isFoilUnlocked && (
+                    <button
+                      onClick={() => { toggleFoil(upgrading.id); }}
+                      className={cn(
+                        'rounded-lg px-3 py-1.5 text-xs font-bold transition-colors',
+                        ownedEntry.isFoilEquipped
+                          ? 'bg-emerald-500 text-emerald-950'
+                          : 'bg-white/10 text-white/70 hover:bg-white/20',
+                      )}
+                    >
+                      {ownedEntry.isFoilEquipped ? '✨ Foil On' : 'Foil Off'}
+                    </button>
+                  )}
                 </div>
               </div>
+
+              {/* Action buttons */}
+              <div className="space-y-2 px-5 pb-5">
+                {next && (
+                  <button
+                    onClick={confirmUpgrade}
+                    disabled={coins < cost}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 py-4 text-base font-black uppercase text-emerald-950 transition-opacity disabled:opacity-40"
+                  >
+                    ⬆ Upgrade · 🪙 {formatCoins(cost)}
+                  </button>
+                )}
+                <button
+                  onClick={() => { sell(upgrading.id); setUpgrading(null); }}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-purple-400/40 py-3.5 text-base font-bold text-purple-300 hover:bg-purple-400/10"
+                >
+                  Sell for 🪙 {formatCoins(discardValue(upgrading))}
+                </button>
+              </div>
             </div>
-          );
-        })()}
+          </div>
+        );
+      })()}
 
       {toast && (
         <div className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 animate-coin-pop rounded-lg bg-emerald-500 px-4 py-2 font-bold text-emerald-950 shadow-lg">
@@ -176,10 +199,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
 }
 
 function FilterRow<T extends string>({
-  label,
-  options,
-  value,
-  onChange,
+  label, options, value, onChange,
 }: {
   label: string;
   options: T[];
@@ -196,7 +216,7 @@ function FilterRow<T extends string>({
             onClick={() => onChange(o)}
             className={cn(
               'rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors',
-              value === o ? 'bg-emerald-500 text-emerald-950' : 'bg-white/10 text-white/70 hover:bg-white/20'
+              value === o ? 'bg-emerald-500 text-emerald-950' : 'bg-white/10 text-white/70 hover:bg-white/20',
             )}
           >
             {o}

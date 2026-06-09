@@ -87,34 +87,38 @@ export function shortName(fullName: string): string {
   return `${first[0]}. ${rest.join(' ')}`;
 }
 
-/** Position/pack-based card background, border, ring, and position badge colours. */
+/** Position/pack-based card border, ring, glow, and legacy bg/posBadge colours. */
 export const PACK_STYLES: Record<
   PackCategory,
-  { bg: string; border: string; ring: string; posBadge: string }
+  { bg: string; border: string; ring: string; posBadge: string; glow: string }
 > = {
   GK: {
     bg: 'bg-gradient-to-b from-green-900 to-green-950',
     border: 'border-green-500',
     ring: 'ring-green-400',
     posBadge: 'bg-green-600',
+    glow: 'shadow-[0_0_18px_rgba(74,222,128,0.45)]',
   },
   DEF: {
     bg: 'bg-gradient-to-b from-amber-800/90 to-amber-950',
     border: 'border-amber-500',
     ring: 'ring-amber-400',
     posBadge: 'bg-amber-600',
+    glow: 'shadow-[0_0_18px_rgba(245,158,11,0.45)]',
   },
   MID: {
     bg: 'bg-gradient-to-b from-blue-900 to-blue-950',
     border: 'border-blue-500',
     ring: 'ring-blue-400',
     posBadge: 'bg-blue-700',
+    glow: 'shadow-[0_0_18px_rgba(96,165,250,0.45)]',
   },
   ATT: {
     bg: 'bg-gradient-to-b from-red-900 to-red-950',
     border: 'border-red-600',
     ring: 'ring-red-500',
     posBadge: 'bg-red-700',
+    glow: 'shadow-[0_0_18px_rgba(239,68,68,0.45)]',
   },
 };
 
