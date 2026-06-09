@@ -112,3 +112,56 @@ export function CompassStarIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+/** Trophy — Cup Run. */
+export function TrophyIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path {...stroke} d="M7 4h10v5a5 5 0 0 1-10 0V4Z" />
+      <path {...stroke} d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3" />
+      <path {...stroke} d="M12 14v3M9 20h6M10 20l.5-3h3l.5 3" />
+    </svg>
+  );
+}
+
+/** Globe — European Tour. */
+export function GlobeIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle {...stroke} cx="12" cy="12" r="9" />
+      <path {...stroke} d="M3 12h18" />
+      <path {...stroke} d="M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" />
+    </svg>
+  );
+}
+
+/** Shield — Invincibles. */
+export function ShieldIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path {...stroke} d="M12 3 5 6v6c0 4 3 6.5 7 9 4-2.5 7-5 7-9V6l-7-3Z" />
+      <path {...stroke} d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
+/** Medal — Centurions. */
+export function MedalIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path {...stroke} d="M8 3 6 9M16 3l2 6" />
+      <circle {...stroke} cx="12" cy="15" r="5.5" />
+      <path {...stroke} d="m12 12.5 1 2 2 .2-1.5 1.4.4 2-1.9-1-1.9 1 .4-2L9 14.7l2-.2Z" />
+    </svg>
+  );
+}
+
+/** Crown — The Quadruple. */
+export function CrownIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path {...stroke} d="M4 8l3 9h10l3-9-5 4-3-6-3 6-5-4Z" />
+      <path {...stroke} d="M7 20h10" />
+    </svg>
+  );
+}
