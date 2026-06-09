@@ -182,17 +182,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'nigelmartyn',
-    playerName: 'Nigel Martyn',
-    nationality: 'England',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Leeds · 1997',   positions: ['GK'], rating: 74 },
-      Star:   { era: 'Leeds · 2001',   positions: ['GK'], rating: 83 },
-      Legend: { era: 'Everton · 2004', positions: ['GK'], rating: 85 },
-    },
-  },
-  {
     playerId: 'degea',
     playerName: 'David de Gea',
     nationality: 'Spain',
@@ -972,17 +961,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Newcastle · 2018', positions: ['GK'], rating: 74 },
       Star:   { era: 'Newcastle · 2021', positions: ['GK'], rating: 81 },
       Legend: { era: 'Newcastle · 2023', positions: ['GK'], rating: 83 },
-    },
-  },
-  {
-    playerId: 'hermansen',
-    playerName: 'Jannik Hermansen',
-    nationality: 'Denmark',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Copenhagen · 2023', positions: ['GK'], rating: 74 },
-      Star:   { era: 'Leicester · 2024', positions: ['GK'], rating: 80 },
-      Legend: { era: 'Leicester · 2025', positions: ['GK'], rating: 82 },
     },
   },
 
