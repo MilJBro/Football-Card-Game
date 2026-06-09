@@ -1584,17 +1584,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'colinhendry',
-    playerName: 'Colin Hendry',
-    nationality: 'Scotland',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Blackburn · 1993', positions: ['CB'], rating: 73 },
-      Star:   { era: 'Blackburn · 1995', positions: ['CB'], rating: 82 },
-      Legend: { era: 'Blackburn · 1997', positions: ['CB'], rating: 85 },
-    },
-  },
-  {
     playerId: 'stuartpearce',
     playerName: 'Stuart Pearce',
     nationality: 'England',
@@ -2688,50 +2677,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Chelsea · 2023', positions: ['CB'], rating: 72 },
       Star:   { era: 'Chelsea · 2024', positions: ['CB'], rating: 78 },
       Legend: { era: 'Chelsea · 2025', positions: ['CB'], rating: 80 },
-    },
-  },
-  {
-    playerId: 'leboeuf',
-    playerName: 'Frank Leboeuf',
-    nationality: 'France',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Chelsea · 1996', positions: ['CB'], rating: 76 },
-      Star:   { era: 'Chelsea · 1998', positions: ['CB'], rating: 82 },
-      Legend: { era: 'Chelsea · 2000', positions: ['CB'], rating: 84 },
-    },
-  },
-  {
-    playerId: 'bould',
-    playerName: 'Steve Bould',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Arsenal · 1993', positions: ['CB'], rating: 73 },
-      Star:   { era: 'Arsenal · 1995', positions: ['CB'], rating: 80 },
-      Legend: { era: 'Arsenal · 1998', positions: ['CB'], rating: 83 },
-    },
-  },
-  {
-    playerId: 'ehiogu',
-    playerName: 'Ugo Ehiogu',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Aston Villa · 1995',   positions: ['CB'], rating: 73 },
-      Star:   { era: 'Aston Villa · 1998',   positions: ['CB'], rating: 80 },
-      Legend: { era: 'Middlesbrough · 2005', positions: ['CB'], rating: 83 },
-    },
-  },
-  {
-    playerId: 'mcgrath',
-    playerName: 'Paul McGrath',
-    nationality: 'Ireland',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Aston Villa · 1992', positions: ['CB'], rating: 75 },
-      Star:   { era: 'Aston Villa · 1993', positions: ['CB'], rating: 83 },
-      Legend: { era: 'Aston Villa · 1995', positions: ['CB'], rating: 86 },
     },
   },
   {
