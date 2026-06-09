@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import type { PackDef } from '@/store/types';
+import type { PackDef, PackCategory } from '@/store/types';
 import { ALL_PACKS } from '@/data/packs';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
@@ -10,22 +10,23 @@ import { PackOpening } from '@/components/opening/PackOpening';
 import { PackArt } from '@/components/opening/PackArt';
 import { cn, TIER_STYLES, TIER_BADGE, formatCoins } from '@/lib/ui';
 
-const CATEGORY_LABEL: Record<string, string> = {
+const CATEGORY_LABEL: Record<PackCategory, string> = {
   GK: 'Goalkeepers',
   DEF: 'Defenders',
   MID: 'Midfielders',
   ATT: 'Attackers',
 };
-const CATEGORY_ICON: Record<string, string> = {
+const CATEGORY_ICON: Record<PackCategory, string> = {
   GK: '🧤',
   DEF: '🛡️',
   MID: '🎯',
   ATT: '⚡',
 };
-const CATEGORY_ORDER = ['GK', 'DEF', 'MID', 'ATT'] as const;
+const CATEGORY_ORDER: PackCategory[] = ['GK', 'DEF', 'MID', 'ATT'];
 
 export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
   const [openingPackId, setOpeningPackId] = useState<string | null>(null);
+  const [category, setCategory] = useState<PackCategory>('ATT');
 
   // Inline pack-opening view.
   if (openingPackId) {
@@ -42,23 +43,41 @@ export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
   }
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-4">
       <header>
         <h1 className="text-2xl font-black">Packs</h1>
         <p className="text-sm text-white/60">
-          Swipe through each tier. Every pack holds 5 cards from one position group.
+          Pick a position, then swipe through the tiers. Every pack holds 5 cards.
         </p>
       </header>
 
-      {CATEGORY_ORDER.map((cat) => (
-        <PackStory
-          key={cat}
-          label={CATEGORY_LABEL[cat]}
-          icon={CATEGORY_ICON[cat]}
-          packs={ALL_PACKS.filter((p) => p.pack === cat)}
-          onOpen={setOpeningPackId}
-        />
-      ))}
+      {/* Category tabs */}
+      <div className="grid grid-cols-4 gap-1.5 rounded-2xl bg-black/30 p-1.5">
+        {CATEGORY_ORDER.map((cat) => {
+          const isActive = cat === category;
+          return (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={cn(
+                'flex flex-col items-center gap-0.5 rounded-xl py-2 text-[11px] font-bold transition-colors',
+                isActive
+                  ? 'bg-emerald-500 text-emerald-950'
+                  : 'text-white/60 hover:bg-white/10 hover:text-white'
+              )}
+            >
+              <span className="text-base">{CATEGORY_ICON[cat]}</span>
+              <span>{CATEGORY_LABEL[cat]}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <PackStory
+        key={category}
+        packs={ALL_PACKS.filter((p) => p.pack === category)}
+        onOpen={setOpeningPackId}
+      />
     </div>
   );
 }
@@ -68,13 +87,9 @@ export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
 // ---------------------------------------------------------------------------
 
 function PackStory({
-  label,
-  icon,
   packs,
   onOpen,
 }: {
-  label: string;
-  icon: string;
   packs: PackDef[];
   onOpen: (packId: string) => void;
 }) {
@@ -96,11 +111,6 @@ function PackStory({
 
   return (
     <section className="space-y-2">
-      <div className="flex items-center gap-2">
-        <span className="text-lg">{icon}</span>
-        <h2 className="text-lg font-bold text-white">{label}</h2>
-      </div>
-
       {/* Story progress segments */}
       <div className="flex gap-1.5">
         {packs.map((p, i) => (
