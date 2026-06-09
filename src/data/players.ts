@@ -2380,6 +2380,383 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  // ---- Modern CBs -----------------------------------------------------------
+
+  {
+    playerId: 'saliba',
+    playerName: 'William Saliba',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2022', positions: ['CB'], rating: 79 },
+      Star:   { era: 'Arsenal · 2024', positions: ['CB'], rating: 86 },
+      Legend: { era: 'Arsenal · 2025', positions: ['CB'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'gabrielmaga',
+    playerName: 'Gabriel Magalhães',
+    nationality: 'Brazil',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 2021', positions: ['CB'], rating: 77 },
+      Star:   { era: 'Arsenal · 2023', positions: ['CB'], rating: 84 },
+      Legend: { era: 'Arsenal · 2025', positions: ['CB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'cristianromero',
+    playerName: 'Cristian Romero',
+    nationality: 'Argentina',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2022', positions: ['CB'], rating: 78 },
+      Star:   { era: 'Tottenham · 2023', positions: ['CB'], rating: 85 },
+      Legend: { era: 'Tottenham · 2025', positions: ['CB'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'jstones',
+    playerName: 'John Stones',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man City · 2017', positions: ['CB'], rating: 76 },
+      Star:   { era: 'Man City · 2019', positions: ['CB'], rating: 84 },
+      Legend: { era: 'Man City · 2023', positions: ['CB'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'alderweireld',
+    playerName: 'Toby Alderweireld',
+    nationality: 'Belgium',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2015', positions: ['CB'], rating: 77 },
+      Star:   { era: 'Tottenham · 2017', positions: ['CB'], rating: 85 },
+      Legend: { era: 'Tottenham · 2019', positions: ['CB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'vertonghen',
+    playerName: 'Jan Vertonghen',
+    nationality: 'Belgium',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2013', positions: ['CB'],        rating: 76 },
+      Star:   { era: 'Tottenham · 2016', positions: ['CB'],        rating: 84 },
+      Legend: { era: 'Tottenham · 2018', positions: ['CB', 'LB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'joegomez',
+    playerName: 'Joe Gomez',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2018', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Liverpool · 2020', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Liverpool · 2022', positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'konate',
+    playerName: 'Ibrahima Konaté',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2022', positions: ['CB'], rating: 77 },
+      Star:   { era: 'Liverpool · 2023', positions: ['CB'], rating: 83 },
+      Legend: { era: 'Liverpool · 2025', positions: ['CB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'vandeven',
+    playerName: 'Micky van de Ven',
+    nationality: 'Netherlands',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2023', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Tottenham · 2024', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Tottenham · 2025', positions: ['CB'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'konsa',
+    playerName: 'Ezri Konsa',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2021', positions: ['CB'], rating: 74 },
+      Star:   { era: 'Aston Villa · 2023', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Aston Villa · 2025', positions: ['CB'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'guehi',
+    playerName: 'Marc Guéhi',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Crystal Palace · 2022', positions: ['CB'], rating: 74 },
+      Star:   { era: 'Crystal Palace · 2024', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Newcastle · 2025',      positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'branthwaite',
+    playerName: 'Jarrad Branthwaite',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Everton · 2024', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Everton · 2025', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Everton · 2026', positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'pautorres',
+    playerName: 'Pau Torres',
+    nationality: 'Spain',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2023', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Aston Villa · 2024', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Aston Villa · 2025', positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'lewisdunk',
+    playerName: 'Lewis Dunk',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Brighton · 2017', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Brighton · 2019', positions: ['CB'], rating: 80 },
+      Legend: { era: 'Brighton · 2023', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'maxkilman',
+    playerName: 'Max Kilman',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Wolves · 2021',   positions: ['CB'], rating: 73 },
+      Star:   { era: 'Wolves · 2023',   positions: ['CB'], rating: 80 },
+      Legend: { era: 'West Ham · 2025', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'schar',
+    playerName: 'Fabian Schär',
+    nationality: 'Switzerland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Newcastle · 2019', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Newcastle · 2022', positions: ['CB'], rating: 80 },
+      Legend: { era: 'Newcastle · 2024', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'zouma',
+    playerName: 'Kurt Zouma',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2017',  positions: ['CB'], rating: 74 },
+      Star:   { era: 'Chelsea · 2019',  positions: ['CB'], rating: 81 },
+      Legend: { era: 'West Ham · 2022', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'achristensen',
+    playerName: 'Andreas Christensen',
+    nationality: 'Denmark',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2018', positions: ['CB'], rating: 74 },
+      Star:   { era: 'Chelsea · 2020', positions: ['CB'], rating: 81 },
+      Legend: { era: 'Chelsea · 2022', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'tomori',
+    playerName: 'Fikayo Tomori',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2019',  positions: ['CB'], rating: 73 },
+      Star:   { era: 'Chelsea · 2020',  positions: ['CB'], rating: 79 },
+      Legend: { era: 'AC Milan · 2022', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'sakho',
+    playerName: 'Mamadou Sakho',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Liverpool · 2014',      positions: ['CB'], rating: 74 },
+      Star:   { era: 'Crystal Palace · 2017', positions: ['CB'], rating: 81 },
+      Legend: { era: 'Crystal Palace · 2018', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'fofana',
+    playerName: 'Wesley Fofana',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leicester · 2021', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Chelsea · 2023',   positions: ['CB'], rating: 80 },
+      Legend: { era: 'Chelsea · 2025',   positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'davinsonsanchez',
+    playerName: 'Davinson Sánchez',
+    nationality: 'Colombia',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Tottenham · 2018', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Tottenham · 2020', positions: ['CB'], rating: 79 },
+      Legend: { era: 'Tottenham · 2022', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'colwill',
+    playerName: 'Levi Colwill',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2023', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Chelsea · 2024', positions: ['CB'], rating: 80 },
+      Legend: { era: 'Chelsea · 2025', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'mkeane',
+    playerName: 'Michael Keane',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Everton · 2017', positions: ['CB'], rating: 72 },
+      Star:   { era: 'Everton · 2019', positions: ['CB'], rating: 78 },
+      Legend: { era: 'Everton · 2021', positions: ['CB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'benmee',
+    playerName: 'Ben Mee',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Burnley · 2016',   positions: ['CB'], rating: 72 },
+      Star:   { era: 'Burnley · 2019',   positions: ['CB'], rating: 79 },
+      Legend: { era: 'Brentford · 2023', positions: ['CB'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'diegocarlos',
+    playerName: 'Diego Carlos',
+    nationality: 'Brazil',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2022', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Aston Villa · 2024', positions: ['CB'], rating: 79 },
+      Legend: { era: 'Aston Villa · 2025', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'tosinadarabioyo',
+    playerName: 'Tosin Adarabioyo',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Fulham · 2021',  positions: ['CB'], rating: 72 },
+      Star:   { era: 'Fulham · 2023',  positions: ['CB'], rating: 78 },
+      Legend: { era: 'Chelsea · 2025', positions: ['CB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'axeldisasi',
+    playerName: 'Axel Disasi',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 2023', positions: ['CB'], rating: 72 },
+      Star:   { era: 'Chelsea · 2024', positions: ['CB'], rating: 78 },
+      Legend: { era: 'Chelsea · 2025', positions: ['CB'], rating: 80 },
+    },
+  },
+  {
+    playerId: 'leboeuf',
+    playerName: 'Frank Leboeuf',
+    nationality: 'France',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Chelsea · 1996', positions: ['CB'], rating: 76 },
+      Star:   { era: 'Chelsea · 1998', positions: ['CB'], rating: 82 },
+      Legend: { era: 'Chelsea · 2000', positions: ['CB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'bould',
+    playerName: 'Steve Bould',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Arsenal · 1993', positions: ['CB'], rating: 73 },
+      Star:   { era: 'Arsenal · 1995', positions: ['CB'], rating: 80 },
+      Legend: { era: 'Arsenal · 1998', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'ehiogu',
+    playerName: 'Ugo Ehiogu',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 1995',   positions: ['CB'], rating: 73 },
+      Star:   { era: 'Aston Villa · 1998',   positions: ['CB'], rating: 80 },
+      Legend: { era: 'Middlesbrough · 2005', positions: ['CB'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'mcgrath',
+    playerName: 'Paul McGrath',
+    nationality: 'Ireland',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Aston Villa · 1992', positions: ['CB'], rating: 75 },
+      Star:   { era: 'Aston Villa · 1993', positions: ['CB'], rating: 83 },
+      Legend: { era: 'Aston Villa · 1995', positions: ['CB'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'woodgate',
+    playerName: 'Jonathan Woodgate',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Leeds · 2000',     positions: ['CB'], rating: 73 },
+      Star:   { era: 'Newcastle · 2005', positions: ['CB'], rating: 80 },
+      Legend: { era: 'Tottenham · 2008', positions: ['CB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'winstonreid',
+    playerName: 'Winston Reid',
+    nationality: 'New Zealand',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'West Ham · 2011', positions: ['CB'], rating: 72 },
+      Star:   { era: 'West Ham · 2014', positions: ['CB'], rating: 79 },
+      Legend: { era: 'West Ham · 2016', positions: ['CB'], rating: 81 },
+    },
+  },
+
   // ---- MID (89) -------------------------------------------------------------
 
   {
