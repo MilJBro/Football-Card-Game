@@ -114,14 +114,6 @@ export interface GameModeDef {
   id: ModeId;
   name: string;
   description: string;
-  /** 1-5 difficulty stars. */
-  difficulty: number;
-  /** Suggested squad rating to have a realistic chance. */
-  recommendedRating: number;
-  /** Coins awarded on first completion. */
-  firstReward: number;
-  /** Coins awarded on repeat completions. */
-  repeatReward: number;
   /** Human-readable win condition. */
   winConditionText: string;
 }

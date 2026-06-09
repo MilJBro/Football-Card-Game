@@ -4,16 +4,7 @@ import Link from 'next/link';
 import { GAME_MODES } from '@/data/gameModes';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { cn, formatCoins } from '@/lib/ui';
-
-function Stars({ n }: { n: number }) {
-  return (
-    <span className="text-yellow-400">
-      {'★'.repeat(n)}
-      <span className="text-white/20">{'★'.repeat(5 - n)}</span>
-    </span>
-  );
-}
+import { cn } from '@/lib/ui';
 
 export default function HomePage() {
   const hydrated = useHydrated();
@@ -52,12 +43,7 @@ export default function HomePage() {
                 )}
               </div>
               <p className="mt-1 text-sm text-white/60">{mode.description}</p>
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
-                <span>
-                  <Stars n={mode.difficulty} />
-                </span>
-                <span className="font-bold text-yellow-300">🪙 {formatCoins(mode.firstReward)}</span>
-              </div>
+              <p className="mt-3 text-xs font-bold text-emerald-400/80">{mode.winConditionText}</p>
             </Link>
           );
         })}

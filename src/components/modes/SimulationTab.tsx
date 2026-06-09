@@ -9,16 +9,13 @@ import { seasonFinishReward } from '@/lib/coinRewards';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
-import { cn, formatCoins } from '@/lib/ui';
+import { cn } from '@/lib/ui';
 
 type Phase = 'ready' | 'sim' | 'result';
 
 interface RunOutcome {
   season: SeasonResult;
   success: boolean;
-  seasonReward: number;
-  modeReward: number;
-  total: number;
 }
 
 interface SimulationTabProps {
@@ -31,7 +28,6 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const hydrated = useHydrated();
   const addCoins = useGameStore((s) => s.addCoins);
   const recordRun = useGameStore((s) => s.recordRun);
-  const completions = useGameStore((s) => s.completions);
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
@@ -45,23 +41,20 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       const season = simulateSeason(sum);
       const success = evaluateWinCondition(mode, season);
 
-      const isFirstClear = success && !completions[mode.id];
-      const modeReward = success ? (isFirstClear ? mode.firstReward : mode.repeatReward) : 0;
-      const seasonReward = seasonFinishReward(season);
-      const total = seasonReward + modeReward;
+      const reward = seasonFinishReward(season);
+      addCoins(reward, `Season: ${mode.name}`);
 
-      addCoins(total, `Season: ${mode.name}`);
       const runResult: ModeRunResult = {
         modeId: mode.id,
         season,
         success,
-        reward: total,
+        reward,
         squadRating: sum.rating,
         playedAt: Date.now(),
       };
       recordRun(runResult);
 
-      setOutcome({ season, success, seasonReward, modeReward, total });
+      setOutcome({ season, success });
       setPhase('result');
     }, 1400);
   }
@@ -98,14 +91,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
           <h1 className="mt-2 text-2xl font-black">
             {o.success ? 'Challenge Complete!' : 'Challenge Failed'}
           </h1>
-          <p className="text-white/60">{mode.winConditionText}</p>
-          <div className="mt-4 inline-block animate-coin-pop rounded-xl bg-yellow-400/15 px-5 py-3">
-            <div className="text-2xl font-black text-yellow-300">+{formatCoins(o.total)} 🪙</div>
-            <div className="text-xs text-white/50">
-              Season finish {formatCoins(o.seasonReward)}
-              {o.modeReward > 0 && ` · Challenge bonus ${formatCoins(o.modeReward)}`}
-            </div>
-          </div>
+          <p className="mt-1 text-white/60">{mode.winConditionText}</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -166,10 +152,9 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         <p className="mt-1 text-white/60">{mode.description}</p>
       </header>
 
-      <div className="rounded-xl border border-yellow-400/20 bg-yellow-400/5 p-4 text-sm">
-        <span className="font-bold text-yellow-300">Win condition: </span>
-        {mode.winConditionText}.{' '}
-        <span className="text-white/50">Recommended squad rating {mode.recommendedRating}.</span>
+      <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4 text-sm">
+        <span className="font-bold text-emerald-300">Win condition: </span>
+        {mode.winConditionText}.
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
