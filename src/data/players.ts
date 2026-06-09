@@ -1029,7 +1029,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 1995', positions: ['RB'], rating: 72 },
       Star:   { era: 'Man Utd · 2000', positions: ['RB'], rating: 82 },
-      Legend: { era: 'Man Utd · 2007', positions: ['RB'], rating: 85 },
+      Legend: { era: 'Man Utd · 2007', positions: ['RB'], rating: 86 },
     },
   },
   {
@@ -1172,7 +1172,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 2009',  positions: ['RB'],        rating: 74 },
       Star:   { era: 'Chelsea · 2012',  positions: ['RB'],        rating: 83 },
-      Legend: { era: 'Chelsea · 2015',  positions: ['RB', 'CB'], rating: 86 },
+      Legend: { era: 'Chelsea · 2015',  positions: ['RB', 'CB'], rating: 85 },
     },
   },
   {
