@@ -930,6 +930,62 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  {
+    playerId: 'vicario',
+    playerName: 'Guglielmo Vicario',
+    nationality: 'Italy',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Tottenham · 2023', positions: ['GK'], rating: 76 },
+      Star:   { era: 'Tottenham · 2024', positions: ['GK'], rating: 82 },
+      Legend: { era: 'Tottenham · 2025', positions: ['GK'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'kelleher',
+    playerName: 'Caoimhín Kelleher',
+    nationality: 'Ireland',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Liverpool · 2020', positions: ['GK'], rating: 74 },
+      Star:   { era: 'Liverpool · 2022', positions: ['GK'], rating: 80 },
+      Legend: { era: 'Brentford · 2025', positions: ['GK'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'mamardashvili',
+    playerName: 'Giorgi Mamardashvili',
+    nationality: 'Georgia',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Valencia · 2022', positions: ['GK'], rating: 76 },
+      Star:   { era: 'Valencia · 2024', positions: ['GK'], rating: 83 },
+      Legend: { era: 'Liverpool · 2025', positions: ['GK'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'dubravka',
+    playerName: 'Martin Dúbravka',
+    nationality: 'Slovakia',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Newcastle · 2018', positions: ['GK'], rating: 74 },
+      Star:   { era: 'Newcastle · 2021', positions: ['GK'], rating: 81 },
+      Legend: { era: 'Newcastle · 2023', positions: ['GK'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'hermansen',
+    playerName: 'Jannik Hermansen',
+    nationality: 'Denmark',
+    pack: 'GK',
+    tiers: {
+      Rising: { era: 'Copenhagen · 2023', positions: ['GK'], rating: 74 },
+      Star:   { era: 'Leicester · 2024', positions: ['GK'], rating: 80 },
+      Legend: { era: 'Leicester · 2025', positions: ['GK'], rating: 82 },
+    },
+  },
+
   // ---- DEF (78) -------------------------------------------------------------
 
   {
