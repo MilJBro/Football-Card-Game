@@ -1342,17 +1342,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'lesaux',
-    playerName: 'Graeme Le Saux',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Blackburn · 1994', positions: ['LB'], rating: 73 },
-      Star:   { era: 'Chelsea · 1999',   positions: ['LB'], rating: 82 },
-      Legend: { era: 'Chelsea · 2003',   positions: ['LB'], rating: 84 },
-    },
-  },
-  {
     playerId: 'robertson',
     playerName: 'Andrew Robertson',
     nationality: 'Scotland',
@@ -1647,7 +1636,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2007',     positions: ['CB'],         rating: 73 },
       Star:   { era: 'Liverpool · 2010',     positions: ['CB'],         rating: 82 },
-      Legend: { era: 'Liverpool · 2012',     positions: ['CB', 'LB'],   rating: 85 },
+      Legend: { era: 'Liverpool · 2012',     positions: ['CB'],         rating: 85 },
     },
   },
   {
@@ -1739,17 +1728,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'staunton',
-    playerName: 'Steve Staunton',
-    nationality: 'Ireland',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Liverpool · 1993',   positions: ['LB'], rating: 73 },
-      Star:   { era: 'Aston Villa · 1995', positions: ['LB'], rating: 80 },
-      Legend: { era: 'Liverpool · 1998',   positions: ['LB'], rating: 83 },
-    },
-  },
-  {
     playerId: 'davidluiz',
     playerName: 'David Luiz',
     nationality: 'Brazil',
@@ -1780,17 +1758,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Birmingham · 2004', positions: ['CB'], rating: 72 },
       Star:   { era: 'West Ham · 2008',   positions: ['CB'], rating: 79 },
       Legend: { era: 'West Ham · 2010',   positions: ['CB'], rating: 82 },
-    },
-  },
-  {
-    playerId: 'winterburn',
-    playerName: 'Nigel Winterburn',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Arsenal · 1993', positions: ['LB'], rating: 74 },
-      Star:   { era: 'Arsenal · 1998', positions: ['LB'], rating: 82 },
-      Legend: { era: 'Arsenal · 2000', positions: ['LB'], rating: 85 },
     },
   },
   {
@@ -1835,28 +1802,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Arsenal · 2019', positions: ['LB'], rating: 75 },
       Star:   { era: 'Arsenal · 2021', positions: ['LB'], rating: 83 },
       Legend: { era: 'Arsenal · 2022', positions: ['LB'], rating: 86 },
-    },
-  },
-  {
-    playerId: 'juliandicks',
-    playerName: 'Julian Dicks',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'West Ham · 1993', positions: ['LB'], rating: 74 },
-      Star:   { era: 'West Ham · 1996', positions: ['LB'], rating: 81 },
-      Legend: { era: 'West Ham · 1997', positions: ['LB'], rating: 83 },
-    },
-  },
-  {
-    playerId: 'ianharte',
-    playerName: 'Ian Harte',
-    nationality: 'Ireland',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Leeds · 1998', positions: ['LB'], rating: 73 },
-      Star:   { era: 'Leeds · 2001', positions: ['LB'], rating: 81 },
-      Legend: { era: 'Leeds · 2002', positions: ['LB'], rating: 83 },
     },
   },
   {
@@ -2070,17 +2015,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'babayaro',
-    playerName: 'Celestine Babayaro',
-    nationality: 'Nigeria',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Chelsea · 1997', positions: ['LB'], rating: 73 },
-      Star:   { era: 'Chelsea · 2000', positions: ['LB'], rating: 80 },
-      Legend: { era: 'Chelsea · 2003', positions: ['LB'], rating: 81 },
-    },
-  },
-  {
     playerId: 'tsimikas',
     playerName: 'Konstantinos Tsimikas',
     nationality: 'Greece',
@@ -2100,28 +2034,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Liverpool · 2005',  positions: ['LB'], rating: 71 },
       Star:   { era: 'Blackburn · 2008',  positions: ['LB'], rating: 78 },
       Legend: { era: 'Aston Villa · 2010', positions: ['LB'], rating: 80 },
-    },
-  },
-  {
-    playerId: 'powell',
-    playerName: 'Chris Powell',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Charlton · 1998', positions: ['LB'], rating: 72 },
-      Star:   { era: 'Charlton · 2001', positions: ['LB'], rating: 79 },
-      Legend: { era: 'Charlton · 2004', positions: ['LB'], rating: 80 },
-    },
-  },
-  {
-    playerId: 'hinchcliffe',
-    playerName: 'Andy Hinchcliffe',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Everton · 1992',      positions: ['LB'], rating: 72 },
-      Star:   { era: 'Everton · 1995',      positions: ['LB'], rating: 79 },
-      Legend: { era: 'Sheffield Wed · 1999', positions: ['LB'], rating: 80 },
     },
   },
 
