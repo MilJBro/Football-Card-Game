@@ -2037,6 +2037,40 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  {
+    playerId: 'zinchenko',
+    playerName: 'Oleksandr Zinchenko',
+    nationality: 'Ukraine',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man City · 2018', positions: ['LB'], rating: 74 },
+      Star:   { era: 'Arsenal · 2022',  positions: ['LB'], rating: 82 },
+      Legend: { era: 'Arsenal · 2024',  positions: ['LB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'aitnouri',
+    playerName: 'Rayan Aït-Nouri',
+    nationality: 'Algeria',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Wolves · 2021', positions: ['LB'], rating: 74 },
+      Star:   { era: 'Wolves · 2023', positions: ['LB'], rating: 82 },
+      Legend: { era: 'Wolves · 2025', positions: ['LB'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'delph',
+    playerName: 'Fabian Delph',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'Man City · 2016', positions: ['LB'], rating: 72 },
+      Star:   { era: 'Man City · 2017', positions: ['LB'], rating: 79 },
+      Legend: { era: 'Man City · 2018', positions: ['LB'], rating: 81 },
+    },
+  },
+
   // ---- MID (89) -------------------------------------------------------------
 
   {
