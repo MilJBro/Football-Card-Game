@@ -88,9 +88,70 @@ function simulateCup(
   return true;
 }
 
-export function simulateSeason(squad: SquadSummary): SeasonResult {
-  const attack = squad.attackRating;
-  const defence = squad.defenceRating;
+/**
+ * Apply a challenge's thematic emphasis to a squad's attack/defence.
+ *
+ * The bonuses are measured *relative to the squad's own overall rating*, so a
+ * perfectly balanced XI (every line equal) gets no change and behaves exactly
+ * as the base tuning intends. Specialising your upgrades toward what a
+ * challenge demands is what shifts the odds in your favour:
+ *   • Iron Defence  → reward a strong goalkeeper + back line.
+ *   • Invincibles   → reward defence (don't lose).
+ *   • Centurions    → reward attack + midfield (rack up points).
+ *   • European Tour → reward attackers who win tight knockout ties.
+ *   • Cup Run       → balanced; carrying weak links hurts in cup ties.
+ *   • The Quadruple → demands a complete XI; weak links are punished hard.
+ */
+function challengeRatings(
+  mode: GameModeDef,
+  s: SquadSummary
+): { attack: number; defence: number } {
+  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+
+  // How much the defensive unit (GK + back line) outshines the squad overall.
+  const defFocus = clamp((s.gkRating + s.defLineRating) / 2 - s.rating, -5, 5);
+  // How much the attacking unit (front line + midfield) outshines the squad.
+  const attFocus = clamp((s.attackLineRating + s.midRating) / 2 - s.rating, -5, 5);
+  // Weak-link gap: 0 when the XI is even, grows as you carry a passenger.
+  const weakGap = clamp(s.rating - s.weakestRating, 0, 10);
+
+  let attack = s.attackRating;
+  let defence = s.defenceRating;
+
+  switch (mode.id) {
+    case 'iron-defence':
+      defence += defFocus * 1.4;
+      break;
+    case 'invincibles':
+      // Unbeaten demands a wall: heavily reward defence, and a lopsided,
+      // leaky attack-first squad will drop a game somewhere.
+      defence += defFocus * 2.5;
+      attack -= attFocus * 0.5;
+      attack -= weakGap * 0.2;
+      defence -= weakGap * 0.2;
+      break;
+    case 'centurions':
+      attack += attFocus * 1.4;
+      break;
+    case 'european-glory':
+      attack += attFocus * 1.0;
+      defence += defFocus * 0.5;
+      break;
+    case 'domestic-double':
+      attack -= weakGap * 0.25;
+      defence -= weakGap * 0.25;
+      break;
+    case 'quadruple':
+      attack += attFocus * 0.4 - weakGap * 0.5;
+      defence += defFocus * 0.4 - weakGap * 0.5;
+      break;
+  }
+
+  return { attack, defence };
+}
+
+export function simulateSeason(squad: SquadSummary, mode: GameModeDef): SeasonResult {
+  const { attack, defence } = challengeRatings(mode, squad);
 
   // ---- League ----
   let wins = 0;

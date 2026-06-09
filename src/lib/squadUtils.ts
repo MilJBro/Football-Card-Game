@@ -106,6 +106,13 @@ export interface SquadSummary {
   evaluations: SlotEvaluation[];
   attackRating: number;
   defenceRating: number;
+  // Specialist line ratings — used by challenge-specific emphasis so that
+  // building toward a challenge's theme actually improves your odds.
+  gkRating: number; // goalkeeper effective rating
+  defLineRating: number; // back line (DEF slots) average
+  midRating: number; // midfield (MID slots) average
+  attackLineRating: number; // front line (ATT slots) average
+  weakestRating: number; // lowest effective rating in the XI (weak-link gauge)
 }
 
 /** Average effective rating across the 11 slots, plus attack/defence splits. */
@@ -124,14 +131,26 @@ export function summariseSquad(squad: Squad): SquadSummary {
   // toward both. Used by the season simulation to weight goals for/against.
   const attackVals: number[] = [];
   const defenceVals: number[] = [];
+  // Pure per-line buckets for challenge-specific emphasis.
+  const gkVals: number[] = [];
+  const defLineVals: number[] = [];
+  const midVals: number[] = [];
+  const attackLineVals: number[] = [];
   evaluations.forEach((e, i) => {
     if (!e.cardId) return;
     const cat = categoryOf(formation.slots[i].naturalPosition);
     if (cat === 'ATT' || cat === 'MID') attackVals.push(e.effectiveRating);
     if (cat === 'GK' || cat === 'DEF' || cat === 'MID') defenceVals.push(e.effectiveRating);
+    if (cat === 'GK') gkVals.push(e.effectiveRating);
+    if (cat === 'DEF') defLineVals.push(e.effectiveRating);
+    if (cat === 'MID') midVals.push(e.effectiveRating);
+    if (cat === 'ATT') attackLineVals.push(e.effectiveRating);
   });
   const avg = (arr: number[]) =>
     arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : rating;
+
+  const filledEff = filled.map((e) => e.effectiveRating);
+  const weakestRating = filledEff.length ? Math.min(...filledEff) : 0;
 
   return {
     rating,
@@ -141,6 +160,11 @@ export function summariseSquad(squad: Squad): SquadSummary {
     evaluations,
     attackRating: avg(attackVals),
     defenceRating: avg(defenceVals),
+    gkRating: avg(gkVals),
+    defLineRating: avg(defLineVals),
+    midRating: avg(midVals),
+    attackLineRating: avg(attackLineVals),
+    weakestRating,
   };
 }
 
