@@ -111,9 +111,11 @@ export function summariseSquad(squad: Squad, ownedCards?: Record<string, OwnedCa
   const sum = filled.reduce((acc, e) => acc + e.effectiveRating, 0);
   const rating = filledSlots > 0 ? Math.round(sum / totalSlots) : 0;
 
-  // Attack = ATT + MID slots; Defence = GK + DEF + MID slots. Midfield counts
-  // toward both. Used by the season simulation to weight goals for/against.
-  const attackVals: number[] = [];
+  // Defence = GK + DEF + MID slots (midfield counts fully — pressing, cover).
+  // Attack uses a weighted average: ATT slots at full weight, MID slots at half
+  // weight. Without this, three elite midfielders inflate goal output as much as
+  // three elite forwards, which produces unrealistic 100+ goal seasons.
+  let atkSum = 0, atkWeight = 0;
   const defenceVals: number[] = [];
   // Pure per-line buckets for challenge-specific emphasis.
   const gkVals: number[] = [];
@@ -123,15 +125,15 @@ export function summariseSquad(squad: Squad, ownedCards?: Record<string, OwnedCa
   evaluations.forEach((e, i) => {
     if (!e.cardId) return;
     const cat = categoryOf(formation.slots[i].naturalPosition);
-    if (cat === 'ATT' || cat === 'MID') attackVals.push(e.effectiveRating);
+    if (cat === 'ATT') { atkSum += e.effectiveRating; atkWeight += 1; attackLineVals.push(e.effectiveRating); }
+    if (cat === 'MID') { atkSum += e.effectiveRating * 0.5; atkWeight += 0.5; midVals.push(e.effectiveRating); }
     if (cat === 'GK' || cat === 'DEF' || cat === 'MID') defenceVals.push(e.effectiveRating);
     if (cat === 'GK') gkVals.push(e.effectiveRating);
     if (cat === 'DEF') defLineVals.push(e.effectiveRating);
-    if (cat === 'MID') midVals.push(e.effectiveRating);
-    if (cat === 'ATT') attackLineVals.push(e.effectiveRating);
   });
   const avg = (arr: number[]) =>
     arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : rating;
+  const attackRating = atkWeight > 0 ? Math.round(atkSum / atkWeight) : rating;
 
   const filledEff = filled.map((e) => e.effectiveRating);
   const weakestRating = filledEff.length ? Math.min(...filledEff) : 0;
@@ -142,7 +144,7 @@ export function summariseSquad(squad: Squad, ownedCards?: Record<string, OwnedCa
     totalSlots,
     isComplete: filledSlots === totalSlots,
     evaluations,
-    attackRating: avg(attackVals),
+    attackRating,
     defenceRating: avg(defenceVals),
     gkRating: avg(gkVals),
     defLineRating: avg(defLineVals),
