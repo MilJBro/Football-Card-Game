@@ -1016,8 +1016,8 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Arsenal · 2002', positions: ['LB'], rating: 74 },
-      Star:   { era: 'Chelsea · 2007', positions: ['LB'], rating: 85 },
+      Rising: { era: 'Arsenal · 2002', positions: ['LB'], rating: 75 },
+      Star:   { era: 'Chelsea · 2007', positions: ['LB'], rating: 86 },
       Legend: { era: 'Chelsea · 2010', positions: ['LB'], rating: 88 },
     },
   },
@@ -1094,7 +1094,7 @@ const PLAYERS: PlayerSource[] = [
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Man Utd · 2006', positions: ['LB'], rating: 75 },
-      Star:   { era: 'Man Utd · 2008', positions: ['LB'], rating: 85 },
+      Star:   { era: 'Man Utd · 2008', positions: ['LB'], rating: 84 },
       Legend: { era: 'Man Utd · 2011', positions: ['LB'], rating: 87 },
     },
   },
@@ -1238,7 +1238,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Southampton · 2013', positions: ['LB'], rating: 75 },
       Star:   { era: 'Man Utd · 2021',    positions: ['LB'], rating: 83 },
-      Legend: { era: 'Man Utd · 2023',    positions: ['LB'], rating: 86 },
+      Legend: { era: 'Man Utd · 2023',    positions: ['LB'], rating: 85 },
     },
   },
   {
@@ -1260,7 +1260,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Everton · 2018', positions: ['LB'], rating: 74 },
       Star:   { era: 'Everton · 2020', positions: ['LB'], rating: 83 },
-      Legend: { era: 'Everton · 2021', positions: ['LB'], rating: 86 },
+      Legend: { era: 'Everton · 2021', positions: ['LB'], rating: 84 },
     },
   },
   {
@@ -1326,8 +1326,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 1992', positions: ['LB'],        rating: 74 },
       Star:   { era: 'Man Utd · 1996', positions: ['LB'],        rating: 83 },
-      // Equally comfortable at right-back — Ferguson used him on both flanks.
-      Legend: { era: 'Man Utd · 2000', positions: ['LB', 'RB'], rating: 86 },
+      Legend: { era: 'Man Utd · 2000', positions: ['LB', 'RB'], rating: 85 },
     },
   },
   {
@@ -1347,7 +1346,7 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Scotland',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Liverpool · 2018', positions: ['LB'], rating: 78 },
+      Rising: { era: 'Liverpool · 2018', positions: ['LB'], rating: 76 },
       Star:   { era: 'Liverpool · 2020', positions: ['LB'], rating: 86 },
       Legend: { era: 'Liverpool · 2022', positions: ['LB'], rating: 89 },
     },
@@ -1459,7 +1458,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 2019', positions: ['LB'], rating: 75 },
       Star:   { era: 'Chelsea · 2021',   positions: ['LB'], rating: 83 },
-      Legend: { era: 'Chelsea · 2022',   positions: ['LB'], rating: 86 },
+      Legend: { era: 'Chelsea · 2022',   positions: ['LB'], rating: 84 },
     },
   },
   {
@@ -1470,7 +1469,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 2017', positions: ['LB'], rating: 74 },
       Star:   { era: 'Chelsea · 2018', positions: ['LB'], rating: 82 },
-      Legend: { era: 'Chelsea · 2020', positions: ['LB'], rating: 85 },
+      Legend: { era: 'Chelsea · 2020', positions: ['LB'], rating: 83 },
     },
   },
   {
@@ -1603,7 +1602,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Nottm Forest · 1990', positions: ['LB'], rating: 74 },
       Star:   { era: 'Nottm Forest · 1993', positions: ['LB'], rating: 82 },
-      Legend: { era: 'Man City · 2002',     positions: ['LB'], rating: 85 },
+      Legend: { era: 'Man City · 2002',     positions: ['LB'], rating: 83 },
     },
   },
   {
@@ -1766,7 +1765,7 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Norway',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Liverpool · 2002', positions: ['LB'], rating: 76 },
+      Rising: { era: 'Liverpool · 2002', positions: ['LB'], rating: 75 },
       Star:   { era: 'Liverpool · 2005', positions: ['LB'], rating: 83 },
       Legend: { era: 'Liverpool · 2007', positions: ['LB'], rating: 85 },
     },
@@ -1778,8 +1777,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Arsenal · 2005',   positions: ['LB'], rating: 75 },
-      Star:   { era: 'Arsenal · 2008',   positions: ['LB'], rating: 83 },
-      Legend: { era: 'Man City · 2012',  positions: ['LB'], rating: 86 },
+      Star:   { era: 'Arsenal · 2008',   positions: ['LB'], rating: 81 },
+      Legend: { era: 'Man City · 2012',  positions: ['LB'], rating: 83 },
     },
   },
   {
@@ -1790,7 +1789,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2013', positions: ['LB'], rating: 75 },
       Star:   { era: 'Arsenal · 2016', positions: ['LB'], rating: 83 },
-      Legend: { era: 'Arsenal · 2018', positions: ['LB'], rating: 85 },
+      Legend: { era: 'Arsenal · 2018', positions: ['LB'], rating: 83 },
     },
   },
   {
@@ -1801,7 +1800,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2019', positions: ['LB'], rating: 75 },
       Star:   { era: 'Arsenal · 2021', positions: ['LB'], rating: 83 },
-      Legend: { era: 'Arsenal · 2022', positions: ['LB'], rating: 86 },
+      Legend: { era: 'Arsenal · 2022', positions: ['LB'], rating: 84 },
     },
   },
   {
@@ -1811,7 +1810,7 @@ const PLAYERS: PlayerSource[] = [
     pack: 'DEF',
     tiers: {
       Rising: { era: 'Newcastle · 2008',  positions: ['LB'], rating: 74 },
-      Star:   { era: 'Liverpool · 2012',  positions: ['LB'], rating: 82 },
+      Star:   { era: 'Liverpool · 2012',  positions: ['LB'], rating: 80 },
       Legend: { era: 'Liverpool · 2013',  positions: ['LB'], rating: 83 },
     },
   },
