@@ -413,17 +413,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'bosnich',
-    playerName: 'Mark Bosnich',
-    nationality: 'Australia',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Aston Villa · 1993', positions: ['GK'], rating: 74 },
-      Star:   { era: 'Aston Villa · 1997', positions: ['GK'], rating: 82 },
-      Legend: { era: 'Man Utd · 1999',     positions: ['GK'], rating: 84 },
-    },
-  },
-  {
     playerId: 'jaaskelainen',
     playerName: 'Jussi Jääskeläinen',
     nationality: 'Finland',
@@ -490,17 +479,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'westerveld',
-    playerName: 'Sander Westerveld',
-    nationality: 'Netherlands',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Liverpool · 1999', positions: ['GK'], rating: 73 },
-      Star:   { era: 'Liverpool · 2000', positions: ['GK'], rating: 80 },
-      Legend: { era: 'Liverpool · 2001', positions: ['GK'], rating: 81 },
-    },
-  },
-  {
     playerId: 'josesa',
     playerName: 'José Sá',
     nationality: 'Portugal',
@@ -556,17 +534,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'hislop',
-    playerName: 'Shaka Hislop',
-    nationality: 'Trinidad & Tobago',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Newcastle · 1997',  positions: ['GK'], rating: 73 },
-      Star:   { era: 'West Ham · 2001',   positions: ['GK'], rating: 80 },
-      Legend: { era: 'Portsmouth · 2004', positions: ['GK'], rating: 82 },
-    },
-  },
-  {
     playerId: 'maiktaylor',
     playerName: 'Maik Taylor',
     nationality: 'Wales',
@@ -578,17 +545,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'poom',
-    playerName: 'Mart Poom',
-    nationality: 'Estonia',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Derby · 1998',      positions: ['GK'], rating: 73 },
-      Star:   { era: 'Sunderland · 2003', positions: ['GK'], rating: 80 },
-      Legend: { era: 'Arsenal · 2006',    positions: ['GK'], rating: 81 },
-    },
-  },
-  {
     playerId: 'kirkland',
     playerName: 'Chris Kirkland',
     nationality: 'England',
@@ -597,17 +553,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Liverpool · 2001', positions: ['GK'], rating: 73 },
       Star:   { era: 'Wigan · 2007',     positions: ['GK'], rating: 80 },
       Legend: { era: 'Wigan · 2009',     positions: ['GK'], rating: 82 },
-    },
-  },
-  {
-    playerId: 'ianwalker',
-    playerName: 'Ian Walker',
-    nationality: 'England',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Tottenham · 1994', positions: ['GK'], rating: 72 },
-      Star:   { era: 'Tottenham · 1998', positions: ['GK'], rating: 79 },
-      Legend: { era: 'Leicester · 2004', positions: ['GK'], rating: 80 },
     },
   },
   {
@@ -732,39 +677,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'hoult',
-    playerName: 'Russell Hoult',
-    nationality: 'England',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Derby · 1997',     positions: ['GK'], rating: 72 },
-      Star:   { era: 'West Brom · 2003', positions: ['GK'], rating: 79 },
-      Legend: { era: 'West Brom · 2005', positions: ['GK'], rating: 81 },
-    },
-  },
-  {
-    playerId: 'rwright',
-    playerName: 'Richard Wright',
-    nationality: 'England',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Ipswich · 1999', positions: ['GK'], rating: 72 },
-      Star:   { era: 'Arsenal · 2002', positions: ['GK'], rating: 77 },
-      Legend: { era: 'Everton · 2004', positions: ['GK'], rating: 79 },
-    },
-  },
-  {
-    playerId: 'pauljones',
-    playerName: 'Paul Jones',
-    nationality: 'Wales',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Wolves · 1997',       positions: ['GK'], rating: 72 },
-      Star:   { era: 'Southampton · 2001',  positions: ['GK'], rating: 79 },
-      Legend: { era: 'Southampton · 2003',  positions: ['GK'], rating: 81 },
-    },
-  },
-  {
     playerId: 'darlow',
     playerName: 'Karl Darlow',
     nationality: 'England',
@@ -820,17 +732,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'akelly',
-    playerName: 'Alan Kelly',
-    nationality: 'Ireland',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Sheffield Utd · 1994', positions: ['GK'], rating: 72 },
-      Star:   { era: 'Blackburn · 2000',     positions: ['GK'], rating: 79 },
-      Legend: { era: 'Blackburn · 2002',     positions: ['GK'], rating: 81 },
-    },
-  },
-  {
     playerId: 'cwoods',
     playerName: 'Chris Woods',
     nationality: 'England',
@@ -875,17 +776,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'roycarroll',
-    playerName: 'Roy Carroll',
-    nationality: 'Northern Ireland',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Man Utd · 2001',    positions: ['GK'], rating: 71 },
-      Star:   { era: 'Man Utd · 2003',    positions: ['GK'], rating: 77 },
-      Legend: { era: 'Sunderland · 2008', positions: ['GK'], rating: 79 },
-    },
-  },
-  {
     playerId: 'karius',
     playerName: 'Loris Karius',
     nationality: 'Germany',
@@ -916,39 +806,6 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Sunderland · 2012', positions: ['GK'], rating: 72 },
       Star:   { era: 'Sunderland · 2014', positions: ['GK'], rating: 79 },
       Legend: { era: 'Reading · 2017',    positions: ['GK'], rating: 80 },
-    },
-  },
-  {
-    playerId: 'segers',
-    playerName: 'Hans Segers',
-    nationality: 'Netherlands',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Wimbledon · 1992', positions: ['GK'], rating: 73 },
-      Star:   { era: 'Wimbledon · 1995', positions: ['GK'], rating: 79 },
-      Legend: { era: 'Wimbledon · 1997', positions: ['GK'], rating: 81 },
-    },
-  },
-  {
-    playerId: 'mcrossley',
-    playerName: 'Mark Crossley',
-    nationality: 'Wales',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Nottm Forest · 1993',  positions: ['GK'], rating: 73 },
-      Star:   { era: 'Middlesbrough · 2004', positions: ['GK'], rating: 79 },
-      Legend: { era: 'Fulham · 2007',        positions: ['GK'], rating: 80 },
-    },
-  },
-  {
-    playerId: 'beasant',
-    playerName: 'Dave Beasant',
-    nationality: 'England',
-    pack: 'GK',
-    tiers: {
-      Rising: { era: 'Chelsea · 1993',     positions: ['GK'], rating: 73 },
-      Star:   { era: 'Southampton · 1997', positions: ['GK'], rating: 79 },
-      Legend: { era: 'Southampton · 1998', positions: ['GK'], rating: 80 },
     },
   },
   {
