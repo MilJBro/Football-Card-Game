@@ -1150,7 +1150,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 1993', positions: ['CB'], rating: 75 },
       Star:   { era: 'Man Utd · 1994', positions: ['CB'], rating: 84 },
-      Legend: { era: 'Man Utd · 1996', positions: ['CB'], rating: 87 },
+      Legend: { era: 'Man Utd · 1996', positions: ['CB'], rating: 86 },
     },
   },
   {
@@ -1657,7 +1657,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 2018', positions: ['CB'], rating: 75 },
       Star:   { era: 'Man Utd · 2020',   positions: ['CB'], rating: 83 },
-      Legend: { era: 'Leicester · 2019', positions: ['CB'], rating: 86 },
+      Legend: { era: 'Leicester · 2019', positions: ['CB'], rating: 85 },
     },
   },
   {
@@ -1734,7 +1734,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 2012', positions: ['CB'], rating: 76 },
       Star:   { era: 'Chelsea · 2015', positions: ['CB'], rating: 83 },
-      Legend: { era: 'Arsenal · 2019', positions: ['CB'], rating: 86 },
+      Legend: { era: 'Arsenal · 2019', positions: ['CB'], rating: 85 },
     },
   },
   {
