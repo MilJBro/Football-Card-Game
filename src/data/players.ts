@@ -79,7 +79,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man City · 2017', positions: ['GK'], rating: 79 },
       Star:   { era: 'Man City · 2019', positions: ['GK'], rating: 86 },
-      Legend: { era: 'Man City · 2023', positions: ['GK'], rating: 89 },
+      Legend: { era: 'Man City · 2023', positions: ['GK'], rating: 87 },
     },
   },
   {
@@ -112,7 +112,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Newcastle · 1998', positions: ['GK'], rating: 75 },
       Star:   { era: 'Newcastle · 2002', positions: ['GK'], rating: 84 },
-      Legend: { era: 'Newcastle · 2006', positions: ['GK'], rating: 87 },
+      Legend: { era: 'Newcastle · 2006', positions: ['GK'], rating: 85 },
     },
   },
   {
@@ -364,8 +364,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Liverpool · 2001', positions: ['GK'], rating: 77 },
-      Star:   { era: 'Liverpool · 2004', positions: ['GK'], rating: 84 },
-      Legend: { era: 'Liverpool · 2005', positions: ['GK'], rating: 87 },
+      Star:   { era: 'Liverpool · 2004', positions: ['GK'], rating: 81 },
+      Legend: { era: 'Liverpool · 2005', positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -375,8 +375,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Chelsea · 2020', positions: ['GK'], rating: 78 },
-      Star:   { era: 'Chelsea · 2021', positions: ['GK'], rating: 86 },
-      Legend: { era: 'Chelsea · 2022', positions: ['GK'], rating: 87 },
+      Star:   { era: 'Chelsea · 2021', positions: ['GK'], rating: 83 },
+      Legend: { era: 'Chelsea · 2022', positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -386,8 +386,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Chelsea · 2000', positions: ['GK'], rating: 75 },
-      Star:   { era: 'Chelsea · 2003', positions: ['GK'], rating: 83 },
-      Legend: { era: 'Chelsea · 2004', positions: ['GK'], rating: 85 },
+      Star:   { era: 'Chelsea · 2003', positions: ['GK'], rating: 80 },
+      Legend: { era: 'Chelsea · 2004', positions: ['GK'], rating: 82 },
     },
   },
   {
@@ -397,8 +397,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Celtic · 2006',      positions: ['GK'], rating: 75 },
-      Star:   { era: 'Celtic · 2008',      positions: ['GK'], rating: 83 },
-      Legend: { era: 'Southampton · 2015', positions: ['GK'], rating: 85 },
+      Star:   { era: 'Celtic · 2008',      positions: ['GK'], rating: 80 },
+      Legend: { era: 'Southampton · 2015', positions: ['GK'], rating: 82 },
     },
   },
   {
@@ -408,8 +408,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Bolton · 1999', positions: ['GK'], rating: 74 },
-      Star:   { era: 'Bolton · 2003', positions: ['GK'], rating: 82 },
-      Legend: { era: 'Bolton · 2007', positions: ['GK'], rating: 85 },
+      Star:   { era: 'Bolton · 2003', positions: ['GK'], rating: 80 },
+      Legend: { era: 'Bolton · 2007', positions: ['GK'], rating: 82 },
     },
   },
   {
@@ -464,7 +464,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Burnley · 2014',     positions: ['GK'], rating: 73 },
       Star:   { era: 'Burnley · 2016',     positions: ['GK'], rating: 81 },
-      Legend: { era: 'Aston Villa · 2021', positions: ['GK'], rating: 83 },
+      Legend: { era: 'Aston Villa · 2021', positions: ['GK'], rating: 80 },
     },
   },
   {
@@ -486,7 +486,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Crystal Palace · 2018', positions: ['GK'], rating: 74 },
       Star:   { era: 'Crystal Palace · 2020', positions: ['GK'], rating: 81 },
-      Legend: { era: 'Crystal Palace · 2022', positions: ['GK'], rating: 83 },
+      Legend: { era: 'Crystal Palace · 2022', positions: ['GK'], rating: 81 },
     },
   },
   {
@@ -705,8 +705,8 @@ const PLAYERS: PlayerSource[] = [
     pack: 'GK',
     tiers: {
       Rising: { era: 'Man City · 2022', positions: ['GK'], rating: 74 },
-      Star:   { era: 'Man City · 2023', positions: ['GK'], rating: 81 },
-      Legend: { era: 'Man City · 2024', positions: ['GK'], rating: 83 },
+      Star:   { era: 'Man City · 2023', positions: ['GK'], rating: 77 },
+      Legend: { era: 'Man City · 2024', positions: ['GK'], rating: 79 },
     },
   },
   {
@@ -750,7 +750,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2000', positions: ['GK'], rating: 79 },
       Star:   { era: 'Man Utd · 2001', positions: ['GK'], rating: 85 },
-      Legend: { era: 'Man Utd · 2003', positions: ['GK'], rating: 87 },
+      Legend: { era: 'Man Utd · 2003', positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -761,7 +761,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2003', positions: ['GK'], rating: 79 },
       Star:   { era: 'Arsenal · 2004', positions: ['GK'], rating: 86 },
-      Legend: { era: 'Arsenal · 2006', positions: ['GK'], rating: 88 },
+      Legend: { era: 'Arsenal · 2006', positions: ['GK'], rating: 86 },
     },
   },
   {
@@ -772,7 +772,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2016',  positions: ['GK'], rating: 72 },
       Star:   { era: 'Liverpool · 2017',  positions: ['GK'], rating: 76 },
-      Legend: { era: 'Newcastle · 2023',  positions: ['GK'], rating: 79 },
+      Legend: { era: 'Newcastle · 2023',  positions: ['GK'], rating: 76 },
     },
   },
   {
@@ -816,7 +816,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'AC Milan · 2019', positions: ['GK'], rating: 82 },
       Star:   { era: 'PSG · 2022',      positions: ['GK'], rating: 89 },
-      Legend: { era: 'Man City · 2025', positions: ['GK'], rating: 91 },
+      Legend: { era: 'Man City · 2025', positions: ['GK'], rating: 89 },
     },
   },
   {
@@ -838,7 +838,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Brentford · 2021', positions: ['GK'], rating: 76 },
       Star:   { era: 'Arsenal · 2023',   positions: ['GK'], rating: 84 },
-      Legend: { era: 'Arsenal · 2025',   positions: ['GK'], rating: 88 },
+      Legend: { era: 'Arsenal · 2025',   positions: ['GK'], rating: 86 },
     },
   },
   {
@@ -860,7 +860,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Brighton · 2023', positions: ['GK'], rating: 75 },
       Star:   { era: 'Brighton · 2024', positions: ['GK'], rating: 82 },
-      Legend: { era: 'Brighton · 2025', positions: ['GK'], rating: 85 },
+      Legend: { era: 'Brighton · 2025', positions: ['GK'], rating: 83 },
     },
   },
   {
@@ -869,9 +869,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Cameroon',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Man Utd · 2023', positions: ['GK'], rating: 77 },
+      Rising: { era: 'Man Utd · 2023', positions: ['GK'], rating: 75 },
       Star:   { era: 'Man Utd · 2024', positions: ['GK'], rating: 82 },
-      Legend: { era: 'Man Utd · 2025', positions: ['GK'], rating: 84 },
+      Legend: { era: 'Man Utd · 2025', positions: ['GK'], rating: 82 },
     },
   },
   {
@@ -880,9 +880,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Spain',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Chelsea · 2018',      positions: ['GK'], rating: 77 },
-      Star:   { era: 'Chelsea · 2020',      positions: ['GK'], rating: 81 },
-      Legend: { era: 'Bournemouth · 2026',  positions: ['GK'], rating: 84 },
+      Rising: { era: 'Chelsea · 2018',      positions: ['GK'], rating: 74 },
+      Star:   { era: 'Chelsea · 2020',      positions: ['GK'], rating: 78 },
+      Legend: { era: 'Bournemouth · 2026',  positions: ['GK'], rating: 80 },
     },
   },
   {
@@ -927,7 +927,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2023', positions: ['GK'], rating: 76 },
       Star:   { era: 'Tottenham · 2024', positions: ['GK'], rating: 82 },
-      Legend: { era: 'Tottenham · 2025', positions: ['GK'], rating: 85 },
+      Legend: { era: 'Tottenham · 2025', positions: ['GK'], rating: 83 },
     },
   },
   {
