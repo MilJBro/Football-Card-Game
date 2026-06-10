@@ -38,7 +38,7 @@ function shortfallText(mode: GameModeDef, s: SeasonResult): string {
       return 'Knocked out of the Champions League';
     case 'iron-defence': {
       const parts: string[] = [];
-      if (s.goalsAgainst >= 12) parts.push(`Conceded ${s.goalsAgainst} goals — need fewer than 12`);
+      if (s.goalsAgainst >= 15) parts.push(`Conceded ${s.goalsAgainst} goals — need fewer than 15`);
       if (!s.wonLeague) parts.push(`${s.points} pts — title not won`);
       return parts.join(' · ');
     }

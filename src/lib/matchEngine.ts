@@ -121,7 +121,10 @@ function challengeRatings(
 
   switch (mode.id) {
     case 'iron-defence':
-      defence += defFocus * 1.0;
+      // No defFocus bonus — conceding < 15 demands an elite squad, not just
+      // a DEF-heavy one. Penalise weak links so you can't ignore attack.
+      attack -= weakGap * 0.4;
+      defence -= weakGap * 0.4;
       break;
     case 'invincibles':
       // Unbeaten demands a wall: heavily reward defence, and a lopsided,
@@ -209,7 +212,7 @@ export function evaluateWinCondition(mode: GameModeDef, s: SeasonResult): boolea
     case 'european-glory':
       return s.wonChampionsLeague;
     case 'iron-defence':
-      return s.wonLeague && s.goalsAgainst < 12;
+      return s.wonLeague && s.goalsAgainst < 15;
     case 'centurions':
       return s.wonLeague && s.points >= 100;
     case 'invincibles':
