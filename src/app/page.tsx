@@ -40,9 +40,10 @@ export default function HomePage() {
   }
 
   function goTo(i: number) {
+    const clamped = Math.max(0, Math.min(GAME_MODES.length - 1, i));
     const el = scrollRef.current;
-    if (!el) return;
-    el.scrollTo({ left: i * el.clientWidth, behavior: 'smooth' });
+    if (el) el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
+    setActive(clamped);
   }
 
   return (
@@ -52,31 +53,54 @@ export default function HomePage() {
           Pick a <span className="text-emerald-400">Challenge</span>
         </h1>
         <p className="mt-1 max-w-xl text-white/70">
-          Swipe through the challenges, build a squad from Premier League greats, and simulate a
-          season to complete one.
+          Choose one of the six challenges below, build your squad, and simulate a season to complete it.
         </p>
       </header>
 
-      {/* Story progress segments */}
-      <div className="flex gap-1.5">
-        {GAME_MODES.map((mode, i) => (
-          <button
-            key={mode.id}
-            onClick={() => goTo(i)}
-            className="h-1 flex-1 overflow-hidden rounded-full bg-white/15"
-            aria-label={`Go to ${mode.name}`}
-          >
-            <span
+      {/* Navigation row — arrows + dot indicators */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => goTo(active - 1)}
+          disabled={active === 0}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-2xl font-bold text-white transition-colors hover:bg-white/20 disabled:opacity-20"
+          aria-label="Previous challenge"
+        >
+          ‹
+        </button>
+
+        <div className="flex flex-1 items-center justify-center gap-2">
+          {GAME_MODES.map((mode, i) => (
+            <button
+              key={mode.id}
+              onClick={() => goTo(i)}
+              aria-label={`Go to ${mode.name}`}
               className={cn(
-                'block h-full rounded-full bg-emerald-400 transition-all',
-                i === active ? 'w-full' : 'w-0'
+                'h-2.5 rounded-full transition-all duration-200',
+                i === active
+                  ? 'w-6 bg-emerald-400'
+                  : 'w-2.5 bg-white/25 hover:bg-white/50',
               )}
             />
-          </button>
-        ))}
+          ))}
+        </div>
+
+        <button
+          onClick={() => goTo(active + 1)}
+          disabled={active === GAME_MODES.length - 1}
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-2xl font-bold text-white transition-colors hover:bg-white/20 disabled:opacity-20"
+          aria-label="Next challenge"
+        >
+          ›
+        </button>
       </div>
 
-      {/* Horizontal snap carousel of challenge cards */}
+      {/* Current challenge name + count */}
+      <p className="text-center text-sm font-bold text-white/60">
+        <span className="text-white">{GAME_MODES[active].name}</span>
+        <span className="ml-2 text-white/30">· {active + 1} / {GAME_MODES.length}</span>
+      </p>
+
+      {/* Horizontal snap carousel */}
       <div
         ref={scrollRef}
         onScroll={onScroll}
@@ -90,10 +114,6 @@ export default function HomePage() {
           />
         ))}
       </div>
-
-      <p className="text-center text-xs text-white/40">
-        {active + 1} / {GAME_MODES.length}
-      </p>
     </div>
   );
 }
@@ -112,13 +132,11 @@ function ChallengeCard({ mode, done }: { mode: GameModeDef; done?: ModeCompletio
           </span>
         )}
 
-        {/* Icon art over a glow */}
         <div className="relative flex flex-1 items-center justify-center">
           <div className="absolute h-36 w-36 rounded-full bg-emerald-400/10 blur-2xl" />
           <Icon className="relative h-28 w-28 text-emerald-300 drop-shadow-lg" />
         </div>
 
-        {/* Text */}
         <div>
           <h2 className="text-2xl font-black group-hover:text-emerald-300">{mode.name}</h2>
           <p className="mx-auto mt-2 max-w-[18rem] text-sm text-white/60">{mode.description}</p>
@@ -127,7 +145,7 @@ function ChallengeCard({ mode, done }: { mode: GameModeDef; done?: ModeCompletio
             <span className="text-white/70">{mode.winConditionText}</span>
           </div>
           <span className="mt-4 inline-block rounded-full bg-emerald-500 px-6 py-2 text-sm font-black text-emerald-950 transition-transform group-hover:scale-105">
-            Start Challenge
+            Start Challenge →
           </span>
         </div>
       </Link>

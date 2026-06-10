@@ -3,11 +3,11 @@
 import { useMemo, useState } from 'react';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import { getCard } from '@/data/players';
+import { getCard, getEffectiveCardData } from '@/data/players';
 import { discardValue, upgradeCost } from '@/lib/coinRewards';
 import { PlayerCard } from '@/components/cards/PlayerCard';
 import { Button } from '@/components/ui/Button';
-import { cn, formatCoins } from '@/lib/ui';
+import { cn, formatCoins, PACK_STYLES } from '@/lib/ui';
 import type { PackCategory, PlayerCardDef } from '@/store/types';
 
 const CATEGORIES: (PackCategory | 'ALL')[] = ['ALL', 'GK', 'DEF', 'MID', 'ATT'];
@@ -59,7 +59,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="text-2xl font-black">Upgrades</h1>
+        <h1 className="text-2xl font-black">Collection</h1>
         <p className="text-white/60">Tap a card to upgrade or sell.</p>
       </header>
 
@@ -76,26 +76,53 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="space-y-2">
           {owned.map(({ owned: o, card }) => {
             const upgradeLevel = (o.upgradeLevel ?? 0) as 0 | 1 | 2;
+            const eff = getEffectiveCardData(card, upgradeLevel);
+            const packStyle = PACK_STYLES[card.pack];
             return (
-              <div key={o.cardId} className="flex flex-col items-center">
-                <div className="relative">
-                  <PlayerCard
-                    card={card}
-                    upgradeLevel={upgradeLevel}
-                    foil={o.isFoilEquipped}
-                    size="md"
-                    onClick={() => setUpgrading(card)}
-                  />
-                  {o.quantity > 1 && (
-                    <span className="absolute -right-2 -top-2 rounded-full bg-white px-2 py-0.5 text-xs font-black text-black">
-                      ×{o.quantity}
-                    </span>
-                  )}
+              <button
+                key={o.cardId}
+                onClick={() => setUpgrading(card)}
+                className="flex w-full items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left transition-colors hover:bg-white/10"
+              >
+                {/* Position colour stripe */}
+                <div className={cn('h-10 w-1.5 shrink-0 rounded-full', packStyle.posBadge)} />
+
+                {/* Name + era */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate font-bold text-white">{card.playerName}</span>
+                    {o.quantity > 1 && (
+                      <span className="shrink-0 rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] font-black text-white">
+                        ×{o.quantity}
+                      </span>
+                    )}
+                  </div>
+                  <div className="truncate text-xs text-white/50">{eff.era}</div>
                 </div>
-              </div>
+
+                {/* Level dots */}
+                <div className="flex shrink-0 gap-1">
+                  {([0, 1, 2] as const).map((lvl) => (
+                    <div
+                      key={lvl}
+                      className={cn(
+                        'h-1.5 w-1.5 rounded-full',
+                        lvl <= upgradeLevel ? 'bg-amber-400' : 'bg-white/15',
+                      )}
+                    />
+                  ))}
+                </div>
+
+                {/* Rating */}
+                <div className="shrink-0 text-lg font-black tabular-nums text-white">
+                  {eff.rating}
+                </div>
+
+                <div className="shrink-0 text-white/30">›</div>
+              </button>
             );
           })}
         </div>
@@ -107,6 +134,16 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
         const currentLevel = ((ownedEntry?.upgradeLevel) ?? 0) as 0 | 1 | 2;
         const canUpgrade = currentLevel < 2;
         const cost = canUpgrade ? upgradeCost(currentLevel) : 0;
+        const nextLevel = (currentLevel + 1) as 1 | 2;
+        const nextEra = canUpgrade
+          ? upgrading.upgrades[nextLevel - 1]?.era ?? ''
+          : '';
+
+        const eraRows: { label: string; era: string; active: boolean }[] = [
+          { label: 'Base', era: upgrading.era, active: true },
+          { label: 'Upgrade 1', era: upgrading.upgrades[0].era, active: currentLevel >= 1 },
+          { label: 'Upgrade 2', era: upgrading.upgrades[1].era, active: currentLevel >= 2 },
+        ];
 
         return (
           <div
@@ -131,18 +168,33 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
               </div>
 
               {/* Card + player info */}
-              <div className="flex items-center gap-4 px-5 pb-5">
+              <div className="flex items-center gap-4 px-5 pb-4">
                 <PlayerCard card={upgrading} upgradeLevel={currentLevel} foil={ownedEntry?.isFoilEquipped} size="md" />
                 <div className="flex flex-1 flex-col gap-3">
-                  <div>
-                    <div className="text-lg font-bold leading-tight text-white">
-                      {upgrading.playerName}
-                    </div>
-                    <div className="mt-0.5 text-sm text-white/50">
-                      {upgrading.club} · {upgrading.season}
-                    </div>
+                  <div className="text-lg font-bold leading-tight text-white">
+                    {upgrading.playerName}
                   </div>
-                  {/* Upgrade progress dots */}
+
+                  {/* Era progression */}
+                  <div className="space-y-1.5">
+                    {eraRows.map((row, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        <span className={cn(
+                          'h-4 w-4 shrink-0 rounded-full border text-center text-[9px] font-black leading-4',
+                          row.active
+                            ? 'border-emerald-400 bg-emerald-400/20 text-emerald-300'
+                            : 'border-white/20 text-white/30',
+                        )}>
+                          {row.active ? '✓' : i}
+                        </span>
+                        <span className={cn('truncate', row.active ? 'text-white' : 'text-white/30')}>
+                          {i === 0 ? row.era : `Unlock ${row.era}`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Level dots */}
                   <div className="flex gap-1.5">
                     {([0, 1, 2] as const).map((lvl) => (
                       <div
@@ -154,6 +206,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
                       />
                     ))}
                   </div>
+
                   {ownedEntry?.isFoilUnlocked && (
                     <button
                       onClick={() => toggleFoil(upgrading.id)}
@@ -176,9 +229,16 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
                   <button
                     onClick={confirmUpgrade}
                     disabled={coins < cost}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-400 py-4 text-base font-black uppercase text-emerald-950 transition-opacity disabled:opacity-40"
+                    className="flex w-full flex-col items-center justify-center rounded-2xl bg-emerald-400 py-3.5 text-emerald-950 transition-opacity disabled:opacity-40"
                   >
-                    ⬆ Upgrade · 🪙 {formatCoins(cost)}
+                    <span className="text-base font-black uppercase">
+                      ⬆ Upgrade · 🪙 {formatCoins(cost)}
+                    </span>
+                    {nextEra && (
+                      <span className="mt-0.5 text-[11px] font-semibold opacity-75">
+                        Unlock {nextEra}
+                      </span>
+                    )}
                   </button>
                 )}
                 <button

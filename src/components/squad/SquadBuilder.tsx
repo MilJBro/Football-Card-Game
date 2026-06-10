@@ -26,6 +26,7 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
   const summary = useMemo(() => summariseSquad(squad, ownedCards), [squad, ownedCards]);
 
   const [activeSlot, setActiveSlot] = useState<string | null>(null);
+  const [showAllPlayers, setShowAllPlayers] = useState(false);
 
   // Cards already used elsewhere can't be reused in the same squad.
   const usedCardIds = useMemo(
@@ -39,12 +40,18 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
     setActiveSlot(null);
   }
 
+  function openSlot(slotId: string) {
+    setActiveSlot(slotId);
+    setShowAllPlayers(false);
+  }
+
   function assign(slotId: string, cardId: string) {
     onChange({
       ...squad,
       assignments: { ...squad.assignments, [slotId]: cardId },
     });
     setActiveSlot(null);
+    setShowAllPlayers(false);
   }
 
   function clearSlot(slotId: string) {
@@ -170,10 +177,10 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
                   card={card}
                   slotLabel={slot.label}
                   effectiveRating={evalForSlot?.effectiveRating}
-                  onClick={() => setActiveSlot(slot.slotId)}
+                  onClick={() => openSlot(slot.slotId)}
                 />
               ) : (
-                <EmptyToken slotLabel={slot.label} onClick={() => setActiveSlot(slot.slotId)} />
+                <EmptyToken slotLabel={slot.label} onClick={() => openSlot(slot.slotId)} />
               )}
             </div>
           );
@@ -184,7 +191,7 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
       {activeSlotDef && (
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center"
-          onClick={() => setActiveSlot(null)}
+          onClick={() => { setActiveSlot(null); setShowAllPlayers(false); }}
         >
           <div
             className="thin-scroll max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl border border-white/15 bg-pitch-dark p-5 sm:rounded-2xl"
@@ -204,34 +211,78 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
                     Remove
                   </Button>
                 )}
-                <Button size="sm" variant="ghost" onClick={() => setActiveSlot(null)}>
+                <Button size="sm" variant="ghost" onClick={() => { setActiveSlot(null); setShowAllPlayers(false); }}>
                   Close
                 </Button>
               </div>
             </div>
 
-            {pickerCards.length === 0 ? (
-              <p className="py-8 text-center text-white/50">
-                No available cards. Open packs to get more players.
-              </p>
-            ) : (
-              <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-                {pickerCards.map(({ card, upgradeLevel, penalty, effective }) => (
-                  <div key={card.id} className="flex flex-col items-center gap-1">
-                    <PlayerCard
-                      card={card}
-                      upgradeLevel={upgradeLevel}
-                      size="sm"
-                      displayRating={effective}
-                      onClick={() => assign(activeSlotDef.slotId, card.id)}
-                    />
-                    {penalty > 0 && (
-                      <span className="text-[10px] font-bold text-red-400">−{penalty} OOP</span>
-                    )}
+            {(() => {
+              const naturalCards = pickerCards.filter((c) => c.penalty === 0);
+              const displayCards = showAllPlayers ? pickerCards : naturalCards;
+              const hiddenCount = pickerCards.length - naturalCards.length;
+
+              if (pickerCards.length === 0) {
+                return (
+                  <p className="py-8 text-center text-white/50">
+                    No available cards. Open packs to get more players.
+                  </p>
+                );
+              }
+
+              if (naturalCards.length === 0 && !showAllPlayers) {
+                return (
+                  <div className="py-8 text-center">
+                    <p className="text-white/50">No {activeSlotDef.label} cards in your collection.</p>
+                    <button
+                      onClick={() => setShowAllPlayers(true)}
+                      className="mt-3 rounded-lg bg-white/10 px-4 py-2 text-sm font-bold text-white hover:bg-white/20"
+                    >
+                      Show all players (out of position)
+                    </button>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              }
+
+              return (
+                <>
+                  <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                    {displayCards.map(({ card, upgradeLevel, penalty, effective }) => (
+                      <div key={card.id} className="flex flex-col items-center gap-1">
+                        <PlayerCard
+                          card={card}
+                          upgradeLevel={upgradeLevel}
+                          size="sm"
+                          displayRating={effective}
+                          onClick={() => assign(activeSlotDef.slotId, card.id)}
+                        />
+                        {penalty > 0 && (
+                          <span className="text-[10px] font-bold text-red-400">−{penalty} OOP</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Show all / show natural toggle */}
+                  {!showAllPlayers && hiddenCount > 0 && (
+                    <button
+                      onClick={() => setShowAllPlayers(true)}
+                      className="mt-4 w-full rounded-xl border border-white/10 py-2.5 text-sm font-bold text-white/50 hover:bg-white/5 hover:text-white"
+                    >
+                      Show {hiddenCount} more out-of-position player{hiddenCount !== 1 ? 's' : ''}
+                    </button>
+                  )}
+                  {showAllPlayers && hiddenCount > 0 && (
+                    <button
+                      onClick={() => setShowAllPlayers(false)}
+                      className="mt-4 w-full rounded-xl border border-white/10 py-2.5 text-sm font-bold text-emerald-400 hover:bg-white/5"
+                    >
+                      Show {activeSlotDef.label} players only
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
       )}
