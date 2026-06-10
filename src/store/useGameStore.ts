@@ -30,6 +30,9 @@ export interface GameState {
   completions: Record<string, ModeCompletion>;
   history: ModeRunResult[];
 
+  // ---- Identity ----
+  teamName: string;
+
   // ---- Actions: coins ----
   addCoins: (amount: number, reason: string) => void;
   spendCoins: (amount: number, reason: string) => boolean;
@@ -43,6 +46,9 @@ export interface GameState {
   // ---- Actions: modes ----
   recordRun: (result: ModeRunResult) => void;
 
+  // ---- Actions: identity ----
+  setTeamName: (name: string) => void;
+
   // ---- Dev / reset ----
   resetProgress: () => void;
   resetChallengeState: () => void;
@@ -55,6 +61,7 @@ const initialState = {
   ownedCards: {} as Record<string, OwnedCard>,
   completions: {} as Record<string, ModeCompletion>,
   history: [] as ModeRunResult[],
+  teamName: '',
 };
 
 export const useGameStore = create<GameState>()(
@@ -200,6 +207,8 @@ export const useGameStore = create<GameState>()(
           return { history, completions };
         }),
 
+      setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
+
       resetProgress: () => set({ ...initialState }),
 
       resetChallengeState: () =>
@@ -210,6 +219,7 @@ export const useGameStore = create<GameState>()(
           ownedCards: {},
           completions: s.completions,
           history: s.history,
+          teamName: s.teamName,
         })),
     }),
     {

@@ -75,6 +75,8 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
   const spendCoins = useGameStore((s) => s.spendCoins);
   const recordRun = useGameStore((s) => s.recordRun);
   const ownedCards = useGameStore((s) => s.ownedCards);
+  const teamName = useGameStore((s) => s.teamName);
+  const setTeamName = useGameStore((s) => s.setTeamName);
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
@@ -136,7 +138,7 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
     const s = o.season;
     const net = o.reward - mode.entryCost;
     const gd = s.goalsFor - s.goalsAgainst;
-    const table = generateLeagueTable(s);
+    const table = generateLeagueTable(s, teamName);
 
     return (
       <div className="space-y-4">
@@ -314,6 +316,18 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
         <Button variant="secondary" onClick={onGoToSquad}>
           Edit Squad
         </Button>
+      </div>
+
+      {/* Team name */}
+      <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+        <span className="shrink-0 text-xs uppercase tracking-wide text-white/40">Team name</span>
+        <input
+          value={teamName}
+          onChange={(e) => setTeamName(e.target.value)}
+          maxLength={25}
+          placeholder="Your Team"
+          className="flex-1 bg-transparent text-sm font-bold text-white outline-none placeholder:text-white/30"
+        />
       </div>
 
       {/* Entry cost panel */}

@@ -48,7 +48,7 @@ export function UpgradesTab({ onGoToPacks }: { onGoToPacks: () => void }) {
   function confirmUpgrade() {
     if (!upgrading) return;
     const result = upgradeCard(upgrading.id);
-    setUpgrading(null);
+    // Keep modal open so the player can see the updated card.
     if (result.ok) {
       showToast('Upgraded!');
     } else if (result.reason) {

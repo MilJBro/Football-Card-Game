@@ -256,7 +256,7 @@ function teamRowFromPoints(pts: number, pos: number, name: string): LeagueTableR
   return { name, isUser: false, won, drawn, lost, gf, ga, points: pts };
 }
 
-export function generateLeagueTable(s: SeasonResult): LeagueTableRow[] {
+export function generateLeagueTable(s: SeasonResult, teamName = 'Your Team'): LeagueTableRow[] {
   const userPos = s.leaguePosition;
   const topPts = userPos === 1 ? s.points : Math.min(114, s.points + (userPos - 1) * 4);
   const botPts = userPos === 20 ? s.points : Math.max(15, s.points - (20 - userPos) * 4);
@@ -267,7 +267,7 @@ export function generateLeagueTable(s: SeasonResult): LeagueTableRow[] {
   for (let pos = 1; pos <= 20; pos++) {
     if (pos === userPos) {
       rows.push({
-        name: 'Your Team',
+        name: teamName || 'Your Team',
         isUser: true,
         won: s.wins,
         drawn: s.draws,
