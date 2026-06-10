@@ -23,9 +23,9 @@ export const GAME_MODES: GameModeDef[] = [
     id: 'iron-defence',
     name: 'Iron Defence',
     description:
-      'Build an impenetrable backline and rule the league. Concede fewer than 15 goals across the season and win the title.',
-    winConditionText: 'Concede under 15 goals and win the Premier League',
-    entryCost: 500,
+      "Build an impenetrable backline. Concede fewer than 12 goals across the entire season and claim the title — you'll need elite defenders to pull this off.",
+    winConditionText: 'Concede under 12 goals and win the Premier League',
+    entryCost: 600,
   },
   {
     id: 'centurions',

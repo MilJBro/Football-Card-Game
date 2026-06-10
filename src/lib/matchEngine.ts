@@ -121,7 +121,7 @@ function challengeRatings(
 
   switch (mode.id) {
     case 'iron-defence':
-      defence += defFocus * 1.4;
+      defence += defFocus * 1.0;
       break;
     case 'invincibles':
       // Unbeaten demands a wall: heavily reward defence, and a lopsided,
@@ -209,7 +209,7 @@ export function evaluateWinCondition(mode: GameModeDef, s: SeasonResult): boolea
     case 'european-glory':
       return s.wonChampionsLeague;
     case 'iron-defence':
-      return s.wonLeague && s.goalsAgainst < 15;
+      return s.wonLeague && s.goalsAgainst < 12;
     case 'centurions':
       return s.wonLeague && s.points >= 100;
     case 'invincibles':
