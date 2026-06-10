@@ -45,6 +45,7 @@ export interface GameState {
 
   // ---- Dev / reset ----
   resetProgress: () => void;
+  resetChallengeState: () => void;
 }
 
 const initialState = {
@@ -200,6 +201,17 @@ export const useGameStore = create<GameState>()(
         }),
 
       resetProgress: () => set({ ...initialState }),
+
+      resetChallengeState: () =>
+        set((s) => ({
+          coins: STARTING_COINS,
+          totalEarned: STARTING_COINS,
+          transactions: [],
+          ownedCards: {},
+          // completions and history are cross-challenge — keep them
+          completions: s.completions,
+          history: s.history,
+        })),
     }),
     {
       name: 'football-card-game-v2',

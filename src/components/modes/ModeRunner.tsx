@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { Squad } from '@/store/types';
+import { useGameStore } from '@/store/useGameStore';
 import { getMode } from '@/data/gameModes';
 import { emptySquad } from '@/lib/squadUtils';
 import { SquadBuilder } from '@/components/squad/SquadBuilder';
@@ -21,6 +22,13 @@ const TAB_LABELS: Record<ChallengeTab, string> = {
 
 export function ModeRunner({ modeId }: { modeId: string }) {
   const mode = getMode(modeId);
+
+  const resetChallengeState = useGameStore((s) => s.resetChallengeState);
+
+  // Reset coins and collection each time a challenge is entered.
+  useEffect(() => {
+    resetChallengeState();
+  }, [modeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Squad is per-challenge and shared between the Squad and Simulation tabs.
   const [squad, setSquad] = useState<Squad>(() => emptySquad('4-3-3'));
