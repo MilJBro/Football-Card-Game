@@ -254,6 +254,7 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
                           upgradeLevel={upgradeLevel}
                           size="sm"
                           displayRating={effective}
+                          showLastNameOnly
                           onClick={() => assign(activeSlotDef.slotId, card.id)}
                         />
                         {penalty > 0 && (

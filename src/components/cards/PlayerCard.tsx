@@ -15,6 +15,8 @@ interface PlayerCardProps {
   dimmed?: boolean;
   /** Rating override for out-of-position display in squad picker. */
   displayRating?: number;
+  /** Show only the last word of the player name (for compact picker cards). */
+  showLastNameOnly?: boolean;
   onClick?: () => void;
   className?: string;
 }
@@ -44,6 +46,7 @@ export function PlayerCard({
   selected = false,
   dimmed = false,
   displayRating,
+  showLastNameOnly = false,
   onClick,
   className,
 }: PlayerCardProps) {
@@ -133,7 +136,9 @@ export function PlayerCard({
         'relative mt-1.5 border-t border-white/10 pt-1.5 text-center font-black uppercase tracking-tight text-white',
         s.name,
       )}>
-        {card.playerName}
+        {showLastNameOnly
+          ? card.playerName.split(' ').at(-1)
+          : card.playerName}
       </div>
     </button>
   );

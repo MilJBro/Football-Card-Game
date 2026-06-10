@@ -23,6 +23,7 @@ const TAB_LABELS: Record<ChallengeTab, string> = {
 export function ModeRunner({ modeId }: { modeId: string }) {
   const mode = getMode(modeId);
   const resetChallengeState = useGameStore((s) => s.resetChallengeState);
+  const ownedCards = useGameStore((s) => s.ownedCards);
 
   // Reset coins and collection each time a challenge is entered.
   useEffect(() => {
@@ -31,6 +32,21 @@ export function ModeRunner({ modeId }: { modeId: string }) {
 
   // Squad is per-challenge and shared between the Squad and Simulation tabs.
   const [squad, setSquad] = useState<Squad>(() => emptySquad('4-3-3'));
+
+  // When a card is sold, clear it from the squad automatically.
+  useEffect(() => {
+    setSquad((prev) => {
+      const updated = { ...prev.assignments };
+      let changed = false;
+      for (const [slotId, cardId] of Object.entries(updated)) {
+        if (cardId && !ownedCards[cardId]) {
+          updated[slotId] = null;
+          changed = true;
+        }
+      }
+      return changed ? { ...prev, assignments: updated } : prev;
+    });
+  }, [ownedCards]);
   const [tab, setTab] = useState<ChallengeTab>('simulation');
   // Lifted here so the selected pack category survives tab switches.
   const [packCategory, setPackCategory] = useState<PackCategory>('GK');
