@@ -208,7 +208,6 @@ export const useGameStore = create<GameState>()(
           totalEarned: STARTING_COINS,
           transactions: [],
           ownedCards: {},
-          // completions and history are cross-challenge — keep them
           completions: s.completions,
           history: s.history,
         })),

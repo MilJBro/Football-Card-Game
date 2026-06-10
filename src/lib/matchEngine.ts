@@ -220,3 +220,72 @@ export function evaluateWinCondition(mode: GameModeDef, s: SeasonResult): boolea
       return false;
   }
 }
+
+// ============================================================================
+// League table generation
+// ============================================================================
+
+export interface LeagueTableRow {
+  name: string;
+  isUser: boolean;
+  won: number;
+  drawn: number;
+  lost: number;
+  gf: number;
+  ga: number;
+  points: number;
+}
+
+const PL_TEAMS = [
+  'Man City', 'Arsenal', 'Liverpool', 'Chelsea', 'Man United',
+  'Spurs', 'Newcastle', 'Aston Villa', 'West Ham', 'Brighton',
+  'Wolves', 'Everton', 'Crystal Palace', 'Fulham', 'Brentford',
+  'Nottm Forest', 'Luton Town', 'Burnley', 'Sheffield Utd',
+];
+
+function teamRowFromPoints(pts: number, pos: number, name: string): LeagueTableRow {
+  const est = Math.max(0, pts - 5);
+  const won = Math.floor(est / 3);
+  const drawn = pts - won * 3;
+  const lost = 38 - won - drawn;
+  const gf = Math.max(20, Math.round(won * 2.2 + drawn * 0.5 + (20 - pos) * 0.6));
+  const ga = Math.max(15, Math.round(lost * 1.8 + drawn * 0.5 + pos * 0.5));
+  return { name, isUser: false, won, drawn, lost, gf, ga, points: pts };
+}
+
+export function generateLeagueTable(s: SeasonResult): LeagueTableRow[] {
+  const userPos = s.leaguePosition;
+  const topPts = userPos === 1 ? s.points : Math.min(114, s.points + (userPos - 1) * 4);
+  const botPts = userPos === 20 ? s.points : Math.max(15, s.points - (20 - userPos) * 4);
+
+  const rows: LeagueTableRow[] = [];
+  let teamIdx = 0;
+
+  for (let pos = 1; pos <= 20; pos++) {
+    if (pos === userPos) {
+      rows.push({
+        name: 'Your Team',
+        isUser: true,
+        won: s.wins,
+        drawn: s.draws,
+        lost: s.losses,
+        gf: s.goalsFor,
+        ga: s.goalsAgainst,
+        points: s.points,
+      });
+    } else {
+      let pts: number;
+      if (pos < userPos) {
+        const frac = (pos - 1) / Math.max(1, userPos - 1);
+        pts = Math.round(topPts - frac * (topPts - (s.points + 1)));
+      } else {
+        const frac = (pos - userPos) / Math.max(1, 20 - userPos);
+        pts = Math.round((s.points - 1) - frac * ((s.points - 1) - botPts));
+      }
+      rows.push(teamRowFromPoints(Math.max(0, Math.min(114, pts)), pos, PL_TEAMS[teamIdx % PL_TEAMS.length]));
+      teamIdx++;
+    }
+  }
+
+  return rows;
+}

@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { GameModeDef, Squad, SeasonResult, ModeRunResult } from '@/store/types';
 import { summariseSquad } from '@/lib/squadUtils';
-import { simulateSeason, evaluateWinCondition } from '@/lib/matchEngine';
+import { simulateSeason, evaluateWinCondition, generateLeagueTable } from '@/lib/matchEngine';
+import type { LeagueTableRow } from '@/lib/matchEngine';
 import { seasonFinishReward } from '@/lib/coinRewards';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
@@ -37,7 +38,7 @@ function shortfallText(mode: GameModeDef, s: SeasonResult): string {
       return 'Knocked out of the Champions League';
     case 'iron-defence': {
       const parts: string[] = [];
-      if (s.goalsAgainst >= 15) parts.push(`Conceded ${s.goalsAgainst} goals — need fewer than 15`);
+      if (s.goalsAgainst >= 12) parts.push(`Conceded ${s.goalsAgainst} goals — need fewer than 12`);
       if (!s.wonLeague) parts.push(`${s.points} pts — title not won`);
       return parts.join(' · ');
     }
@@ -134,17 +135,20 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
     const o = outcome;
     const s = o.season;
     const net = o.reward - mode.entryCost;
+    const gd = s.goalsFor - s.goalsAgainst;
+    const table = generateLeagueTable(s);
+
     return (
-      <div className="space-y-5">
+      <div className="space-y-4">
         {/* Win / keep going header */}
         {o.success ? (
-          <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-400/10 p-6 text-center">
+          <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-400/10 p-5 text-center">
             <div className="text-5xl">🏆</div>
             <h1 className="mt-2 text-2xl font-black">Challenge Complete!</h1>
             <p className="mt-1 text-sm text-white/60">{mode.winConditionText}</p>
           </div>
         ) : (
-          <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-6 text-center">
+          <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-5 text-center">
             <div className="text-5xl">💪</div>
             <h1 className="mt-2 text-2xl font-black">Keep Going</h1>
             <p className="mt-1 text-sm text-white/50">{shortfallText(mode, s)}</p>
@@ -155,49 +159,106 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
         )}
 
         {/* Coin summary */}
-        <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm">
-          <span className="text-white/50">Entry fee paid</span>
-          <span className="font-bold text-red-400">−🪙 {formatCoins(mode.entryCost)}</span>
-        </div>
-        <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm">
-          <span className="text-white/50">Season payout</span>
-          <span className="font-bold text-emerald-300">+🪙 {formatCoins(o.reward)}</span>
-        </div>
-        <div className={cn(
-          'flex items-center justify-between rounded-xl border px-5 py-3 text-sm font-black',
-          net >= 0
-            ? 'border-emerald-400/30 bg-emerald-400/5 text-emerald-300'
-            : 'border-red-400/30 bg-red-400/5 text-red-400',
-        )}>
-          <span>Net</span>
-          <span>{net >= 0 ? '+' : ''}🪙 {formatCoins(net)}</span>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Entry fee</div>
+            <div className="mt-1 text-sm font-black text-red-400">−🪙 {formatCoins(mode.entryCost)}</div>
+          </div>
+          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Payout</div>
+            <div className="mt-1 text-sm font-black text-emerald-300">+🪙 {formatCoins(o.reward)}</div>
+          </div>
+          <div className={cn(
+            'rounded-xl border p-3 text-center',
+            net >= 0 ? 'border-emerald-400/30 bg-emerald-400/5' : 'border-red-400/30 bg-red-400/5',
+          )}>
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Net</div>
+            <div className={cn('mt-1 text-sm font-black', net >= 0 ? 'text-emerald-300' : 'text-red-400')}>
+              {net >= 0 ? '+' : ''}🪙 {formatCoins(net)}
+            </div>
+          </div>
         </div>
 
-        {/* Season stats */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 className="mb-3 text-base font-bold">Premier League</h2>
-            <dl className="space-y-1.5 text-sm">
-              <Row k="Final position" v={ordinal(s.leaguePosition)} highlight={s.wonLeague} />
-              <Row k="Points" v={`${s.points}`} highlight={s.points >= 100} />
-              <Row k="Record (W-D-L)" v={`${s.wins}-${s.draws}-${s.losses}`} />
-              <Row
-                k="Goals for / against"
-                v={`${s.goalsFor} / ${s.goalsAgainst}`}
-                highlight={s.goalsAgainst < 15}
-              />
-              <Row k="Unbeaten" v={s.unbeaten ? 'Yes' : 'No'} highlight={s.unbeaten} />
-            </dl>
+        {/* League position hero */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Season Stats</div>
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <div className={cn('text-5xl font-black tabular-nums', s.wonLeague ? 'text-emerald-400' : 'text-white')}>
+                {ordinal(s.leaguePosition)}
+              </div>
+              <div className="mt-0.5 text-[10px] text-white/40">Position</div>
+            </div>
+            <div className="flex flex-1 flex-wrap gap-x-5 gap-y-2">
+              <Stat label="Pts" value={String(s.points)} highlight={s.wonLeague} />
+              <Stat label="GD" value={(gd >= 0 ? '+' : '') + gd} highlight={gd > 0} />
+              {s.unbeaten && (
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-black text-emerald-300">
+                  UNBEATEN
+                </span>
+              )}
+            </div>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h2 className="mb-3 text-base font-bold">Trophies</h2>
-            <ul className="space-y-1.5 text-sm">
-              <Trophy won={s.wonLeague} name="Premier League" />
-              <Trophy won={s.wonFaCup} name="FA Cup" />
-              <Trophy won={s.wonLeagueCup} name="League Cup" />
-              <Trophy won={s.wonChampionsLeague} name="Champions League" />
-            </ul>
+
+          {/* W / D / L / GF / GA row */}
+          <div className="mt-4 grid grid-cols-5 gap-1.5">
+            <StatBox label="W" value={s.wins} color="emerald" />
+            <StatBox label="D" value={s.draws} color="yellow" />
+            <StatBox label="L" value={s.losses} color="red" />
+            <StatBox label="GF" value={s.goalsFor} color="white" />
+            <StatBox label="GA" value={s.goalsAgainst} color="white" />
           </div>
+        </div>
+
+        {/* Trophy cabinet */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Trophies</div>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { won: s.wonLeague, label: 'PL', emoji: '🏆' },
+              { won: s.wonFaCup, label: 'FA Cup', emoji: '🏅' },
+              { won: s.wonLeagueCup, label: 'EFL Cup', emoji: '🥈' },
+              { won: s.wonChampionsLeague, label: 'UCL', emoji: '⭐' },
+            ].map((t) => (
+              <div
+                key={t.label}
+                className={cn(
+                  'rounded-xl border p-3 text-center',
+                  t.won
+                    ? 'border-amber-400/40 bg-amber-400/10'
+                    : 'border-white/5 bg-white/5 opacity-40',
+                )}
+              >
+                <div className="text-2xl">{t.won ? t.emoji : '—'}</div>
+                <div className="mt-1 text-[10px] font-bold text-white/60">{t.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* League table */}
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <div className="px-4 pt-4 pb-2 text-[10px] uppercase tracking-widest text-white/40">
+            League Table
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/10 text-[10px] uppercase text-white/30">
+                <th className="px-3 py-1.5 text-left">#</th>
+                <th className="px-3 py-1.5 text-left">Team</th>
+                <th className="px-3 py-1.5 text-right">W</th>
+                <th className="px-3 py-1.5 text-right">D</th>
+                <th className="px-3 py-1.5 text-right">L</th>
+                <th className="px-3 py-1.5 text-right">GD</th>
+                <th className="px-3 py-1.5 text-right font-black">Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {table.map((row, i) => (
+                <TableRow key={row.name} row={row} pos={i + 1} />
+              ))}
+            </tbody>
+          </table>
         </div>
 
         {/* Actions */}
@@ -310,23 +371,67 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
   );
 }
 
-function Row({ k, v, highlight }: { k: string; v: string; highlight?: boolean }) {
+function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="flex justify-between">
-      <dt className="text-white/50">{k}</dt>
-      <dd className={cn('font-bold tabular-nums', highlight ? 'text-emerald-300' : 'text-white')}>
-        {v}
-      </dd>
+    <div className="text-center">
+      <div className={cn('text-xl font-black tabular-nums', highlight ? 'text-emerald-300' : 'text-white')}>
+        {value}
+      </div>
+      <div className="text-[10px] uppercase tracking-wide text-white/40">{label}</div>
     </div>
   );
 }
 
-function Trophy({ won, name }: { won: boolean; name: string }) {
+function StatBox({ label, value, color }: { label: string; value: number; color: 'emerald' | 'yellow' | 'red' | 'white' }) {
+  const textColor = {
+    emerald: 'text-emerald-300',
+    yellow: 'text-yellow-300',
+    red: 'text-red-400',
+    white: 'text-white',
+  }[color];
   return (
-    <li className="flex items-center justify-between">
-      <span className={won ? 'text-white' : 'text-white/40'}>{name}</span>
-      <span>{won ? '🏆' : '—'}</span>
-    </li>
+    <div className="rounded-xl bg-black/20 py-2 text-center">
+      <div className={cn('text-lg font-black tabular-nums', textColor)}>{value}</div>
+      <div className="text-[10px] uppercase tracking-wide text-white/40">{label}</div>
+    </div>
+  );
+}
+
+function TableRow({ row, pos }: { row: LeagueTableRow; pos: number }) {
+  const gd = row.gf - row.ga;
+  const isTop4 = pos <= 4;
+  const isEuropa = pos === 5;
+  const isRelegation = pos >= 18;
+
+  return (
+    <tr className={cn('border-b border-white/5 text-xs last:border-0', row.isUser && 'bg-emerald-500/10')}>
+      <td className="px-3 py-2">
+        <div className="flex items-center gap-1.5">
+          <span
+            className={cn(
+              'h-3.5 w-1 shrink-0 rounded-full',
+              isTop4 ? 'bg-blue-400' : isEuropa ? 'bg-amber-400' : isRelegation ? 'bg-red-500' : 'bg-transparent',
+            )}
+          />
+          <span className="tabular-nums text-white/40">{pos}</span>
+        </div>
+      </td>
+      <td className={cn('px-3 py-2 font-bold', row.isUser ? 'text-emerald-300' : 'text-white')}>
+        {row.name}
+      </td>
+      <td className="px-3 py-2 text-right tabular-nums text-white/70">{row.won}</td>
+      <td className="px-3 py-2 text-right tabular-nums text-white/70">{row.drawn}</td>
+      <td className="px-3 py-2 text-right tabular-nums text-white/70">{row.lost}</td>
+      <td className={cn(
+        'px-3 py-2 text-right tabular-nums',
+        gd > 0 ? 'text-emerald-400' : gd < 0 ? 'text-red-400' : 'text-white/40',
+      )}>
+        {gd > 0 ? '+' : ''}{gd}
+      </td>
+      <td className={cn('px-3 py-2 text-right tabular-nums font-black', row.isUser ? 'text-emerald-300' : 'text-white')}>
+        {row.points}
+      </td>
+    </tr>
   );
 }
 

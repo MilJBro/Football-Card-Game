@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { Squad } from '@/store/types';
+import type { Squad, PackCategory } from '@/store/types';
 import { useGameStore } from '@/store/useGameStore';
 import { getMode } from '@/data/gameModes';
 import { emptySquad } from '@/lib/squadUtils';
@@ -22,7 +22,6 @@ const TAB_LABELS: Record<ChallengeTab, string> = {
 
 export function ModeRunner({ modeId }: { modeId: string }) {
   const mode = getMode(modeId);
-
   const resetChallengeState = useGameStore((s) => s.resetChallengeState);
 
   // Reset coins and collection each time a challenge is entered.
@@ -33,6 +32,8 @@ export function ModeRunner({ modeId }: { modeId: string }) {
   // Squad is per-challenge and shared between the Squad and Simulation tabs.
   const [squad, setSquad] = useState<Squad>(() => emptySquad('4-3-3'));
   const [tab, setTab] = useState<ChallengeTab>('simulation');
+  // Lifted here so the selected pack category survives tab switches.
+  const [packCategory, setPackCategory] = useState<PackCategory>('GK');
 
   if (!mode) {
     return (
@@ -97,7 +98,13 @@ export function ModeRunner({ modeId }: { modeId: string }) {
           <SquadBuilder squad={squad} onChange={setSquad} />
         </div>
       )}
-      {tab === 'packs' && <PacksTab onGoToUpgrades={() => setTab('upgrades')} />}
+      {tab === 'packs' && (
+        <PacksTab
+          category={packCategory}
+          onCategoryChange={setPackCategory}
+          onGoToUpgrades={() => setTab('upgrades')}
+        />
+      )}
       {tab === 'upgrades' && <UpgradesTab onGoToPacks={() => setTab('packs')} />}
 
       <BottomTabs active={tab} onChange={setTab} />

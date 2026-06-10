@@ -27,9 +27,14 @@ const CATEGORY_ICON: Record<PackCategory, (props: { className?: string }) => JSX
 
 const CATEGORY_ORDER: PackCategory[] = ['GK', 'DEF', 'MID', 'ATT'];
 
-export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
+interface PacksTabProps {
+  category: PackCategory;
+  onCategoryChange: (c: PackCategory) => void;
+  onGoToUpgrades: () => void;
+}
+
+export function PacksTab({ category, onCategoryChange, onGoToUpgrades }: PacksTabProps) {
   const [openingPackId, setOpeningPackId] = useState<string | null>(null);
-  const [category, setCategory] = useState<PackCategory>('ATT');
 
   if (openingPackId) {
     return (
@@ -63,7 +68,7 @@ export function PacksTab({ onGoToUpgrades }: { onGoToUpgrades: () => void }) {
           return (
             <button
               key={cat}
-              onClick={() => setCategory(cat)}
+              onClick={() => onCategoryChange(cat)}
               className={cn(
                 'flex flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-bold transition-colors',
                 isActive
