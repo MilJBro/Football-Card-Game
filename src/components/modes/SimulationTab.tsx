@@ -319,15 +319,16 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
       </div>
 
       {/* Team name */}
-      <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-        <span className="shrink-0 text-xs uppercase tracking-wide text-white/40">Team name</span>
+      <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-5">
+        <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Your Team Name</div>
         <input
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
           maxLength={25}
-          placeholder="Your Team"
-          className="flex-1 bg-transparent text-sm font-bold text-white outline-none placeholder:text-white/30"
+          placeholder="e.g. FC Legends"
+          className="w-full border-b-2 border-white/20 bg-transparent pb-2 text-2xl font-black text-white outline-none transition-colors placeholder:text-white/25 focus:border-emerald-400"
         />
+        <p className="mt-2 text-xs text-white/30">Shown in the league table</p>
       </div>
 
       {/* Entry cost panel */}
