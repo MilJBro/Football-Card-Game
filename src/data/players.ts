@@ -77,7 +77,7 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Brazil',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Man City · 2017', positions: ['GK'], rating: 79 },
+      Rising: { era: 'Man City · 2018', positions: ['GK'], rating: 79 },
       Star:   { era: 'Man City · 2019', positions: ['GK'], rating: 86 },
       Legend: { era: 'Man City · 2023', positions: ['GK'], rating: 87 },
     },
@@ -242,9 +242,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Portugal',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Wolves · 2018', positions: ['GK'], rating: 74 },
+      Rising: { era: 'Wolves · 2019', positions: ['GK'], rating: 74 },
       Star:   { era: 'Wolves · 2020', positions: ['GK'], rating: 81 },
-      Legend: { era: 'Wolves · 2022', positions: ['GK'], rating: 84 },
+      Legend: { era: 'Roma · 2022',   positions: ['GK'], rating: 84 },
     },
   },
   {
@@ -2798,9 +2798,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Spain',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Liverpool · 2004', positions: ['CM'], rating: 77 },
-      Star:   { era: 'Liverpool · 2006', positions: ['CM'], rating: 86 },
-      Legend: { era: 'Liverpool · 2009', positions: ['CM'], rating: 89 },
+      Rising: { era: 'Liverpool · 2004',    positions: ['CM'], rating: 77 },
+      Star:   { era: 'Liverpool · 2006',    positions: ['CM'], rating: 86 },
+      Legend: { era: 'Real Madrid · 2012',  positions: ['CM'], rating: 89 },
     },
   },
   {
@@ -4841,6 +4841,17 @@ const PLAYERS: PlayerSource[] = [
       Rising: { era: 'Arsenal · 2021', positions: ['LW'], rating: 73 },
       Star:   { era: 'Arsenal · 2022', positions: ['LW'], rating: 79 },
       Legend: { era: 'Arsenal · 2023', positions: ['LW'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'michaelricketts',
+    playerName: 'Michael Ricketts',
+    nationality: 'England',
+    pack: 'ATT',
+    tiers: {
+      Rising: { era: 'Bolton · 2002',        positions: ['ST'], rating: 71 },
+      Star:   { era: 'Middlesbrough · 2003', positions: ['ST'], rating: 76 },
+      Legend: { era: 'Middlesbrough · 2005', positions: ['ST'], rating: 79 },
     },
   },
   {
