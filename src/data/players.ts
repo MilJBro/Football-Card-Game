@@ -6058,6 +6058,338 @@ const PLAYERS: PlayerSource[] = [
     },
   },
 
+  // ── More CMs ───────────────────────────────────────────────────────────────
+  {
+    playerId: 'fernandinho',
+    playerName: 'Fernandinho',
+    nationality: 'Brazil',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man City · 2014', positions: ['CM'], rating: 77 },
+      Star:   { era: 'Man City · 2018', positions: ['CM'], rating: 85 },
+      Legend: { era: 'Man City · 2022', positions: ['CM'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'jorginho',
+    playerName: 'Jorginho',
+    nationality: 'Italy',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Chelsea · 2019', positions: ['CM'], rating: 75 },
+      Star:   { era: 'Chelsea · 2022', positions: ['CM'], rating: 83 },
+      Legend: { era: 'Arsenal · 2024', positions: ['CM'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'georgeboateng',
+    playerName: 'George Boateng',
+    nationality: 'Netherlands',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Aston Villa · 2001',    positions: ['CM'], rating: 72 },
+      Star:   { era: 'Middlesbrough · 2004',  positions: ['CM'], rating: 78 },
+      Legend: { era: 'Middlesbrough · 2006',  positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'nabykeita',
+    playerName: 'Naby Keïta',
+    nationality: 'Guinea',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Liverpool · 2019', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Liverpool · 2021', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Liverpool · 2023', positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'jenas',
+    playerName: 'Jermaine Jenas',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Newcastle · 2003',  positions: ['CM'], rating: 73 },
+      Star:   { era: 'Newcastle · 2005',  positions: ['CM'], rating: 80 },
+      Legend: { era: 'Tottenham · 2011',  positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'guspoyet',
+    playerName: 'Gus Poyet',
+    nationality: 'Uruguay',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Chelsea · 1998',     positions: ['CM'], rating: 73 },
+      Star:   { era: 'Chelsea · 2001',     positions: ['CM'], rating: 79 },
+      Legend: { era: 'Tottenham · 2004',   positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'garymcallister',
+    playerName: 'Gary McAllister',
+    nationality: 'Scotland',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Coventry · 1998',  positions: ['CM'], rating: 74 },
+      Star:   { era: 'Liverpool · 2001', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Liverpool · 2002', positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'parlour',
+    playerName: 'Ray Parlour',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Arsenal · 1998',      positions: ['CM'], rating: 73 },
+      Star:   { era: 'Arsenal · 2002',      positions: ['CM'], rating: 80 },
+      Legend: { era: 'Middlesbrough · 2007', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'malouda',
+    playerName: 'Florent Malouda',
+    nationality: 'France',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Chelsea · 2007', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Chelsea · 2010', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Chelsea · 2012', positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'ballack',
+    playerName: 'Michael Ballack',
+    nationality: 'Germany',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Chelsea · 2006', positions: ['CM'], rating: 78 },
+      Star:   { era: 'Chelsea · 2008', positions: ['CM'], rating: 85 },
+      Legend: { era: 'Chelsea · 2010', positions: ['CM'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'barkley',
+    playerName: 'Ross Barkley',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Everton · 2015',     positions: ['CM'], rating: 74 },
+      Star:   { era: 'Chelsea · 2020',     positions: ['CM'], rating: 80 },
+      Legend: { era: 'Aston Villa · 2022', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'bowyer',
+    playerName: 'Lee Bowyer',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Leeds · 2001',      positions: ['CM'], rating: 73 },
+      Star:   { era: 'Newcastle · 2007',  positions: ['CM'], rating: 79 },
+      Legend: { era: 'Birmingham · 2011', positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'pienaar',
+    playerName: 'Steven Pienaar',
+    nationality: 'South Africa',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Everton · 2009', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Everton · 2012', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Everton · 2014', positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'neves',
+    playerName: 'Rúben Neves',
+    nationality: 'Portugal',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Wolves · 2018', positions: ['CM'], rating: 76 },
+      Star:   { era: 'Wolves · 2021', positions: ['CM'], rating: 83 },
+      Legend: { era: 'Wolves · 2023', positions: ['CM'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'dier',
+    playerName: 'Eric Dier',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Tottenham · 2016', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Tottenham · 2019', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'winks',
+    playerName: 'Harry Winks',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Tottenham · 2018', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Tottenham · 2020', positions: ['CM'], rating: 78 },
+      Legend: { era: 'Tottenham · 2022', positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'ramires',
+    playerName: 'Ramires',
+    nationality: 'Brazil',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Chelsea · 2011', positions: ['CM'], rating: 75 },
+      Star:   { era: 'Chelsea · 2013', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Chelsea · 2015', positions: ['CM'], rating: 85 },
+    },
+  },
+  {
+    playerId: 'mctominay',
+    playerName: 'Scott McTominay',
+    nationality: 'Scotland',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man Utd · 2020', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Man Utd · 2022', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Man Utd · 2024', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'joeybarton',
+    playerName: 'Joey Barton',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man City · 2007', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Newcastle · 2010', positions: ['CM'], rating: 79 },
+      Legend: { era: 'QPR · 2013',      positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'gravesen',
+    playerName: 'Thomas Gravesen',
+    nationality: 'Denmark',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Everton · 2001', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Everton · 2003', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Everton · 2005', positions: ['CM'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'darrenfletcher',
+    playerName: 'Darren Fletcher',
+    nationality: 'Scotland',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man Utd · 2006',   positions: ['CM'], rating: 74 },
+      Star:   { era: 'Man Utd · 2009',   positions: ['CM'], rating: 80 },
+      Legend: { era: 'West Brom · 2016', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'mascherano',
+    playerName: 'Javier Mascherano',
+    nationality: 'Argentina',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'West Ham · 2007',  positions: ['CM'], rating: 77 },
+      Star:   { era: 'Liverpool · 2009', positions: ['CM'], rating: 84 },
+      Legend: { era: 'Liverpool · 2010', positions: ['CM'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'caicedo',
+    playerName: 'Moisés Caicedo',
+    nationality: 'Ecuador',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Brighton · 2022', positions: ['CM'], rating: 77 },
+      Star:   { era: 'Brighton · 2023', positions: ['CM'], rating: 84 },
+      Legend: { era: 'Chelsea · 2025',  positions: ['CM'], rating: 87 },
+    },
+  },
+  {
+    playerId: 'wardprowse',
+    playerName: 'James Ward-Prowse',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Southampton · 2016', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Southampton · 2022', positions: ['CM'], rating: 81 },
+      Legend: { era: 'West Ham · 2025',    positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'juanmata',
+    playerName: 'Juan Mata',
+    nationality: 'Spain',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Chelsea · 2013',   positions: ['CM'], rating: 77 },
+      Star:   { era: 'Man Utd · 2017',   positions: ['CM'], rating: 83 },
+      Legend: { era: 'Man Utd · 2022',   positions: ['CM'], rating: 86 },
+    },
+  },
+  {
+    playerId: 'casemiro',
+    playerName: 'Casemiro',
+    nationality: 'Brazil',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man Utd · 2023', positions: ['CM'], rating: 78 },
+      Star:   { era: 'Man Utd · 2024', positions: ['CM'], rating: 85 },
+      Legend: { era: 'Man Utd · 2025', positions: ['CM'], rating: 88 },
+    },
+  },
+  {
+    playerId: 'kierdyer',
+    playerName: 'Kieron Dyer',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Newcastle · 2001', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Newcastle · 2003', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Newcastle · 2005', positions: ['CM'], rating: 83 },
+    },
+  },
+  {
+    playerId: 'rosicky',
+    playerName: 'Tomáš Rosický',
+    nationality: 'Czech Republic',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Arsenal · 2007', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Arsenal · 2010', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Arsenal · 2012', positions: ['CM'], rating: 84 },
+    },
+  },
+  {
+    playerId: 'bullard',
+    playerName: 'Jimmy Bullard',
+    nationality: 'England',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Wigan · 2006',  positions: ['CM'], rating: 72 },
+      Star:   { era: 'Fulham · 2009', positions: ['CM'], rating: 78 },
+      Legend: { era: 'Hull · 2011',   positions: ['CM'], rating: 81 },
+    },
+  },
+  {
+    playerId: 'fredbrazil',
+    playerName: 'Fred',
+    nationality: 'Brazil',
+    pack: 'MID',
+    tiers: {
+      Rising: { era: 'Man Utd · 2019', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Man Utd · 2021', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Man Utd · 2023', positions: ['CM'], rating: 82 },
+    },
+  },
+
 ];
 
 // ---------------------------------------------------------------------------
