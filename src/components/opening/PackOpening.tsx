@@ -104,8 +104,6 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
       if (el) el.scrollTo({ left: nextIdx * el.clientWidth, behavior: 'smooth' });
       setActive(nextIdx);
       reveal(nextIdx);
-    } else if (onViewCards) {
-      onViewCards();
     }
   }
 
@@ -192,12 +190,27 @@ export function PackOpening({ packId, onClose, onViewCards }: PackOpeningProps) 
       </div>
 
       <div className="flex items-center gap-3">
-        <Button variant="ghost" onClick={onClose}>
-          Open Another
-        </Button>
-        <Button onClick={goNext}>
-          {active < drawn.length - 1 ? 'Next →' : 'View Cards →'}
-        </Button>
+        {active < drawn.length - 1 ? (
+          <>
+            <Button variant="ghost" onClick={onClose}>
+              Back to Packs
+            </Button>
+            <Button onClick={goNext}>
+              Next →
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button variant="ghost" onClick={onClose}>
+              Back to Packs
+            </Button>
+            {onViewCards && (
+              <Button onClick={onViewCards}>
+                View Club
+              </Button>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
