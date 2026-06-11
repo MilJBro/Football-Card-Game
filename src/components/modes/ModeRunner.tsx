@@ -2,22 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import type { Squad, PackCategory } from '@/store/types';
+import type { Squad } from '@/store/types';
 import { useGameStore } from '@/store/useGameStore';
 import { getMode } from '@/data/gameModes';
 import { emptySquad } from '@/lib/squadUtils';
 import { SquadBuilder } from '@/components/squad/SquadBuilder';
 import { SimulationTab } from '@/components/modes/SimulationTab';
-import { PacksTab } from '@/components/modes/PacksTab';
-import { UpgradesTab } from '@/components/modes/UpgradesTab';
 import { BottomTabs, type ChallengeTab } from '@/components/modes/BottomTabs';
 
-const TAB_ORDER: ChallengeTab[] = ['simulation', 'squad', 'packs', 'upgrades'];
+const TAB_ORDER: ChallengeTab[] = ['simulation', 'squad'];
 const TAB_LABELS: Record<ChallengeTab, string> = {
   simulation: 'Simulate',
   squad: 'Squad',
-  packs: 'Packs',
-  upgrades: 'Upgrades',
 };
 
 export function ModeRunner({ modeId }: { modeId: string }) {
@@ -27,8 +23,6 @@ export function ModeRunner({ modeId }: { modeId: string }) {
   const setActiveSquad = useGameStore((s) => s.setActiveSquad);
   const ownedCards = useGameStore((s) => s.ownedCards);
 
-  // Reset coins/collection only when switching to a different challenge.
-  // Re-entering the same challenge continues from where the player left off.
   useEffect(() => {
     const { activeModeId } = useGameStore.getState();
     if (activeModeId !== modeId) {
@@ -37,18 +31,15 @@ export function ModeRunner({ modeId }: { modeId: string }) {
     }
   }, [modeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Squad: restore persisted squad when re-entering the same challenge.
   const [squad, setSquad] = useState<Squad>(() => {
     const { activeModeId, activeSquad } = useGameStore.getState();
     return activeModeId === modeId && activeSquad ? activeSquad : emptySquad('4-3-3');
   });
 
-  // Persist squad changes so they survive navigation.
   useEffect(() => {
     setActiveSquad(squad);
   }, [squad]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When a card is sold, clear it from the squad automatically.
   useEffect(() => {
     setSquad((prev) => {
       const updated = { ...prev.assignments };
@@ -62,9 +53,8 @@ export function ModeRunner({ modeId }: { modeId: string }) {
       return changed ? { ...prev, assignments: updated } : prev;
     });
   }, [ownedCards]);
+
   const [tab, setTab] = useState<ChallengeTab>('simulation');
-  // Lifted here so the selected pack category survives tab switches.
-  const [packCategory, setPackCategory] = useState<PackCategory>('GK');
 
   if (!mode) {
     return (
@@ -83,7 +73,6 @@ export function ModeRunner({ modeId }: { modeId: string }) {
 
   return (
     <div className="pb-4">
-      {/* Slim challenge header */}
       <div className="mb-3 flex items-center justify-between gap-3">
         <Link href="/" className="text-sm font-semibold text-emerald-400 hover:underline">
           ← Challenges
@@ -91,7 +80,6 @@ export function ModeRunner({ modeId }: { modeId: string }) {
         <span className="truncate text-sm font-bold text-white/70">{mode.name}</span>
       </div>
 
-      {/* Tab navigation arrows */}
       <div className="mb-4 flex items-center gap-2 rounded-xl bg-white/5 px-2 py-1.5">
         <button
           onClick={() => hasPrev && setTab(TAB_ORDER[tabIdx - 1])}
@@ -119,8 +107,6 @@ export function ModeRunner({ modeId }: { modeId: string }) {
           mode={mode}
           squad={squad}
           onGoToSquad={() => setTab('squad')}
-          onGoToPacks={() => setTab('packs')}
-          onGoToUpgrades={() => setTab('upgrades')}
         />
       )}
       {tab === 'squad' && (
@@ -129,14 +115,6 @@ export function ModeRunner({ modeId }: { modeId: string }) {
           <SquadBuilder squad={squad} onChange={setSquad} />
         </div>
       )}
-      {tab === 'packs' && (
-        <PacksTab
-          category={packCategory}
-          onCategoryChange={setPackCategory}
-          onGoToUpgrades={() => setTab('upgrades')}
-        />
-      )}
-      {tab === 'upgrades' && <UpgradesTab onGoToPacks={() => setTab('packs')} />}
 
       <BottomTabs active={tab} onChange={setTab} />
     </div>

@@ -24,8 +24,6 @@ interface SimulationTabProps {
   mode: GameModeDef;
   squad: Squad;
   onGoToSquad: () => void;
-  onGoToPacks: () => void;
-  onGoToUpgrades: () => void;
 }
 
 function shortfallText(mode: GameModeDef, s: SeasonResult): string {
@@ -68,7 +66,7 @@ function shortfallText(mode: GameModeDef, s: SeasonResult): string {
   }
 }
 
-export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpgrades }: SimulationTabProps) {
+export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) {
   const hydrated = useHydrated();
   const coins = useGameStore((s) => s.coins);
   const addCoins = useGameStore((s) => s.addCoins);
@@ -271,8 +269,7 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
           </div>
         ) : (
           <div className="flex flex-wrap justify-center gap-3">
-            <Button onClick={onGoToPacks}>Open Packs</Button>
-            <Button onClick={onGoToUpgrades}>Upgrade Squad</Button>
+            <Button onClick={onGoToSquad}>Improve Squad</Button>
             <Button variant="ghost" onClick={tryAgain}>Try Again</Button>
           </div>
         )}
@@ -359,10 +356,10 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
               Need 🪙 {formatCoins(mode.entryCost - coins)} more — sell cards to raise funds
             </p>
             <button
-              onClick={onGoToUpgrades}
+              onClick={onGoToSquad}
               className="mt-3 rounded-lg bg-white/10 px-4 py-2 text-xs font-bold text-white hover:bg-white/20"
             >
-              Sell Cards →
+              Go to Squad →
             </button>
           </div>
         )}
