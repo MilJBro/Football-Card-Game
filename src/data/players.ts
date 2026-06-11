@@ -3717,7 +3717,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2014', positions: ['ST'],        rating: 78 },
       Star:   { era: 'Tottenham · 2017', positions: ['ST'],        rating: 88 },
-      Legend: { era: 'Tottenham · 2021', positions: ['ST', 'CM'], rating: 90 },
+      Legend: { era: 'Tottenham · 2021', positions: ['ST'],        rating: 90 },
     },
   },
   {
