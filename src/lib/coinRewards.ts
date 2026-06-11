@@ -2,6 +2,7 @@ import type { PlayerCardDef, SeasonResult } from '@/store/types';
 import { getEffectiveCardData } from '@/data/players';
 
 export const STARTING_COINS = 4000;
+export const MAX_DAILY_TOKENS = 3;
 
 // ---- Discard / sell value (scaled by upgrade level & rating) ----
 const DISCARD_MULTIPLIER: Record<0 | 1 | 2, number> = {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { GameModeDef, Squad, SeasonResult, ModeRunResult } from '@/store/types';
 import { summariseSquad } from '@/lib/squadUtils';
@@ -77,14 +77,23 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
   const ownedCards = useGameStore((s) => s.ownedCards);
   const teamName = useGameStore((s) => s.teamName);
   const setTeamName = useGameStore((s) => s.setTeamName);
+  const simulationTokens = useGameStore((s) => s.simulationTokens);
+  const consumeSimulationToken = useGameStore((s) => s.consumeSimulationToken);
+  const checkAndRefillTokens = useGameStore((s) => s.checkAndRefillTokens);
+
+  useEffect(() => {
+    checkAndRefillTokens();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
 
   const summary = summariseSquad(squad, ownedCards);
   const canAfford = coins >= mode.entryCost;
+  const hasTokens = simulationTokens > 0;
 
   function runSeason() {
+    if (!consumeSimulationToken()) return;
     if (!spendCoins(mode.entryCost, `Entry fee: ${mode.name}`)) return;
     setPhase('sim');
     setTimeout(() => {
@@ -368,9 +377,31 @@ export function SimulationTab({ mode, squad, onGoToSquad, onGoToPacks, onGoToUpg
         )}
       </div>
 
+      {/* Daily tokens */}
+      <div className={cn(
+        'rounded-2xl border p-4 text-center',
+        hasTokens ? 'border-white/10 bg-white/5' : 'border-red-400/20 bg-red-400/5',
+      )}>
+        <div className="text-[10px] uppercase tracking-widest text-white/40">Simulations Today</div>
+        <div className="mt-1 flex items-center justify-center gap-1.5">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className={cn(
+                'h-3 w-3 rounded-full',
+                i < simulationTokens ? 'bg-emerald-400' : 'bg-white/15',
+              )}
+            />
+          ))}
+        </div>
+        <div className={cn('mt-1 text-sm font-bold', hasTokens ? 'text-white/70' : 'text-red-400')}>
+          {hasTokens ? `${simulationTokens} remaining` : 'Come back tomorrow'}
+        </div>
+      </div>
+
       {summary.isComplete ? (
         <div className="flex justify-center">
-          <Button size="lg" onClick={runSeason} disabled={!hydrated || !canAfford}>
+          <Button size="lg" onClick={runSeason} disabled={!hydrated || !canAfford || !hasTokens}>
             Simulate Season · 🪙 {formatCoins(mode.entryCost)}
           </Button>
         </div>

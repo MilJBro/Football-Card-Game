@@ -9,7 +9,7 @@ import type {
   Squad,
 } from '@/store/types';
 import { getCard } from '@/data/players';
-import { STARTING_COINS, discardValue, upgradeCost } from '@/lib/coinRewards';
+import { STARTING_COINS, MAX_DAILY_TOKENS, discardValue, upgradeCost } from '@/lib/coinRewards';
 
 export interface UpgradeResult {
   ok: boolean;
@@ -38,6 +38,10 @@ export interface GameState {
   activeModeId: string | null;
   activeSquad: Squad | null;
 
+  // ---- Daily simulation tokens ----
+  simulationTokens: number;
+  lastTokenRefillDate: string;
+
   // ---- Actions: coins ----
   addCoins: (amount: number, reason: string) => void;
   spendCoins: (amount: number, reason: string) => boolean;
@@ -58,6 +62,10 @@ export interface GameState {
   setActiveModeId: (modeId: string | null) => void;
   setActiveSquad: (squad: Squad | null) => void;
 
+  // ---- Actions: daily tokens ----
+  consumeSimulationToken: () => boolean;
+  checkAndRefillTokens: () => void;
+
   // ---- Dev / reset ----
   resetProgress: () => void;
   resetChallengeState: () => void;
@@ -73,6 +81,8 @@ const initialState = {
   teamName: '',
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
+  simulationTokens: MAX_DAILY_TOKENS,
+  lastTokenRefillDate: '',
 };
 
 export const useGameStore = create<GameState>()(
@@ -222,6 +232,21 @@ export const useGameStore = create<GameState>()(
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
+
+      consumeSimulationToken: () => {
+        const s = get();
+        if (s.simulationTokens <= 0) return false;
+        set({ simulationTokens: s.simulationTokens - 1 });
+        return true;
+      },
+
+      checkAndRefillTokens: () => {
+        const today = new Date().toISOString().slice(0, 10);
+        const s = get();
+        if (s.lastTokenRefillDate !== today) {
+          set({ simulationTokens: MAX_DAILY_TOKENS, lastTokenRefillDate: today });
+        }
+      },
 
       resetProgress: () => set({ ...initialState }),
 
