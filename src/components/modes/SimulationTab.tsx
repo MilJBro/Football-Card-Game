@@ -10,6 +10,7 @@ import { seasonFinishReward } from '@/lib/coinRewards';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
+import { SeasonReward } from '@/components/modes/SeasonReward';
 import { cn, formatCoins } from '@/lib/ui';
 
 type Phase = 'ready' | 'sim' | 'result';
@@ -23,6 +24,7 @@ interface RunOutcome {
 interface SimulationTabProps {
   mode: GameModeDef;
   squad: Squad;
+  onSquadChange: (squad: Squad) => void;
   onGoToSquad: () => void;
 }
 
@@ -66,7 +68,7 @@ function shortfallText(mode: GameModeDef, s: SeasonResult): string {
   }
 }
 
-export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) {
+export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: SimulationTabProps) {
   const hydrated = useHydrated();
   const coins = useGameStore((s) => s.coins);
   const addCoins = useGameStore((s) => s.addCoins);
@@ -78,6 +80,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
+  const [showReward, setShowReward] = useState(false);
 
   const summary = summariseSquad(squad, ownedCards);
   const canAfford = coins >= mode.entryCost;
@@ -106,6 +109,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
 
       setOutcome({ season, success, reward });
       setPhase('result');
+      setShowReward(false);
     }, 1400);
   }
 
@@ -262,6 +266,15 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         </div>
 
         {/* Actions */}
+        {/* Season reward */}
+        {!showReward && (
+          <div className="flex justify-center">
+            <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
+              🎰 Spin for Reward
+            </Button>
+          </div>
+        )}
+
         {o.success ? (
           <div className="flex flex-wrap justify-center gap-3">
             <Button variant="secondary" onClick={onGoToSquad}>Adjust Squad</Button>
@@ -272,6 +285,14 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             <Button onClick={onGoToSquad}>Improve Squad</Button>
             <Button variant="ghost" onClick={tryAgain}>Try Again</Button>
           </div>
+        )}
+
+        {showReward && (
+          <SeasonReward
+            squad={squad}
+            onClaim={(updatedSquad) => onSquadChange(updatedSquad)}
+            onDismiss={() => setShowReward(false)}
+          />
         )}
       </div>
     );

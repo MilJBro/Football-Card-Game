@@ -38,6 +38,9 @@ export interface GameState {
   activeModeId: string | null;
   activeSquad: Squad | null;
 
+  // ---- Upgrade tokens ----
+  upgradeTokens: number;
+
   // ---- Actions: coins ----
   addCoins: (amount: number, reason: string) => void;
   spendCoins: (amount: number, reason: string) => boolean;
@@ -58,6 +61,10 @@ export interface GameState {
   setActiveModeId: (modeId: string | null) => void;
   setActiveSquad: (squad: Squad | null) => void;
 
+  // ---- Actions: upgrade tokens ----
+  addUpgradeToken: () => void;
+  spendUpgradeToken: (cardId: string) => boolean;
+
   // ---- Dev / reset ----
   resetProgress: () => void;
   resetChallengeState: () => void;
@@ -73,6 +80,7 @@ const initialState = {
   teamName: '',
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
+  upgradeTokens: 0,
 };
 
 export const useGameStore = create<GameState>()(
@@ -222,6 +230,23 @@ export const useGameStore = create<GameState>()(
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
+
+      addUpgradeToken: () => set((s) => ({ upgradeTokens: s.upgradeTokens + 1 })),
+
+      spendUpgradeToken: (cardId) => {
+        const s = get();
+        if (s.upgradeTokens <= 0) return false;
+        const owned = s.ownedCards[cardId];
+        if (!owned || (owned.upgradeLevel ?? 0) >= 2) return false;
+        set({
+          upgradeTokens: s.upgradeTokens - 1,
+          ownedCards: {
+            ...s.ownedCards,
+            [cardId]: { ...owned, upgradeLevel: ((owned.upgradeLevel ?? 0) + 1) as 0 | 1 | 2 },
+          },
+        });
+        return true;
+      },
 
       resetProgress: () => set({ ...initialState }),
 

@@ -37,6 +37,8 @@ interface SquadBuilderProps {
 export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
   const ownedCards = useGameStore((s) => s.ownedCards);
   const addCards = useGameStore((s) => s.addCards);
+  const upgradeTokens = useGameStore((s) => s.upgradeTokens);
+  const spendUpgradeToken = useGameStore((s) => s.spendUpgradeToken);
   const formation = getFormation(squad.formation);
   const summary = useMemo(() => summariseSquad(squad, ownedCards), [squad, ownedCards]);
 
@@ -264,6 +266,20 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
                   </Button>
                 </div>
                 <PlayerCard card={activeCard} upgradeLevel={activeUpgradeLevel} size="sm" />
+
+                {/* Upgrade token button */}
+                {upgradeTokens > 0 && activeUpgradeLevel < 2 && (
+                  <button
+                    onClick={() => {
+                      spendUpgradeToken(activeCard.id);
+                      setActiveSlot(null);
+                    }}
+                    className="w-full rounded-xl border border-amber-400/30 bg-amber-400/10 py-2.5 text-sm font-bold text-amber-300 hover:bg-amber-400/20"
+                  >
+                    ⬆ Upgrade Player <span className="text-amber-400/60">({upgradeTokens} token{upgradeTokens !== 1 ? 's' : ''})</span>
+                  </button>
+                )}
+
                 <div className="flex w-full gap-2">
                   <Button
                     className="flex-1"
