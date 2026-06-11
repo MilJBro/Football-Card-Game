@@ -23,15 +23,30 @@ const TAB_LABELS: Record<ChallengeTab, string> = {
 export function ModeRunner({ modeId }: { modeId: string }) {
   const mode = getMode(modeId);
   const resetChallengeState = useGameStore((s) => s.resetChallengeState);
+  const setActiveModeId = useGameStore((s) => s.setActiveModeId);
+  const setActiveSquad = useGameStore((s) => s.setActiveSquad);
   const ownedCards = useGameStore((s) => s.ownedCards);
 
-  // Reset coins and collection each time a challenge is entered.
+  // Reset coins/collection only when switching to a different challenge.
+  // Re-entering the same challenge continues from where the player left off.
   useEffect(() => {
-    resetChallengeState();
+    const { activeModeId } = useGameStore.getState();
+    if (activeModeId !== modeId) {
+      resetChallengeState();
+      setActiveModeId(modeId);
+    }
   }, [modeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Squad is per-challenge and shared between the Squad and Simulation tabs.
-  const [squad, setSquad] = useState<Squad>(() => emptySquad('4-3-3'));
+  // Squad: restore persisted squad when re-entering the same challenge.
+  const [squad, setSquad] = useState<Squad>(() => {
+    const { activeModeId, activeSquad } = useGameStore.getState();
+    return activeModeId === modeId && activeSquad ? activeSquad : emptySquad('4-3-3');
+  });
+
+  // Persist squad changes so they survive navigation.
+  useEffect(() => {
+    setActiveSquad(squad);
+  }, [squad]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // When a card is sold, clear it from the squad automatically.
   useEffect(() => {

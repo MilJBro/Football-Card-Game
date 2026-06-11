@@ -6,6 +6,7 @@ import type {
   ModeCompletion,
   ModeRunResult,
   ModeId,
+  Squad,
 } from '@/store/types';
 import { getCard } from '@/data/players';
 import { STARTING_COINS, discardValue, upgradeCost } from '@/lib/coinRewards';
@@ -33,6 +34,10 @@ export interface GameState {
   // ---- Identity ----
   teamName: string;
 
+  // ---- Active challenge ----
+  activeModeId: string | null;
+  activeSquad: Squad | null;
+
   // ---- Actions: coins ----
   addCoins: (amount: number, reason: string) => void;
   spendCoins: (amount: number, reason: string) => boolean;
@@ -49,6 +54,10 @@ export interface GameState {
   // ---- Actions: identity ----
   setTeamName: (name: string) => void;
 
+  // ---- Actions: active challenge ----
+  setActiveModeId: (modeId: string | null) => void;
+  setActiveSquad: (squad: Squad | null) => void;
+
   // ---- Dev / reset ----
   resetProgress: () => void;
   resetChallengeState: () => void;
@@ -62,6 +71,8 @@ const initialState = {
   completions: {} as Record<string, ModeCompletion>,
   history: [] as ModeRunResult[],
   teamName: '',
+  activeModeId: null as string | null,
+  activeSquad: null as Squad | null,
 };
 
 export const useGameStore = create<GameState>()(
@@ -209,6 +220,9 @@ export const useGameStore = create<GameState>()(
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
 
+      setActiveModeId: (modeId) => set({ activeModeId: modeId }),
+      setActiveSquad: (squad) => set({ activeSquad: squad }),
+
       resetProgress: () => set({ ...initialState }),
 
       resetChallengeState: () =>
@@ -217,6 +231,7 @@ export const useGameStore = create<GameState>()(
           totalEarned: STARTING_COINS,
           transactions: [],
           ownedCards: {},
+          activeSquad: null,
           completions: s.completions,
           history: s.history,
           teamName: s.teamName,
