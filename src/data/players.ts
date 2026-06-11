@@ -2743,7 +2743,7 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Ireland',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Nottm Forest · 1992', positions: ['CM'], rating: 74 },
+      Rising: { era: 'Nottm Forest · 1993', positions: ['CM'], rating: 74 },
       Star:   { era: 'Man Utd · 1997',      positions: ['CM'], rating: 86 },
       Legend: { era: 'Man Utd · 2000',      positions: ['CM'], rating: 89 },
     },
@@ -2767,7 +2767,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man City · 2010', positions: ['CM'], rating: 78 },
       Star:   { era: 'Man City · 2012', positions: ['CM'], rating: 86 },
-      Legend: { era: 'Man City · 2014', positions: ['CM'], rating: 88 },
+      Legend: { era: 'Man City · 2014', positions: ['CM'], rating: 91 },
     },
   },
   {
@@ -2855,7 +2855,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2013', positions: ['CM'], rating: 77 },
       Star:   { era: 'Arsenal · 2016', positions: ['CM'], rating: 86 },
-      Legend: { era: 'Arsenal · 2018', positions: ['CM'], rating: 89 },
+      Legend: { era: 'Arsenal · 2018', positions: ['CM'], rating: 87 },
     },
   },
   {
@@ -3285,7 +3285,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2020', positions: ['CM'], rating: 79 },
       Star:   { era: 'Man Utd · 2021', positions: ['CM'], rating: 86 },
-      Legend: { era: 'Man Utd · 2023', positions: ['CM'], rating: 89 },
+      Legend: { era: 'Man Utd · 2023', positions: ['CM'], rating: 87 },
     },
   },
   {
@@ -3296,7 +3296,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 2020', positions: ['CM'], rating: 75 },
       Star:   { era: 'Chelsea · 2021', positions: ['CM'], rating: 82 },
-      Legend: { era: 'Chelsea · 2023', positions: ['CM'], rating: 85 },
+      Legend: { era: 'Chelsea · 2023', positions: ['CM'], rating: 82 },
     },
   },
   {
@@ -3415,7 +3415,7 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Man Utd · 1991',   positions: ['CM'], rating: 75 },
+      Rising: { era: 'Man Utd · 1993',   positions: ['CM'], rating: 75 },
       Star:   { era: 'Man Utd · 1994',   positions: ['CM'], rating: 84 },
       Legend: { era: 'Liverpool · 1998', positions: ['CM'], rating: 87 },
     },
@@ -3514,9 +3514,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Man Utd · 2007',       positions: ['CM'], rating: 73 },
-      Star:   { era: 'Man Utd · 2007',       positions: ['CM'], rating: 80 },
-      Legend: { era: 'Man Utd · 2008',       positions: ['CM'], rating: 83 },
+      Rising: { era: 'Man Utd · 2007',       positions: ['CM'], rating: 72 },
+      Star:   { era: 'Man Utd · 2008',       positions: ['CM'], rating: 77 },
+      Legend: { era: 'Man City · 2012',       positions: ['CM'], rating: 74 },
     },
   },
   {
@@ -3580,9 +3580,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Aston Villa · 1990', positions: ['CM'], rating: 74 },
-      Star:   { era: 'Aston Villa · 1991', positions: ['CM'], rating: 81 },
-      Legend: { era: 'Arsenal · 1996',     positions: ['CM'], rating: 84 },
+      Rising: { era: 'Arsenal · 1996', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Arsenal · 1997', positions: ['CM'], rating: 78 },
+      Legend: { era: 'Arsenal · 1998',     positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -4941,7 +4941,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Swansea · 2013',   positions: ['CM'], rating: 75 },
       Star:   { era: 'Tottenham · 2016', positions: ['CM'], rating: 83 },
-      Legend: { era: 'Everton · 2019',   positions: ['CM'], rating: 86 },
+      Legend: { era: 'Everton · 2019',   positions: ['CM'], rating: 80 },
     },
   },
   {
@@ -4963,7 +4963,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2015',   positions: ['CM'], rating: 74 },
       Star:   { era: 'Liverpool · 2018', positions: ['CM'], rating: 82 },
-      Legend: { era: 'Liverpool · 2019', positions: ['CM'], rating: 85 },
+      Legend: { era: 'Liverpool · 2019', positions: ['CM'], rating: 80 },
     },
   },
   {
@@ -4983,9 +4983,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'France',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Southampton · 2014', positions: ['CM'], rating: 75 },
-      Star:   { era: 'Southampton · 2015', positions: ['CM'], rating: 82 },
-      Legend: { era: 'Everton · 2018',     positions: ['CM'], rating: 85 },
+      Rising: { era: 'Southampton · 2014', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Southampton · 2015', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Everton · 2018',     positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5051,7 +5051,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2022', positions: ['CM'], rating: 75 },
       Star:   { era: 'Tottenham · 2023', positions: ['CM'], rating: 81 },
-      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 84 },
+      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -5062,7 +5062,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leeds · 2021',     positions: ['CM'], rating: 75 },
       Star:   { era: 'Leeds · 2022',     positions: ['CM'], rating: 82 },
-      Legend: { era: 'Man City · 2023',  positions: ['CM'], rating: 84 },
+      Legend: { era: 'Man City · 2023',  positions: ['CM'], rating: 74 },
     },
   },
   {
@@ -5073,7 +5073,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Watford · 2018',  positions: ['CM'], rating: 74 },
       Star:   { era: 'Everton · 2022',  positions: ['CM'], rating: 80 },
-      Legend: { era: 'Everton · 2024',  positions: ['CM'], rating: 83 },
+      Legend: { era: 'Everton · 2024',  positions: ['CM'], rating: 80 },
     },
   },
   {
@@ -5084,7 +5084,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Aston Villa · 2016', positions: ['CM'], rating: 75 },
       Star:   { era: 'Everton · 2018',     positions: ['CM'], rating: 82 },
-      Legend: { era: 'Everton · 2023',     positions: ['CM'], rating: 84 },
+      Legend: { era: 'Everton · 2023',     positions: ['CM'], rating: 82 },
     },
   },
   {
@@ -5095,7 +5095,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Everton · 2019', positions: ['CM'], rating: 73 },
       Star:   { era: 'Everton · 2020', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Everton · 2022', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Everton · 2022', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5106,7 +5106,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'West Ham · 2015',     positions: ['CM'], rating: 73 },
       Star:   { era: 'Crystal Palace · 2019', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Crystal Palace · 2021', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Crystal Palace · 2021', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5117,7 +5117,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Newcastle · 2022', positions: ['CM'], rating: 73 },
       Star:   { era: 'Newcastle · 2023', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Newcastle · 2024', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Newcastle · 2024', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5128,7 +5128,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2024', positions: ['CM'], rating: 74 },
       Star:   { era: 'Man Utd · 2025', positions: ['CM'], rating: 81 },
-      Legend: { era: 'Man Utd · 2025', positions: ['CM'], rating: 84 },
+      Legend: { era: 'Man Utd · 2025', positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -5139,7 +5139,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2022', positions: ['CM'], rating: 73 },
       Star:   { era: 'Liverpool · 2023', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Liverpool · 2024', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Liverpool · 2024', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5150,7 +5150,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2021', positions: ['CM'], rating: 73 },
       Star:   { era: 'Liverpool · 2023', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Liverpool · 2024', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Liverpool · 2024', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5161,7 +5161,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2022', positions: ['CM'], rating: 72 },
       Star:   { era: 'Tottenham · 2023', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5172,7 +5172,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Brighton · 2021',  positions: ['CM'], rating: 73 },
       Star:   { era: 'Tottenham · 2023', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -5183,7 +5183,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Watford · 2018',  positions: ['CM'], rating: 72 },
       Star:   { era: 'Watford · 2019',  positions: ['CM'], rating: 78 },
-      Legend: { era: 'Chelsea · 2024',  positions: ['CM'], rating: 81 },
+      Legend: { era: 'Chelsea · 2024',  positions: ['CM'], rating: 74 },
     },
   },
   {
@@ -5194,7 +5194,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 2014', positions: ['CM'], rating: 73 },
       Star:   { era: 'Leicester · 2016', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Chelsea · 2018',   positions: ['CM'], rating: 83 },
+      Legend: { era: 'Chelsea · 2018',   positions: ['CM'], rating: 70 },
     },
   },
   {
@@ -5205,7 +5205,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Everton · 2014',      positions: ['CM'], rating: 73 },
       Star:   { era: 'Everton · 2016',      positions: ['CM'], rating: 79 },
-      Legend: { era: 'Crystal Palace · 2021', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Crystal Palace · 2021', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5216,7 +5216,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Blackburn · 2012', positions: ['CM'], rating: 73 },
       Star:   { era: 'Stoke · 2014',     positions: ['CM'], rating: 80 },
-      Legend: { era: 'Stoke · 2016',     positions: ['CM'], rating: 83 },
+      Legend: { era: 'Stoke · 2016',     positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -5227,7 +5227,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Southampton · 2016', positions: ['CM'], rating: 72 },
       Star:   { era: 'Southampton · 2018', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Brighton · 2024',    positions: ['CM'], rating: 81 },
+      Legend: { era: 'Brighton · 2024',    positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -5249,7 +5249,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Blackburn · 2004', positions: ['CM'], rating: 73 },
       Star:   { era: 'Blackburn · 2006', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Blackburn · 2008', positions: ['CM'], rating: 83 },
+      Legend: { era: 'Blackburn · 2008', positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -5260,7 +5260,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2002', positions: ['CM'], rating: 72 },
       Star:   { era: 'Tottenham · 2005', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Everton · 2008',   positions: ['CM'], rating: 81 },
+      Legend: { era: 'Everton · 2008',   positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -5271,7 +5271,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Aston Villa · 1999', positions: ['CM'], rating: 72 },
       Star:   { era: 'Aston Villa · 2002', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Aston Villa · 2004', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Aston Villa · 2004', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5293,7 +5293,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'West Ham · 1995',   positions: ['CM'], rating: 72 },
       Star:   { era: 'Everton · 2000',    positions: ['CM'], rating: 78 },
-      Legend: { era: 'Sunderland · 2001', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Sunderland · 2001', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5304,7 +5304,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 1999', positions: ['CM'], rating: 72 },
       Star:   { era: 'Leicester · 2001', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Leicester · 2003', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Leicester · 2003', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5315,7 +5315,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Sunderland · 2001', positions: ['CM'], rating: 72 },
       Star:   { era: 'Aston Villa · 2004', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Aston Villa · 2006', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Aston Villa · 2006', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5326,7 +5326,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 1998', positions: ['CM'], rating: 72 },
       Star:   { era: 'Leicester · 1999', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Leicester · 2000', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Leicester · 2000', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5337,7 +5337,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2006',  positions: ['CM'], rating: 72 },
       Star:   { era: 'Sunderland · 2009', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Sunderland · 2011', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Sunderland · 2011', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5348,7 +5348,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Stoke · 2010',      positions: ['CM'], rating: 72 },
       Star:   { era: 'Stoke · 2013',      positions: ['CM'], rating: 78 },
-      Legend: { era: 'Aston Villa · 2019', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Aston Villa · 2019', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5359,7 +5359,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Wigan · 2008',      positions: ['CM'], rating: 72 },
       Star:   { era: 'Sunderland · 2011', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Sunderland · 2015', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Sunderland · 2015', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5370,7 +5370,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Southampton · 2018', positions: ['CM'], rating: 73 },
       Star:   { era: 'Wolves · 2023',      positions: ['CM'], rating: 79 },
-      Legend: { era: 'Fulham · 2024',       positions: ['CM'], rating: 82 },
+      Legend: { era: 'Fulham · 2024',       positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5392,7 +5392,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 2008',      positions: ['CM'], rating: 72 },
       Star:   { era: 'Aston Villa · 2010',  positions: ['CM'], rating: 77 },
-      Legend: { era: 'Fulham · 2013',        positions: ['CM'], rating: 80 },
+      Legend: { era: 'Fulham · 2013',        positions: ['CM'], rating: 74 },
     },
   },
   {
@@ -5403,7 +5403,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Leicester · 2020', positions: ['CM'], rating: 72 },
       Star:   { era: 'Leicester · 2022', positions: ['CM'], rating: 77 },
-      Legend: { era: 'Watford · 2022',   positions: ['CM'], rating: 80 },
+      Legend: { era: 'Watford · 2022',   positions: ['CM'], rating: 73 },
     },
   },
   {
@@ -5412,9 +5412,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Derby · 2001', positions: ['CM'], rating: 71 },
-      Star:   { era: 'Leeds · 2002', positions: ['CM'], rating: 76 },
-      Legend: { era: 'Leeds · 2003', positions: ['CM'], rating: 79 },
+      Rising: { era: 'Derby · 2001', positions: ['CM'], rating: 70 },
+      Star:   { era: 'Leeds · 2002', positions: ['CM'], rating: 74 },
+      Legend: { era: 'Leeds · 2003', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5425,7 +5425,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 1994', positions: ['CM'], rating: 72 },
       Star:   { era: 'Chelsea · 1997', positions: ['CM'], rating: 77 },
-      Legend: { era: 'Derby · 2000',   positions: ['CM'], rating: 80 },
+      Legend: { era: 'Derby · 2000',   positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5436,7 +5436,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2011', positions: ['CM'], rating: 72 },
       Star:   { era: 'Everton · 2013', positions: ['CM'], rating: 77 },
-      Legend: { era: 'Everton · 2015', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Everton · 2015', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5447,7 +5447,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Everton · 2017', positions: ['CM'], rating: 72 },
       Star:   { era: 'Everton · 2019', positions: ['CM'], rating: 77 },
-      Legend: { era: 'Everton · 2021', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Everton · 2021', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -5458,7 +5458,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'West Brom · 2013', positions: ['CM'], rating: 71 },
       Star:   { era: 'West Brom · 2015', positions: ['CM'], rating: 76 },
-      Legend: { era: 'West Brom · 2017', positions: ['CM'], rating: 79 },
+      Legend: { era: 'West Brom · 2017', positions: ['CM'], rating: 74 },
     },
   },
   {
@@ -5469,7 +5469,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Swansea · 2014',     positions: ['CM'], rating: 72 },
       Star:   { era: 'Southampton · 2016', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Burnley · 2018',     positions: ['CM'], rating: 81 },
+      Legend: { era: 'Burnley · 2018',     positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5480,7 +5480,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Hull · 2014',      positions: ['CM'], rating: 72 },
       Star:   { era: 'West Brom · 2018', positions: ['CM'], rating: 77 },
-      Legend: { era: 'West Brom · 2021', positions: ['CM'], rating: 80 },
+      Legend: { era: 'West Brom · 2021', positions: ['CM'], rating: 75 },
     },
   },
   {
@@ -5491,7 +5491,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Wimbledon · 1994', positions: ['CM'], rating: 71 },
       Star:   { era: 'Wimbledon · 1996', positions: ['CM'], rating: 77 },
-      Legend: { era: 'Wimbledon · 1997', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Wimbledon · 1997', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -5502,7 +5502,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Wimbledon · 1994', positions: ['CM'], rating: 72 },
       Star:   { era: 'Wimbledon · 1997', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Wimbledon · 1999', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Wimbledon · 1999', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -5513,7 +5513,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Derby · 2001',   positions: ['CM'], rating: 72 },
       Star:   { era: 'Everton · 2004', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Everton · 2007', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Everton · 2007', positions: ['CM'], rating: 80 },
     },
   },
   {
@@ -5524,7 +5524,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Aston Villa · 2007', positions: ['CM'], rating: 73 },
       Star:   { era: 'Aston Villa · 2009', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Aston Villa · 2012', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Aston Villa · 2012', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -5535,7 +5535,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Newcastle · 1994',  positions: ['CM'], rating: 72 },
       Star:   { era: 'Newcastle · 1996',  positions: ['CM'], rating: 77 },
-      Legend: { era: 'Sunderland · 1999', positions: ['CM'], rating: 80 },
+      Legend: { era: 'Sunderland · 1999', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5546,7 +5546,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2001',  positions: ['CM'], rating: 72 },
       Star:   { era: 'Everton · 2008',  positions: ['CM'], rating: 78 },
-      Legend: { era: 'Everton · 2012',  positions: ['CM'], rating: 81 },
+      Legend: { era: 'Everton · 2012',  positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -5557,7 +5557,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 1997',   positions: ['CM'], rating: 72 },
       Star:   { era: 'Blackburn · 2001',   positions: ['CM'], rating: 77 },
-      Legend: { era: 'Sunderland · 2003',  positions: ['CM'], rating: 80 },
+      Legend: { era: 'Sunderland · 2003',  positions: ['CM'], rating: 77 },
     },
   },
 
@@ -6089,7 +6089,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Aston Villa · 2001',    positions: ['CM'], rating: 72 },
       Star:   { era: 'Middlesbrough · 2004',  positions: ['CM'], rating: 78 },
-      Legend: { era: 'Middlesbrough · 2006',  positions: ['CM'], rating: 81 },
+      Legend: { era: 'Middlesbrough · 2006',  positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6100,18 +6100,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2019', positions: ['CM'], rating: 73 },
       Star:   { era: 'Liverpool · 2021', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Liverpool · 2023', positions: ['CM'], rating: 82 },
-    },
-  },
-  {
-    playerId: 'jenas',
-    playerName: 'Jermaine Jenas',
-    nationality: 'England',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Newcastle · 2003',  positions: ['CM'], rating: 73 },
-      Star:   { era: 'Newcastle · 2005',  positions: ['CM'], rating: 80 },
-      Legend: { era: 'Tottenham · 2011',  positions: ['CM'], rating: 83 },
+      Legend: { era: 'Liverpool · 2023', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6122,18 +6111,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 1998',     positions: ['CM'], rating: 73 },
       Star:   { era: 'Chelsea · 2001',     positions: ['CM'], rating: 79 },
-      Legend: { era: 'Tottenham · 2004',   positions: ['CM'], rating: 82 },
-    },
-  },
-  {
-    playerId: 'garymcallister',
-    playerName: 'Gary McAllister',
-    nationality: 'Scotland',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Coventry · 1998',  positions: ['CM'], rating: 74 },
-      Star:   { era: 'Liverpool · 2001', positions: ['CM'], rating: 81 },
-      Legend: { era: 'Liverpool · 2002', positions: ['CM'], rating: 84 },
+      Legend: { era: 'Tottenham · 2004',   positions: ['CM'], rating: 80 },
     },
   },
   {
@@ -6170,28 +6148,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'barkley',
-    playerName: 'Ross Barkley',
-    nationality: 'England',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Everton · 2015',     positions: ['CM'], rating: 74 },
-      Star:   { era: 'Chelsea · 2020',     positions: ['CM'], rating: 80 },
-      Legend: { era: 'Aston Villa · 2022', positions: ['CM'], rating: 83 },
-    },
-  },
-  {
-    playerId: 'bowyer',
-    playerName: 'Lee Bowyer',
-    nationality: 'England',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Leeds · 2001',      positions: ['CM'], rating: 73 },
-      Star:   { era: 'Newcastle · 2007',  positions: ['CM'], rating: 79 },
-      Legend: { era: 'Birmingham · 2011', positions: ['CM'], rating: 82 },
-    },
-  },
-  {
     playerId: 'pienaar',
     playerName: 'Steven Pienaar',
     nationality: 'South Africa',
@@ -6214,17 +6170,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'dier',
-    playerName: 'Eric Dier',
-    nationality: 'England',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Tottenham · 2016', positions: ['CM'], rating: 74 },
-      Star:   { era: 'Tottenham · 2019', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Tottenham · 2024', positions: ['CM'], rating: 83 },
-    },
-  },
-  {
     playerId: 'winks',
     playerName: 'Harry Winks',
     nationality: 'England',
@@ -6232,7 +6177,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Tottenham · 2018', positions: ['CM'], rating: 72 },
       Star:   { era: 'Tottenham · 2020', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Tottenham · 2022', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Tottenham · 2022', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6254,7 +6199,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2020', positions: ['CM'], rating: 74 },
       Star:   { era: 'Man Utd · 2022', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Man Utd · 2024', positions: ['CM'], rating: 83 },
+      Legend: { era: 'Man Utd · 2024', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -6265,7 +6210,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man City · 2007', positions: ['CM'], rating: 73 },
       Star:   { era: 'Newcastle · 2010', positions: ['CM'], rating: 79 },
-      Legend: { era: 'QPR · 2013',      positions: ['CM'], rating: 82 },
+      Legend: { era: 'QPR · 2013',      positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -6324,17 +6269,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'juanmata',
-    playerName: 'Juan Mata',
-    nationality: 'Spain',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Chelsea · 2013',   positions: ['CM'], rating: 77 },
-      Star:   { era: 'Man Utd · 2017',   positions: ['CM'], rating: 83 },
-      Legend: { era: 'Man Utd · 2022',   positions: ['CM'], rating: 86 },
-    },
-  },
-  {
     playerId: 'casemiro',
     playerName: 'Casemiro',
     nationality: 'Brazil',
@@ -6342,18 +6276,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2023', positions: ['CM'], rating: 78 },
       Star:   { era: 'Man Utd · 2024', positions: ['CM'], rating: 85 },
-      Legend: { era: 'Man Utd · 2025', positions: ['CM'], rating: 88 },
-    },
-  },
-  {
-    playerId: 'kierdyer',
-    playerName: 'Kieron Dyer',
-    nationality: 'England',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Newcastle · 2001', positions: ['CM'], rating: 74 },
-      Star:   { era: 'Newcastle · 2003', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Newcastle · 2005', positions: ['CM'], rating: 83 },
+      Legend: { era: 'Man Utd · 2025', positions: ['CM'], rating: 85 },
     },
   },
   {
@@ -6386,7 +6309,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Man Utd · 2019', positions: ['CM'], rating: 73 },
       Star:   { era: 'Man Utd · 2021', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Man Utd · 2023', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Man Utd · 2023', positions: ['CM'], rating: 77 },
     },
   },
 
@@ -6397,9 +6320,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Middlesbrough · 1999', positions: ['CM'], rating: 76 },
-      Star:   { era: 'Middlesbrough · 2000', positions: ['CM'], rating: 82 },
-      Legend: { era: 'Everton · 2002',       positions: ['CM'], rating: 85 },
+      Rising: { era: 'Middlesbrough · 1999', positions: ['CM'], rating: 70 },
+      Star:   { era: 'Middlesbrough · 2000', positions: ['CM'], rating: 74 },
+      Legend: { era: 'Everton · 2002',       positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6408,20 +6331,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Argentina',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Man Utd · 2002', positions: ['CM'], rating: 77 },
-      Star:   { era: 'Man Utd · 2003', positions: ['CM'], rating: 83 },
-      Legend: { era: 'Chelsea · 2004', positions: ['CM'], rating: 86 },
-    },
-  },
-  {
-    playerId: 'bernardosilva',
-    playerName: 'Bernardo Silva',
-    nationality: 'Portugal',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Man City · 2018', positions: ['CM'], rating: 77 },
-      Star:   { era: 'Man City · 2021', positions: ['CM'], rating: 84 },
-      Legend: { era: 'Man City · 2023', positions: ['CM'], rating: 88 },
+      Rising: { era: 'Man Utd · 2002', positions: ['CM'], rating: 74 },
+      Star:   { era: 'Man Utd · 2003', positions: ['CM'], rating: 79 },
+      Legend: { era: 'Chelsea · 2004', positions: ['CM'], rating: 82 },
     },
   },
   {
@@ -6430,9 +6342,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Japan',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Man Utd · 2013', positions: ['CM'], rating: 74 },
-      Star:   { era: 'Man Utd · 2014', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Man Utd · 2014', positions: ['CM'], rating: 83 },
+      Rising: { era: 'Man Utd · 2013', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Man Utd · 2014', positions: ['CM'], rating: 76 },
+      Legend: { era: 'Man Utd · 2014', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -6458,17 +6370,6 @@ const PLAYERS: PlayerSource[] = [
     },
   },
   {
-    playerId: 'redknapp',
-    playerName: 'Jamie Redknapp',
-    nationality: 'England',
-    pack: 'MID',
-    tiers: {
-      Rising: { era: 'Liverpool · 1995',   positions: ['CM'], rating: 74 },
-      Star:   { era: 'Liverpool · 1998',   positions: ['CM'], rating: 81 },
-      Legend: { era: 'Tottenham · 2003',   positions: ['CM'], rating: 84 },
-    },
-  },
-  {
     playerId: 'juninho',
     playerName: 'Juninho Paulista',
     nationality: 'Brazil',
@@ -6485,9 +6386,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'Spain',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Middlesbrough · 2004', positions: ['CM'], rating: 74 },
-      Star:   { era: 'Middlesbrough · 2006', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Middlesbrough · 2008', positions: ['CM'], rating: 83 },
+      Rising: { era: 'Middlesbrough · 2004', positions: ['CM'], rating: 72 },
+      Star:   { era: 'Middlesbrough · 2006', positions: ['CM'], rating: 76 },
+      Legend: { era: 'Middlesbrough · 2008', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -6553,7 +6454,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Chelsea · 2020', positions: ['CM'], rating: 74 },
       Star:   { era: 'Chelsea · 2022', positions: ['CM'], rating: 80 },
-      Legend: { era: 'Chelsea · 2023', positions: ['CM'], rating: 83 },
+      Legend: { era: 'Chelsea · 2023', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -6564,7 +6465,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Wolves · 2023',   positions: ['CM'], rating: 73 },
       Star:   { era: 'Man City · 2024', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Man City · 2025', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Man City · 2025', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6575,7 +6476,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Sunderland · 2001', positions: ['CM'], rating: 72 },
       Star:   { era: 'Everton · 2005',    positions: ['CM'], rating: 78 },
-      Legend: { era: 'Wigan · 2007',      positions: ['CM'], rating: 81 },
+      Legend: { era: 'Wigan · 2007',      positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6586,7 +6487,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Ipswich · 2001', positions: ['CM'], rating: 73 },
       Star:   { era: 'Ipswich · 2002', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Charlton · 2005', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Charlton · 2005', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -6597,7 +6498,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'West Ham · 1998', positions: ['CM'], rating: 73 },
       Star:   { era: 'Man City · 2002', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Man City · 2003', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Man City · 2003', positions: ['CM'], rating: 79 },
     },
   },
   {
@@ -6608,7 +6509,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Everton · 1999', positions: ['CM'], rating: 73 },
       Star:   { era: 'Leeds · 2001',   positions: ['CM'], rating: 80 },
-      Legend: { era: 'Leeds · 2003',   positions: ['CM'], rating: 83 },
+      Legend: { era: 'Leeds · 2003',   positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -6628,9 +6529,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'France',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Chelsea · 1999', positions: ['CM'], rating: 77 },
-      Star:   { era: 'Chelsea · 2000', positions: ['CM'], rating: 82 },
-      Legend: { era: 'Chelsea · 2001', positions: ['CM'], rating: 85 },
+      Rising: { era: 'Chelsea · 1999', positions: ['CM'], rating: 73 },
+      Star:   { era: 'Chelsea · 2000', positions: ['CM'], rating: 78 },
+      Legend: { era: 'Chelsea · 2001', positions: ['CM'], rating: 81 },
     },
   },
   {
@@ -6641,7 +6542,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Arsenal · 2020', positions: ['CM'], rating: 72 },
       Star:   { era: 'Arsenal · 2021', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Arsenal · 2021', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Arsenal · 2021', positions: ['CM'], rating: 76 },
     },
   },
   {
@@ -6652,7 +6553,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'West Ham · 2000', positions: ['CM'], rating: 73 },
       Star:   { era: 'Man City · 2003', positions: ['CM'], rating: 79 },
-      Legend: { era: 'Man City · 2003', positions: ['CM'], rating: 82 },
+      Legend: { era: 'Man City · 2003', positions: ['CM'], rating: 78 },
     },
   },
   {
@@ -6674,7 +6575,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Blackpool · 2011', positions: ['CM'], rating: 72 },
       Star:   { era: 'Stoke · 2014',     positions: ['CM'], rating: 78 },
-      Legend: { era: 'Stoke · 2016',     positions: ['CM'], rating: 81 },
+      Legend: { era: 'Stoke · 2016',     positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6694,9 +6595,9 @@ const PLAYERS: PlayerSource[] = [
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Man Utd · 1993',     positions: ['CM'], rating: 74 },
-      Star:   { era: 'Man Utd · 1994',     positions: ['CM'], rating: 80 },
-      Legend: { era: 'Middlesbrough · 1996', positions: ['CM'], rating: 83 },
+      Rising: { era: 'Man Utd · 1993',     positions: ['CM'], rating: 70 },
+      Star:   { era: 'Man Utd · 1994',     positions: ['CM'], rating: 74 },
+      Legend: { era: 'Middlesbrough · 1996', positions: ['CM'], rating: 77 },
     },
   },
   {
@@ -6707,7 +6608,7 @@ const PLAYERS: PlayerSource[] = [
     tiers: {
       Rising: { era: 'Liverpool · 2001', positions: ['CM'], rating: 72 },
       Star:   { era: 'Liverpool · 2003', positions: ['CM'], rating: 78 },
-      Legend: { era: 'Liverpool · 2005', positions: ['CM'], rating: 81 },
+      Legend: { era: 'Liverpool · 2005', positions: ['CM'], rating: 78 },
     },
   },
   {
