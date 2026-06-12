@@ -7,6 +7,7 @@ import type {
   ModeId,
   Squad,
   TournamentStage,
+  MatchResult,
 } from '@/store/types';
 
 export interface GameState {
@@ -27,6 +28,8 @@ export interface GameState {
   // ---- Tournament state ----
   /** Which stage is next to simulate. null = haven't started yet. */
   currentStage: TournamentStage | null;
+  /** Group matches played so far this tournament (max 3). */
+  groupMatches: MatchResult[];
   tournamentWon: boolean;
   tournamentEliminated: boolean;
 
@@ -48,6 +51,7 @@ export interface GameState {
 
   // ---- Actions: tournament progression ----
   startTournament: () => void;
+  recordGroupMatch: (match: MatchResult) => void;
   advanceStage: (nextStage: TournamentStage | null) => void;
   eliminateFromTournament: () => void;
   winTournament: () => void;
@@ -70,6 +74,7 @@ const initialState = {
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
   currentStage: null as TournamentStage | null,
+  groupMatches: [] as MatchResult[],
   tournamentWon: false,
   tournamentEliminated: false,
   upgradeTokens: 0,
@@ -112,7 +117,11 @@ export const useGameStore = create<GameState>()(
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
 
-      startTournament: () => set({ currentStage: 'group', tournamentWon: false, tournamentEliminated: false }),
+      startTournament: () =>
+        set({ currentStage: 'group', groupMatches: [], tournamentWon: false, tournamentEliminated: false }),
+
+      recordGroupMatch: (match) =>
+        set((s) => ({ groupMatches: [...s.groupMatches, match] })),
 
       advanceStage: (nextStage) =>
         set({ currentStage: nextStage }),
@@ -128,6 +137,7 @@ export const useGameStore = create<GameState>()(
           ownedCards: {},
           activeSquad: null,
           currentStage: null,
+          groupMatches: [],
           tournamentWon: false,
           tournamentEliminated: false,
           upgradeTokens: 0,
@@ -157,6 +167,7 @@ export const useGameStore = create<GameState>()(
           ownedCards: {},
           activeSquad: null,
           currentStage: null,
+          groupMatches: [],
           tournamentWon: false,
           tournamentEliminated: false,
           upgradeTokens: 0,

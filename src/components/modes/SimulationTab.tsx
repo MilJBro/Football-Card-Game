@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { GameModeDef, Squad, TournamentStage, MatchResult, GroupStageResult } from '@/store/types';
+import type { GameModeDef, Squad, TournamentStage, MatchResult } from '@/store/types';
 import { summariseSquad } from '@/lib/squadUtils';
 import {
-  simulateGroupStage,
+  simulateGroupMatch,
   simulateKnockoutStage,
+  pickGroupOpponent,
+  groupPoints,
+  GROUP_GAMES,
+  GROUP_QUALIFY_POINTS,
   getStageLabel,
   getNextStage,
   matchWon,
@@ -17,7 +21,7 @@ import { Button } from '@/components/ui/Button';
 import { SeasonReward } from '@/components/modes/SeasonReward';
 import { cn } from '@/lib/ui';
 
-type Phase = 'ready' | 'simulating' | 'group-result' | 'knockout-result' | 'won' | 'eliminated';
+type Phase = 'ready' | 'simulating' | 'group-match-result' | 'knockout-result' | 'won' | 'eliminated';
 
 const STAGE_ORDER: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'final'];
 
@@ -33,6 +37,8 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   const ownedCards = useGameStore((s) => s.ownedCards);
   const recordRun = useGameStore((s) => s.recordRun);
   const currentStage = useGameStore((s) => s.currentStage);
+  const groupMatches = useGameStore((s) => s.groupMatches);
+  const recordGroupMatch = useGameStore((s) => s.recordGroupMatch);
   const tournamentWon = useGameStore((s) => s.tournamentWon);
   const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
   const startTournament = useGameStore((s) => s.startTournament);
@@ -48,7 +54,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     return 'ready';
   });
 
-  const [groupResult, setGroupResult] = useState<GroupStageResult | null>(null);
+  const [latestGroupMatch, setLatestGroupMatch] = useState<MatchResult | null>(null);
   const [knockoutResult, setKnockoutResult] = useState<MatchResult | null>(null);
   /** Stage the result on screen belongs to — currentStage may have already advanced. */
   const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
@@ -56,7 +62,11 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
 
   const summary = summariseSquad(squad, ownedCards);
   const stageToSimulate = currentStage ?? 'group';
-  const stageLabel = getStageLabel(stageToSimulate);
+  const groupGameNumber = Math.min(groupMatches.length + 1, GROUP_GAMES);
+  const stageLabel =
+    stageToSimulate === 'group'
+      ? `Group Game ${groupGameNumber} of ${GROUP_GAMES}`
+      : getStageLabel(stageToSimulate);
 
   function simulate() {
     const isFirst = currentStage === null;
@@ -70,15 +80,20 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
       setPlayedStage(stage);
 
       if (stage === 'group') {
-        const result = simulateGroupStage(sum.rating);
-        setGroupResult(result);
-        setPhase('group-result');
+        const opponent = pickGroupOpponent(groupMatches.map((m) => m.opponent.name));
+        const result = simulateGroupMatch(sum.rating, opponent);
+        recordGroupMatch(result);
+        setLatestGroupMatch(result);
+        setPhase('group-match-result');
 
-        if (!result.qualified) {
-          eliminateFromTournament();
-          recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now() });
-        } else {
-          advanceStage('r32');
+        const allMatches = [...groupMatches, result];
+        if (allMatches.length >= GROUP_GAMES) {
+          if (groupPoints(allMatches) >= GROUP_QUALIFY_POINTS) {
+            advanceStage('r32');
+          } else {
+            eliminateFromTournament();
+            recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now() });
+          }
         }
       } else {
         const result = simulateKnockoutStage(sum.rating, stage);
@@ -100,7 +115,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   }
 
   function continueToNext() {
-    setGroupResult(null);
+    setLatestGroupMatch(null);
     setKnockoutResult(null);
     setShowReward(false);
 
@@ -115,7 +130,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
 
   function restart() {
     restartRun();
-    setGroupResult(null);
+    setLatestGroupMatch(null);
     setKnockoutResult(null);
     setShowReward(false);
     setPhase('ready');
@@ -132,61 +147,104 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         >
           ⚽
         </motion.div>
-        <p className="text-lg font-bold text-white/70">Simulating the {stageLabel}…</p>
+        <p className="text-lg font-bold text-white/70">Simulating {stageLabel}…</p>
       </div>
     );
   }
 
-  // ---------------------------------------------------------------- Group result
-  if (phase === 'group-result' && groupResult) {
-    const qualified = groupResult.qualified;
+  // ---------------------------------------------------------------- Group match result
+  if (phase === 'group-match-result' && latestGroupMatch) {
+    const m = latestGroupMatch;
+    const won = m.englandGoals > m.opponentGoals;
+    const drew = m.englandGoals === m.opponentGoals;
+    const gameNumber = groupMatches.length; // already recorded
+    const points = groupPoints(groupMatches);
+    const groupOver = gameNumber >= GROUP_GAMES;
+    const qualified = groupOver && points >= GROUP_QUALIFY_POINTS;
+    const eliminated = groupOver && !qualified;
+
     return (
       <div className="space-y-4">
-        <div className={cn(
-          'rounded-2xl border-2 p-5 text-center',
-          qualified ? 'border-emerald-400 bg-emerald-400/10' : 'border-red-400/50 bg-red-400/10',
-        )}>
-          <div className="text-5xl">{qualified ? '✅' : '❌'}</div>
-          <h1 className="mt-2 text-2xl font-black">
-            {qualified ? 'Qualified!' : 'Eliminated'}
-          </h1>
-          <p className="mt-1 text-sm text-white/60">
-            {qualified
-              ? `${groupResult.points} points — through to the Round of 32`
-              : `Only ${groupResult.points} points — not enough to qualify`}
-          </p>
-        </div>
+        {/* Headline — match result mid-group, qualification verdict after game 3 */}
+        {groupOver ? (
+          <div className={cn(
+            'rounded-2xl border-2 p-5 text-center',
+            qualified ? 'border-emerald-400 bg-emerald-400/10' : 'border-red-400/50 bg-red-400/10',
+          )}>
+            <div className="text-5xl">{qualified ? '✅' : '❌'}</div>
+            <h1 className="mt-2 text-2xl font-black">
+              {qualified ? 'Qualified!' : 'Eliminated'}
+            </h1>
+            <p className="mt-1 text-sm text-white/60">
+              {qualified
+                ? `${points} points — through to the Round of 32`
+                : `Only ${points} points — not enough to qualify`}
+            </p>
+          </div>
+        ) : (
+          <div className={cn(
+            'rounded-2xl border-2 p-5 text-center',
+            won ? 'border-emerald-400 bg-emerald-400/10'
+              : drew ? 'border-yellow-400/50 bg-yellow-400/10'
+              : 'border-red-400/50 bg-red-400/10',
+          )}>
+            <div className="text-5xl">{won ? '🎉' : drew ? '🤝' : '😖'}</div>
+            <h1 className="mt-2 text-2xl font-black">
+              {won ? 'Victory!' : drew ? 'A Draw' : 'Defeat'}
+            </h1>
+            <p className="mt-1 text-sm text-white/60">
+              Group Game {gameNumber} of {GROUP_GAMES} · {points} pt{points !== 1 ? 's' : ''} so far
+            </p>
+          </div>
+        )}
 
+        {/* Latest match */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Group Stage Results</div>
-          <div className="space-y-2">
-            {groupResult.matches.map((m, i) => (
-              <MatchCard key={i} match={m} stage="group" />
-            ))}
+          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
+            Group Game {gameNumber}
           </div>
-          <div className="mt-3 flex items-center justify-between rounded-xl bg-black/20 px-4 py-2">
-            <span className="text-sm font-bold text-white/60">Total Points</span>
-            <span className={cn('text-xl font-black tabular-nums', qualified ? 'text-emerald-300' : 'text-red-400')}>
-              {groupResult.points} / 9
-            </span>
-          </div>
+          <MatchCard match={m} stage="group" />
         </div>
 
-        {qualified && !showReward && (
+        {/* Group so far */}
+        {gameNumber > 1 && (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Group So Far</div>
+            <div className="space-y-2">
+              {groupMatches.map((gm, i) => (
+                <MatchCard key={i} match={gm} stage="group" />
+              ))}
+            </div>
+            <div className="mt-3 flex items-center justify-between rounded-xl bg-black/20 px-4 py-2">
+              <span className="text-sm font-bold text-white/60">Points</span>
+              <span className={cn(
+                'text-xl font-black tabular-nums',
+                points >= GROUP_QUALIFY_POINTS ? 'text-emerald-300' : 'text-white',
+              )}>
+                {points} / 9
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Reward spin — campaign continues unless the group is lost */}
+        {!eliminated && !showReward && (
           <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
             🎰 Spin for Reward
           </Button>
         )}
 
-        {qualified ? (
-          <div className="flex flex-wrap gap-3">
-            <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
-            <Button className="flex-1" onClick={continueToNext}>Round of 32 →</Button>
-          </div>
-        ) : (
+        {eliminated ? (
           <Button size="lg" variant="danger" className="w-full" onClick={restart}>
             Start Again
           </Button>
+        ) : (
+          <div className="flex flex-wrap gap-3">
+            <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
+            <Button className="flex-1" onClick={continueToNext}>
+              {qualified ? 'Round of 32 →' : `Group Game ${gameNumber + 1} →`}
+            </Button>
+          </div>
         )}
 
         {showReward && (
@@ -388,8 +446,15 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
       {/* Next stage callout */}
       {!isFirstSim && (
         <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-          <div className="text-[10px] uppercase tracking-widest text-white/40">Next Stage</div>
+          <div className="text-[10px] uppercase tracking-widest text-white/40">
+            {stageToSimulate === 'group' ? 'Next Match' : 'Next Stage'}
+          </div>
           <div className="mt-0.5 text-lg font-black text-white">{stageLabel}</div>
+          {stageToSimulate === 'group' && groupMatches.length > 0 && (
+            <p className="mt-1 text-xs font-bold text-white/50">
+              {groupPoints(groupMatches)} pts from {groupMatches.length} game{groupMatches.length !== 1 ? 's' : ''} — need {GROUP_QUALIFY_POINTS}+ to qualify
+            </p>
+          )}
         </div>
       )}
 

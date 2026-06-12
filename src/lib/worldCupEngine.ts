@@ -1,4 +1,4 @@
-import type { Nation, MatchResult, GroupStageResult, TournamentStage } from '@/store/types';
+import type { Nation, MatchResult, TournamentStage } from '@/store/types';
 
 // ============================================================================
 // World Cup match simulation — Poisson-based goal engine.
@@ -100,11 +100,6 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function pickUnique<T extends { name: string }>(arr: T[], count: number): T[] {
-  const shuffled = [...arr].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
-
 // ---------------------------------------------------------------------------
 // Match simulation
 // ---------------------------------------------------------------------------
@@ -144,19 +139,23 @@ export function simulateKnockoutMatch(englandRating: number, opponent: Nation): 
 // Stage simulation
 // ---------------------------------------------------------------------------
 
-export function simulateGroupStage(englandRating: number): GroupStageResult {
-  const opponents = pickUnique(GROUP_NATIONS, 3);
-  const matches = opponents.map((opp) =>
-    simulateGroupMatch(englandRating, opp)
-  ) as [MatchResult, MatchResult, MatchResult];
+export const GROUP_GAMES = 3;
+export const GROUP_QUALIFY_POINTS = 4;
 
+/** Pick the next group opponent, never repeating one already faced this group. */
+export function pickGroupOpponent(playedNames: string[]): Nation {
+  const pool = GROUP_NATIONS.filter((n) => !playedNames.includes(n.name));
+  return pickRandom(pool.length > 0 ? pool : GROUP_NATIONS);
+}
+
+/** Points earned so far across played group matches. */
+export function groupPoints(matches: MatchResult[]): number {
   let points = 0;
   for (const m of matches) {
     if (m.englandGoals > m.opponentGoals) points += 3;
     else if (m.englandGoals === m.opponentGoals) points += 1;
   }
-
-  return { matches, points, qualified: points >= 4 };
+  return points;
 }
 
 export function simulateKnockoutStage(

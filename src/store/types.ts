@@ -38,11 +38,6 @@ export interface MatchResult {
   penaltiesLoss?: boolean;
 }
 
-export interface GroupStageResult {
-  matches: [MatchResult, MatchResult, MatchResult];
-  points: number;
-  qualified: boolean;
-}
 
 // ---------------------------------------------------------------------------
 // Cards
