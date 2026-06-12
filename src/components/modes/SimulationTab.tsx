@@ -25,7 +25,6 @@ import {
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
-import { SeasonReward } from '@/components/modes/SeasonReward';
 import { cn } from '@/lib/ui';
 
 type Phase = 'ready' | 'simulating' | 'group-match-result' | 'knockout-result' | 'won' | 'eliminated';
@@ -35,11 +34,10 @@ const STAGE_ORDER: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'fina
 interface SimulationTabProps {
   mode: GameModeDef;
   squad: Squad;
-  onSquadChange: (squad: Squad) => void;
   onGoToSquad: () => void;
 }
 
-export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: SimulationTabProps) {
+export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) {
   const hydrated = useHydrated();
   const ownedCards = useGameStore((s) => s.ownedCards);
   const recordRun = useGameStore((s) => s.recordRun);
@@ -72,7 +70,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   const [knockoutResult, setKnockoutResult] = useState<MatchResult | null>(null);
   /** Stage the result on screen belongs to — currentStage may have already advanced. */
   const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
-  const [showReward, setShowReward] = useState(false);
 
   // Draw the group before kick-off so the player can see it; backfill a missing
   // knockout opponent (e.g. saves from before opponents were pre-drawn).
@@ -101,7 +98,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     const isFirst = currentStage === null;
     if (isFirst) startTournament();
     setPhase('simulating');
-    setShowReward(false);
 
     setTimeout(() => {
       const sum = summariseSquad(squad, ownedCards);
@@ -167,7 +163,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   function continueToNext() {
     setLatestGroupMatch(null);
     setKnockoutResult(null);
-    setShowReward(false);
 
     if (tournamentWon) {
       setPhase('won');
@@ -182,7 +177,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     restartRun();
     setLatestGroupMatch(null);
     setKnockoutResult(null);
-    setShowReward(false);
     setPhase('ready');
   }
 
@@ -226,8 +220,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
             'rounded-2xl border-2 p-5 text-center',
             qualified ? 'border-emerald-400 bg-emerald-400/10' : 'border-red-400/50 bg-red-400/10',
           )}>
-            <div className="text-5xl">{qualified ? '✅' : '❌'}</div>
-            <h1 className="mt-2 text-2xl font-black">
+            <h1 className="text-2xl font-black">
               {qualified ? 'Qualified!' : 'Eliminated'}
             </h1>
             <p className="mt-1 text-sm text-white/60">
@@ -247,8 +240,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
               : drew ? 'border-yellow-400/50 bg-yellow-400/10'
               : 'border-red-400/50 bg-red-400/10',
           )}>
-            <div className="text-5xl">{won ? '🎉' : drew ? '🤝' : '😖'}</div>
-            <h1 className="mt-2 text-2xl font-black">
+            <h1 className="text-2xl font-black">
               {won ? 'Victory!' : drew ? 'A Draw' : 'Defeat'}
             </h1>
             <p className="mt-1 text-sm text-white/60">
@@ -277,11 +269,28 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         {/* Live group table */}
         <GroupTable table={groupTable} />
 
-        {/* Reward spin — campaign continues unless the group is lost */}
-        {!eliminated && !showReward && (
-          <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
-            🎰 Spin for Reward
-          </Button>
+        {/* Next fixture teaser */}
+        {!groupOver && groupOpponents[gameNumber] && (
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="text-[10px] uppercase tracking-widest text-white/40">
+              Next Fixture — Group Game {gameNumber + 1}
+            </div>
+            <div className="mt-1 flex items-center gap-2 text-lg font-black text-white">
+              <span className="text-2xl">{groupOpponents[gameNumber].flag}</span>
+              {groupOpponents[gameNumber].name}
+            </div>
+          </div>
+        )}
+        {qualified && nextOpponent && (
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="text-[10px] uppercase tracking-widest text-white/40">
+              Up next in the Round of 32
+            </div>
+            <div className="mt-1 flex items-center gap-2 text-lg font-black text-white">
+              <span className="text-2xl">{nextOpponent.flag}</span>
+              {nextOpponent.name}
+            </div>
+          </div>
         )}
 
         {eliminated ? (
@@ -295,14 +304,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
               {qualified ? 'Round of 32 →' : `Group Game ${gameNumber + 1} →`}
             </Button>
           </div>
-        )}
-
-        {showReward && (
-          <SeasonReward
-            squad={squad}
-            onClaim={(updatedSquad) => onSquadChange(updatedSquad)}
-            onDismiss={() => setShowReward(false)}
-          />
         )}
       </div>
     );
@@ -323,8 +324,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
             : won ? 'border-emerald-400 bg-emerald-400/10'
             : 'border-red-400/50 bg-red-400/10',
         )}>
-          <div className="text-5xl">{won && wasFinale ? '🏆' : won ? '✅' : '❌'}</div>
-          <h1 className="mt-2 text-2xl font-black">
+          <h1 className="text-2xl font-black">
             {won && wasFinale ? 'World Champions!' : won ? `${getStageLabel(playedStage)} — Won!` : 'Eliminated'}
           </h1>
           {won && wasFinale && (
@@ -359,12 +359,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           </div>
         )}
 
-        {won && !showReward && (
-          <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
-            🎰 Spin for Reward
-          </Button>
-        )}
-
         {won ? (
           wasFinale ? (
             <Button size="lg" className="w-full" onClick={restart}>
@@ -380,14 +374,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           <Button size="lg" variant="danger" className="w-full" onClick={restart}>
             Start Again
           </Button>
-        )}
-
-        {showReward && (
-          <SeasonReward
-            squad={squad}
-            onClaim={(updatedSquad) => onSquadChange(updatedSquad)}
-            onDismiss={() => setShowReward(false)}
-          />
         )}
       </div>
     );
@@ -422,8 +408,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     return (
       <div className="space-y-4">
         <div className="rounded-2xl border-2 border-red-400/50 bg-red-400/10 p-6 text-center">
-          <div className="text-5xl">💔</div>
-          <h1 className="mt-3 text-2xl font-black">England are Out</h1>
+          <h1 className="text-2xl font-black">England are Out</h1>
           <p className="mt-2 text-sm text-white/50">
             This squad&apos;s World Cup journey is over. Build a new one and try again.
           </p>
@@ -499,30 +484,18 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         />
       )}
 
-      {/* Next knockout opponent */}
+      {/* Next fixture — group opponent in order, or the pre-drawn knockout opponent */}
+      {inGroupPhase && groupMatches.length < GROUP_GAMES && groupOpponents[groupMatches.length] && (
+        <NextOpponentCard
+          title={`Next Fixture — Group Game ${groupGameNumber}`}
+          opponent={groupOpponents[groupMatches.length]}
+        />
+      )}
       {!inGroupPhase && nextOpponent && (
-        <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-4">
-          <div className="text-[10px] uppercase tracking-widest text-white/40">
-            {getStageLabel(stageToSimulate)} — Next Opponent
-          </div>
-          <div className="mt-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-4xl">{nextOpponent.flag}</span>
-              <div>
-                <div className="text-xl font-black text-white">{nextOpponent.name}</div>
-                <div className="text-xs text-white/40">Team rating {nextOpponent.rating}</div>
-              </div>
-            </div>
-            <span className={cn(
-              'rounded-full px-3 py-1 text-xs font-black',
-              nextOpponent.rating >= 88 ? 'bg-red-500/20 text-red-300'
-                : nextOpponent.rating >= 81 ? 'bg-amber-500/20 text-amber-300'
-                : 'bg-emerald-500/20 text-emerald-300',
-            )}>
-              {nextOpponent.rating >= 88 ? 'ELITE' : nextOpponent.rating >= 81 ? 'TOUGH' : 'WINNABLE'}
-            </span>
-          </div>
-        </div>
+        <NextOpponentCard
+          title={`${getStageLabel(stageToSimulate)} — Next Opponent`}
+          opponent={nextOpponent}
+        />
       )}
 
       {/* Squad rating */}
@@ -568,6 +541,31 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
+
+function NextOpponentCard({ title, opponent }: { title: string; opponent: { name: string; flag: string; rating: number } }) {
+  return (
+    <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-4">
+      <div className="text-[10px] uppercase tracking-widest text-white/40">{title}</div>
+      <div className="mt-2 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="text-4xl">{opponent.flag}</span>
+          <div>
+            <div className="text-xl font-black text-white">{opponent.name}</div>
+            <div className="text-xs text-white/40">Team rating {opponent.rating}</div>
+          </div>
+        </div>
+        <span className={cn(
+          'rounded-full px-3 py-1 text-xs font-black',
+          opponent.rating >= 88 ? 'bg-red-500/20 text-red-300'
+            : opponent.rating >= 81 ? 'bg-amber-500/20 text-amber-300'
+            : 'bg-emerald-500/20 text-emerald-300',
+        )}>
+          {opponent.rating >= 88 ? 'ELITE' : opponent.rating >= 81 ? 'TOUGH' : 'WINNABLE'}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: string }) {
   return (

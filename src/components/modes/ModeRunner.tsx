@@ -109,7 +109,6 @@ export function ModeRunner({ modeId }: { modeId: string }) {
         <SimulationTab
           mode={mode}
           squad={squad}
-          onSquadChange={setSquad}
           onGoToSquad={() => setTab('squad')}
         />
       )}
