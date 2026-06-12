@@ -14,6 +14,14 @@ export type Tier = 'Rising' | 'Star' | 'Legend';
 
 export type Formation = '4-3-3' | '4-4-2' | '3-5-2';
 
+/** A past England manager — the wheel assigns one per run, locking the formation. */
+export interface EnglandManager {
+  name: string;
+  /** Years in charge of England, e.g. "1963–1974". */
+  era: string;
+  formation: Formation;
+}
+
 export type ModeId = 'england';
 
 // ---------------------------------------------------------------------------

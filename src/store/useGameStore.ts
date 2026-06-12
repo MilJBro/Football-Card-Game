@@ -8,6 +8,7 @@ import type {
   Squad,
   TournamentStage,
   MatchResult,
+  EnglandManager,
 } from '@/store/types';
 
 export interface GameState {
@@ -24,6 +25,8 @@ export interface GameState {
   // ---- Active run ----
   activeModeId: string | null;
   activeSquad: Squad | null;
+  /** Manager assigned by the wheel for this run — locks the formation. */
+  manager: EnglandManager | null;
 
   // ---- Tournament state ----
   /** Which stage is next to simulate. null = haven't started yet. */
@@ -48,6 +51,7 @@ export interface GameState {
   // ---- Actions: active run ----
   setActiveModeId: (modeId: string | null) => void;
   setActiveSquad: (squad: Squad | null) => void;
+  setManager: (manager: EnglandManager | null) => void;
 
   // ---- Actions: tournament progression ----
   startTournament: () => void;
@@ -73,6 +77,7 @@ const initialState = {
   teamName: '',
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
+  manager: null as EnglandManager | null,
   currentStage: null as TournamentStage | null,
   groupMatches: [] as MatchResult[],
   tournamentWon: false,
@@ -116,6 +121,7 @@ export const useGameStore = create<GameState>()(
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
+      setManager: (manager) => set({ manager }),
 
       startTournament: () =>
         set({ currentStage: 'group', groupMatches: [], tournamentWon: false, tournamentEliminated: false }),
@@ -136,6 +142,7 @@ export const useGameStore = create<GameState>()(
         set({
           ownedCards: {},
           activeSquad: null,
+          manager: null,
           currentStage: null,
           groupMatches: [],
           tournamentWon: false,
@@ -166,6 +173,7 @@ export const useGameStore = create<GameState>()(
         set((s) => ({
           ownedCards: {},
           activeSquad: null,
+          manager: null,
           currentStage: null,
           groupMatches: [],
           tournamentWon: false,

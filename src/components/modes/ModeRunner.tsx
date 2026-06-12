@@ -7,6 +7,7 @@ import { useGameStore } from '@/store/useGameStore';
 import { getMode } from '@/data/gameModes';
 import { emptySquad } from '@/lib/squadUtils';
 import { SquadBuilder } from '@/components/squad/SquadBuilder';
+import { ManagerWheel } from '@/components/squad/ManagerWheel';
 import { SimulationTab } from '@/components/modes/SimulationTab';
 import { BottomTabs, type ChallengeTab } from '@/components/modes/BottomTabs';
 
@@ -22,6 +23,8 @@ export function ModeRunner({ modeId }: { modeId: string }) {
   const setActiveModeId = useGameStore((s) => s.setActiveModeId);
   const setActiveSquad = useGameStore((s) => s.setActiveSquad);
   const ownedCards = useGameStore((s) => s.ownedCards);
+  const manager = useGameStore((s) => s.manager);
+  const setManager = useGameStore((s) => s.setManager);
 
   useEffect(() => {
     const { activeModeId } = useGameStore.getState();
@@ -111,10 +114,19 @@ export function ModeRunner({ modeId }: { modeId: string }) {
         />
       )}
       {tab === 'squad' && (
-        <div className="space-y-4">
-          <h1 className="text-2xl font-black">Squad</h1>
-          <SquadBuilder squad={squad} onChange={setSquad} />
-        </div>
+        manager ? (
+          <div className="space-y-4">
+            <h1 className="text-2xl font-black">Squad</h1>
+            <SquadBuilder squad={squad} onChange={setSquad} manager={manager} />
+          </div>
+        ) : (
+          <ManagerWheel
+            onComplete={(m) => {
+              setManager(m);
+              setSquad(emptySquad(m.formation));
+            }}
+          />
+        )
       )}
 
       <BottomTabs active={tab} onChange={setTab} />

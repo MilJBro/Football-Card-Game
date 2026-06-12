@@ -47,6 +47,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   const winTournament = useGameStore((s) => s.winTournament);
   const restartRun = useGameStore((s) => s.restartRun);
   const completions = useGameStore((s) => s.completions);
+  const manager = useGameStore((s) => s.manager);
 
   const [phase, setPhase] = useState<Phase>(() => {
     if (tournamentWon) return 'won';
@@ -436,6 +437,9 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           <div className="h-10 w-px bg-white/10" />
           <div className="text-sm text-white/60">
             {summary.filledSlots}/{summary.totalSlots} players · {squad.formation}
+            {manager && (
+              <div className="text-xs text-white/40">{manager.name}&apos;s XI</div>
+            )}
           </div>
         </div>
         <Button variant="secondary" onClick={onGoToSquad}>

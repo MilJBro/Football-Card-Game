@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import type { Formation, Squad, PlayerCardDef } from '@/store/types';
+import type { Formation, Squad, PlayerCardDef, EnglandManager } from '@/store/types';
 import type { Position } from '@/store/types';
 import { FORMATION_LIST, getFormation } from '@/data/formations';
 import { getCard, getEffectiveCardData, ALL_CARDS } from '@/data/players';
@@ -32,9 +32,11 @@ function getRandomCardForPosition(position: Position, excludeIds: Set<string>): 
 interface SquadBuilderProps {
   squad: Squad;
   onChange: (squad: Squad) => void;
+  /** When set, the formation is locked to the manager's preferred shape. */
+  manager?: EnglandManager | null;
 }
 
-export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
+export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
   const ownedCards = useGameStore((s) => s.ownedCards);
   const addCards = useGameStore((s) => s.addCards);
   const upgradeTokens = useGameStore((s) => s.upgradeTokens);
@@ -144,26 +146,41 @@ export function SquadBuilder({ squad, onChange }: SquadBuilderProps) {
         </div>
       </div>
 
-      {/* Formation selector */}
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] uppercase tracking-wide text-white/40">Formation</span>
-        <div className="flex gap-1">
-          {FORMATION_LIST.map((f) => (
-            <button
-              key={f}
-              onClick={() => setFormation(f)}
-              className={cn(
-                'rounded-lg px-3 py-1.5 text-sm font-bold transition-colors',
-                squad.formation === f
-                  ? 'bg-emerald-500 text-emerald-950'
-                  : 'bg-white/10 text-white/70 hover:bg-white/20'
-              )}
-            >
-              {f}
-            </button>
-          ))}
+      {/* Formation — locked to the manager's shape when one is appointed */}
+      {manager ? (
+        <div className="flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5">
+          <div>
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Manager</div>
+            <div className="text-sm font-black text-white">
+              {manager.name}
+              <span className="ml-2 font-normal text-white/40">England {manager.era}</span>
+            </div>
+          </div>
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-sm font-black text-emerald-300">
+            {manager.formation}
+          </span>
         </div>
-      </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] uppercase tracking-wide text-white/40">Formation</span>
+          <div className="flex gap-1">
+            {FORMATION_LIST.map((f) => (
+              <button
+                key={f}
+                onClick={() => setFormation(f)}
+                className={cn(
+                  'rounded-lg px-3 py-1.5 text-sm font-bold transition-colors',
+                  squad.formation === f
+                    ? 'bg-emerald-500 text-emerald-950'
+                    : 'bg-white/10 text-white/70 hover:bg-white/20'
+                )}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Pitch */}
       <div className="relative mx-auto aspect-[3/4.2] w-full max-w-sm overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-900/50 via-pitch to-pitch-dark shadow-2xl">
