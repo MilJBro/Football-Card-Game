@@ -246,6 +246,58 @@ export function englandGroupPosition(table: GroupTableRow[]): number {
   return table.findIndex((r) => r.isEngland) + 1;
 }
 
+// ---------------------------------------------------------------------------
+// Best third-placed teams (48-team format: 8 of the 12 thirds advance)
+// ---------------------------------------------------------------------------
+
+interface ThirdPlaceRecord {
+  pts: number;
+  gd: number;
+  gf: number;
+}
+
+/** Simulate one rival group (round robin of 4) and return its 3rd-place record. */
+function simulateRivalThirdPlace(): ThirdPlaceRecord {
+  const teams = [...GROUP_NATIONS].sort(() => Math.random() - 0.5).slice(0, 4);
+  const stats = new Map<string, ThirdPlaceRecord>(
+    teams.map((t) => [t.name, { pts: 0, gd: 0, gf: 0 }])
+  );
+
+  for (let i = 0; i < teams.length; i++) {
+    for (let j = i + 1; j < teams.length; j++) {
+      const m = simulateOtherGroupMatch(teams[i], teams[j]);
+      const home = stats.get(m.home.name)!;
+      const away = stats.get(m.away.name)!;
+      home.gd += m.homeGoals - m.awayGoals;
+      home.gf += m.homeGoals;
+      away.gd += m.awayGoals - m.homeGoals;
+      away.gf += m.awayGoals;
+      if (m.homeGoals > m.awayGoals) home.pts += 3;
+      else if (m.homeGoals < m.awayGoals) away.pts += 3;
+      else { home.pts += 1; away.pts += 1; }
+    }
+  }
+
+  const sorted = Array.from(stats.values()).sort(
+    (a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf
+  );
+  return sorted[2];
+}
+
+/**
+ * Did England's 3rd-place record make the cut as one of the 8 best thirds?
+ * The other 11 groups are simulated to rank England's record among the 12.
+ */
+export function thirdPlaceQualifies(england: ThirdPlaceRecord): boolean {
+  const rivals = Array.from({ length: 11 }, simulateRivalThirdPlace);
+  const beatenBy = rivals.filter(
+    (r) =>
+      r.pts > england.pts ||
+      (r.pts === england.pts && (r.gd > england.gd || (r.gd === england.gd && r.gf > england.gf)))
+  ).length;
+  return beatenBy < 8;
+}
+
 /** Draw the opponent for a knockout stage in advance, so the player knows who's next. */
 export function pickKnockoutOpponent(stage: Exclude<TournamentStage, 'group'>): Nation {
   const pools: Record<string, Nation[]> = {

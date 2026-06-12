@@ -13,6 +13,7 @@ import {
   computeGroupTable,
   englandGroupPosition,
   pickKnockoutOpponent,
+  thirdPlaceQualifies,
   groupPoints,
   GROUP_GAMES,
   GROUP_QUALIFY_SPOTS,
@@ -127,7 +128,14 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         if (allMatches.length >= GROUP_GAMES) {
           const finalTable = computeGroupTable(opponents, allMatches, [...otherGroupMatches, otherResult]);
           const position = englandGroupPosition(finalTable);
-          if (position <= GROUP_QUALIFY_SPOTS) {
+          const engRow = finalTable.find((r) => r.isEngland)!;
+          // Top 2 go straight through; a 3rd-place finish can survive as one
+          // of the 8 best thirds (ranked against the other 11 groups).
+          const qualified =
+            position <= GROUP_QUALIFY_SPOTS ||
+            (position === 3 &&
+              thirdPlaceQualifies({ pts: engRow.pts, gd: engRow.gf - engRow.ga, gf: engRow.gf }));
+          if (qualified) {
             advanceStage('r32');
             setNextOpponent(pickKnockoutOpponent('r32'));
           } else {
@@ -203,8 +211,11 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     const points = groupPoints(groupMatches);
     const groupOver = gameNumber >= GROUP_GAMES;
     const position = englandGroupPosition(groupTable);
-    const qualified = groupOver && position <= GROUP_QUALIFY_SPOTS;
-    const eliminated = groupOver && !qualified;
+    // The thirds ranking is rolled once at sim time — read the verdict from the
+    // store rather than recomputing it.
+    const qualified = groupOver && !tournamentEliminated;
+    const eliminated = groupOver && tournamentEliminated;
+    const viaThirdPlace = qualified && position > GROUP_QUALIFY_SPOTS;
     const matchdayOther = otherGroupMatches[gameNumber - 1];
 
     return (
@@ -220,9 +231,13 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
               {qualified ? 'Qualified!' : 'Eliminated'}
             </h1>
             <p className="mt-1 text-sm text-white/60">
-              {qualified
-                ? `Finished ${ordinal(position)} — through to the Round of 32`
-                : `Finished ${ordinal(position)} — out of the World Cup`}
+              {viaThirdPlace
+                ? `Finished ${ordinal(position)} — squeezed through as one of the 8 best third-placed teams`
+                : qualified
+                  ? `Finished ${ordinal(position)} — through to the Round of 32`
+                  : position === 3
+                    ? `Finished 3rd — not among the 8 best third-placed teams`
+                    : `Finished ${ordinal(position)} — out of the World Cup`}
             </p>
           </div>
         ) : (
@@ -478,8 +493,8 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           table={groupTable}
           subtitle={
             groupMatches.length === 0
-              ? `The draw is made — top ${GROUP_QUALIFY_SPOTS} go through`
-              : `Top ${GROUP_QUALIFY_SPOTS} go through`
+              ? `The draw is made — top ${GROUP_QUALIFY_SPOTS} qualify, 3rd might sneak in`
+              : `Top ${GROUP_QUALIFY_SPOTS} qualify · 3rd might sneak in`
           }
         />
       )}
@@ -593,7 +608,7 @@ function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: st
                   <div className="flex items-center gap-1.5">
                     <span className={cn(
                       'h-3.5 w-1 shrink-0 rounded-full',
-                      qualifies ? 'bg-emerald-400' : 'bg-red-500/60',
+                      qualifies ? 'bg-emerald-400' : pos === 3 ? 'bg-amber-400/80' : 'bg-red-500/60',
                     )} />
                     <span className="tabular-nums text-white/40">{pos}</span>
                   </div>
