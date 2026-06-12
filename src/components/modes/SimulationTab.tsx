@@ -1,19 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { GameModeDef, Squad, TournamentStage, MatchResult } from '@/store/types';
 import { summariseSquad } from '@/lib/squadUtils';
 import {
   simulateGroupMatch,
-  simulateKnockoutStage,
-  pickGroupOpponent,
+  simulateKnockoutMatch,
+  simulateOtherGroupMatch,
+  drawGroupOpponents,
+  otherFixtureForMatchday,
+  computeGroupTable,
+  englandGroupPosition,
+  pickKnockoutOpponent,
   groupPoints,
   GROUP_GAMES,
-  GROUP_QUALIFY_POINTS,
+  GROUP_QUALIFY_SPOTS,
   getStageLabel,
   getNextStage,
   matchWon,
+  type GroupTableRow,
 } from '@/lib/worldCupEngine';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
@@ -37,8 +43,14 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   const ownedCards = useGameStore((s) => s.ownedCards);
   const recordRun = useGameStore((s) => s.recordRun);
   const currentStage = useGameStore((s) => s.currentStage);
+  const groupOpponents = useGameStore((s) => s.groupOpponents);
+  const setGroupOpponents = useGameStore((s) => s.setGroupOpponents);
   const groupMatches = useGameStore((s) => s.groupMatches);
   const recordGroupMatch = useGameStore((s) => s.recordGroupMatch);
+  const otherGroupMatches = useGameStore((s) => s.otherGroupMatches);
+  const recordOtherGroupMatch = useGameStore((s) => s.recordOtherGroupMatch);
+  const nextOpponent = useGameStore((s) => s.nextOpponent);
+  const setNextOpponent = useGameStore((s) => s.setNextOpponent);
   const tournamentWon = useGameStore((s) => s.tournamentWon);
   const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
   const startTournament = useGameStore((s) => s.startTournament);
@@ -61,6 +73,19 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
   const [showReward, setShowReward] = useState(false);
 
+  // Draw the group before kick-off so the player can see it; backfill a missing
+  // knockout opponent (e.g. saves from before opponents were pre-drawn).
+  useEffect(() => {
+    if (!hydrated || tournamentWon || tournamentEliminated) return;
+    const inGroupPhase = currentStage === null || currentStage === 'group';
+    if (inGroupPhase && groupOpponents.length < GROUP_GAMES) {
+      setGroupOpponents(drawGroupOpponents());
+    }
+    if (currentStage && currentStage !== 'group' && !nextOpponent) {
+      setNextOpponent(pickKnockoutOpponent(currentStage));
+    }
+  }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const summary = summariseSquad(squad, ownedCards);
   const stageToSimulate = currentStage ?? 'group';
   const groupGameNumber = Math.min(groupMatches.length + 1, GROUP_GAMES);
@@ -68,6 +93,8 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     stageToSimulate === 'group'
       ? `Group Game ${groupGameNumber} of ${GROUP_GAMES}`
       : getStageLabel(stageToSimulate);
+
+  const groupTable = computeGroupTable(groupOpponents, groupMatches, otherGroupMatches);
 
   function simulate() {
     const isFirst = currentStage === null;
@@ -81,23 +108,36 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
       setPlayedStage(stage);
 
       if (stage === 'group') {
-        const opponent = pickGroupOpponent(groupMatches.map((m) => m.opponent.name));
-        const result = simulateGroupMatch(sum.rating, opponent);
+        let opponents = groupOpponents;
+        if (opponents.length < GROUP_GAMES) {
+          opponents = drawGroupOpponents();
+          setGroupOpponents(opponents);
+        }
+
+        const matchday = groupMatches.length;
+        const result = simulateGroupMatch(sum.rating, opponents[matchday]);
         recordGroupMatch(result);
+        const [home, away] = otherFixtureForMatchday(opponents, matchday);
+        const otherResult = simulateOtherGroupMatch(home, away);
+        recordOtherGroupMatch(otherResult);
         setLatestGroupMatch(result);
         setPhase('group-match-result');
 
         const allMatches = [...groupMatches, result];
         if (allMatches.length >= GROUP_GAMES) {
-          if (groupPoints(allMatches) >= GROUP_QUALIFY_POINTS) {
+          const finalTable = computeGroupTable(opponents, allMatches, [...otherGroupMatches, otherResult]);
+          const position = englandGroupPosition(finalTable);
+          if (position <= GROUP_QUALIFY_SPOTS) {
             advanceStage('r32');
+            setNextOpponent(pickKnockoutOpponent('r32'));
           } else {
             eliminateFromTournament();
             recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now() });
           }
         }
       } else {
-        const result = simulateKnockoutStage(sum.rating, stage);
+        const opponent = nextOpponent ?? pickKnockoutOpponent(stage);
+        const result = simulateKnockoutMatch(sum.rating, opponent);
         setKnockoutResult(result);
         setPhase('knockout-result');
 
@@ -110,6 +150,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         } else {
           const next = getNextStage(stage);
           advanceStage(next);
+          if (next && next !== 'group') setNextOpponent(pickKnockoutOpponent(next));
         }
       }
     }, 1600);
@@ -161,8 +202,10 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     const gameNumber = groupMatches.length; // already recorded
     const points = groupPoints(groupMatches);
     const groupOver = gameNumber >= GROUP_GAMES;
-    const qualified = groupOver && points >= GROUP_QUALIFY_POINTS;
+    const position = englandGroupPosition(groupTable);
+    const qualified = groupOver && position <= GROUP_QUALIFY_SPOTS;
     const eliminated = groupOver && !qualified;
+    const matchdayOther = otherGroupMatches[gameNumber - 1];
 
     return (
       <div className="space-y-4">
@@ -178,8 +221,8 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
             </h1>
             <p className="mt-1 text-sm text-white/60">
               {qualified
-                ? `${points} points — through to the Round of 32`
-                : `Only ${points} points — not enough to qualify`}
+                ? `Finished ${ordinal(position)} — through to the Round of 32`
+                : `Finished ${ordinal(position)} — out of the World Cup`}
             </p>
           </div>
         ) : (
@@ -194,39 +237,30 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
               {won ? 'Victory!' : drew ? 'A Draw' : 'Defeat'}
             </h1>
             <p className="mt-1 text-sm text-white/60">
-              Group Game {gameNumber} of {GROUP_GAMES} · {points} pt{points !== 1 ? 's' : ''} so far
+              Group Game {gameNumber} of {GROUP_GAMES} · {points} pt{points !== 1 ? 's' : ''} · {ordinal(position)} in the group
             </p>
           </div>
         )}
 
-        {/* Latest match */}
+        {/* This matchday's results */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
-            Group Game {gameNumber}
+            Matchday {gameNumber}
           </div>
-          <MatchCard match={m} stage="group" />
+          <MatchCard match={m} />
+          {matchdayOther && (
+            <div className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-black/10 px-4 py-2 text-xs text-white/50">
+              <span>{matchdayOther.home.flag} {matchdayOther.home.name}</span>
+              <span className="font-black tabular-nums text-white/70">
+                {matchdayOther.homeGoals} – {matchdayOther.awayGoals}
+              </span>
+              <span>{matchdayOther.away.name} {matchdayOther.away.flag}</span>
+            </div>
+          )}
         </div>
 
-        {/* Group so far */}
-        {gameNumber > 1 && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-            <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Group So Far</div>
-            <div className="space-y-2">
-              {groupMatches.map((gm, i) => (
-                <MatchCard key={i} match={gm} stage="group" />
-              ))}
-            </div>
-            <div className="mt-3 flex items-center justify-between rounded-xl bg-black/20 px-4 py-2">
-              <span className="text-sm font-bold text-white/60">Points</span>
-              <span className={cn(
-                'text-xl font-black tabular-nums',
-                points >= GROUP_QUALIFY_POINTS ? 'text-emerald-300' : 'text-white',
-              )}>
-                {points} / 9
-              </span>
-            </div>
-          </div>
-        )}
+        {/* Live group table */}
+        <GroupTable table={groupTable} />
 
         {/* Reward spin — campaign continues unless the group is lost */}
         {!eliminated && !showReward && (
@@ -294,8 +328,21 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
             {getStageLabel(playedStage)}
           </div>
-          <MatchCard match={knockoutResult} stage="knockout" />
+          <MatchCard match={knockoutResult} />
         </div>
+
+        {/* Next opponent teaser */}
+        {won && !wasFinale && nextOpponent && (
+          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="text-[10px] uppercase tracking-widest text-white/40">
+              Up next in the {nextStageName}
+            </div>
+            <div className="mt-1 flex items-center gap-2 text-lg font-black text-white">
+              <span className="text-2xl">{nextOpponent.flag}</span>
+              {nextOpponent.name}
+            </div>
+          </div>
+        )}
 
         {won && !showReward && (
           <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
@@ -386,6 +433,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     : [];
 
   const isFirstSim = currentStage === null && !tournamentWon && !tournamentEliminated;
+  const inGroupPhase = stageToSimulate === 'group';
 
   return (
     <div className="space-y-6">
@@ -403,10 +451,9 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
         <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Tournament Path</div>
         <div className="flex items-center gap-1">
-          {STAGE_ORDER.map((s, i) => {
+          {STAGE_ORDER.map((s) => {
             const isDone = completedStages.includes(s);
             const isCurrent = s === stageToSimulate;
-            const isPending = !isDone && !isCurrent;
             return (
               <div key={s} className="flex flex-1 flex-col items-center gap-1">
                 <div className={cn(
@@ -424,6 +471,44 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           })}
         </div>
       </div>
+
+      {/* England's group — visible from the moment it's drawn */}
+      {inGroupPhase && groupOpponents.length === GROUP_GAMES && (
+        <GroupTable
+          table={groupTable}
+          subtitle={
+            groupMatches.length === 0
+              ? `The draw is made — top ${GROUP_QUALIFY_SPOTS} go through`
+              : `Top ${GROUP_QUALIFY_SPOTS} go through`
+          }
+        />
+      )}
+
+      {/* Next knockout opponent */}
+      {!inGroupPhase && nextOpponent && (
+        <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-4">
+          <div className="text-[10px] uppercase tracking-widest text-white/40">
+            {getStageLabel(stageToSimulate)} — Next Opponent
+          </div>
+          <div className="mt-2 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">{nextOpponent.flag}</span>
+              <div>
+                <div className="text-xl font-black text-white">{nextOpponent.name}</div>
+                <div className="text-xs text-white/40">Team rating {nextOpponent.rating}</div>
+              </div>
+            </div>
+            <span className={cn(
+              'rounded-full px-3 py-1 text-xs font-black',
+              nextOpponent.rating >= 88 ? 'bg-red-500/20 text-red-300'
+                : nextOpponent.rating >= 81 ? 'bg-amber-500/20 text-amber-300'
+                : 'bg-emerald-500/20 text-emerald-300',
+            )}>
+              {nextOpponent.rating >= 88 ? 'ELITE' : nextOpponent.rating >= 81 ? 'TOUGH' : 'WINNABLE'}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Squad rating */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
@@ -447,21 +532,6 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         </Button>
       </div>
 
-      {/* Next stage callout */}
-      {!isFirstSim && (
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-          <div className="text-[10px] uppercase tracking-widest text-white/40">
-            {stageToSimulate === 'group' ? 'Next Match' : 'Next Stage'}
-          </div>
-          <div className="mt-0.5 text-lg font-black text-white">{stageLabel}</div>
-          {stageToSimulate === 'group' && groupMatches.length > 0 && (
-            <p className="mt-1 text-xs font-bold text-white/50">
-              {groupPoints(groupMatches)} pts from {groupMatches.length} game{groupMatches.length !== 1 ? 's' : ''} — need {GROUP_QUALIFY_POINTS}+ to qualify
-            </p>
-          )}
-        </div>
-      )}
-
       {summary.isComplete ? (
         <div className="flex justify-center">
           <Button size="lg" className="w-full" onClick={simulate} disabled={!hydrated}>
@@ -484,10 +554,79 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function MatchCard({ match, stage }: { match: MatchResult; stage: 'group' | 'knockout' }) {
+function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: string }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+      <div className="flex items-baseline justify-between px-4 pt-4 pb-2">
+        <span className="text-[10px] uppercase tracking-widest text-white/40">
+          England&apos;s Group
+        </span>
+        {subtitle && <span className="text-[10px] text-white/30">{subtitle}</span>}
+      </div>
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-white/10 text-[10px] uppercase text-white/30">
+            <th className="px-3 py-1.5 text-left">#</th>
+            <th className="px-3 py-1.5 text-left">Team</th>
+            <th className="px-2 py-1.5 text-right">P</th>
+            <th className="px-2 py-1.5 text-right">W</th>
+            <th className="px-2 py-1.5 text-right">D</th>
+            <th className="px-2 py-1.5 text-right">L</th>
+            <th className="px-2 py-1.5 text-right">GD</th>
+            <th className="px-3 py-1.5 text-right font-black">Pts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {table.map((row, i) => {
+            const pos = i + 1;
+            const qualifies = pos <= GROUP_QUALIFY_SPOTS;
+            const gd = row.gf - row.ga;
+            return (
+              <tr
+                key={row.name}
+                className={cn(
+                  'border-b border-white/5 text-xs last:border-0',
+                  row.isEngland && 'bg-emerald-500/10',
+                )}
+              >
+                <td className="px-3 py-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className={cn(
+                      'h-3.5 w-1 shrink-0 rounded-full',
+                      qualifies ? 'bg-emerald-400' : 'bg-red-500/60',
+                    )} />
+                    <span className="tabular-nums text-white/40">{pos}</span>
+                  </div>
+                </td>
+                <td className={cn('px-3 py-2 font-bold', row.isEngland ? 'text-emerald-300' : 'text-white')}>
+                  <span className="mr-1.5">{row.flag}</span>
+                  {row.name}
+                </td>
+                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.played}</td>
+                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.won}</td>
+                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.drawn}</td>
+                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.lost}</td>
+                <td className={cn(
+                  'px-2 py-2 text-right tabular-nums',
+                  gd > 0 ? 'text-emerald-400' : gd < 0 ? 'text-red-400' : 'text-white/40',
+                )}>
+                  {gd > 0 ? '+' : ''}{gd}
+                </td>
+                <td className={cn('px-3 py-2 text-right tabular-nums font-black', row.isEngland ? 'text-emerald-300' : 'text-white')}>
+                  {row.pts}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function MatchCard({ match }: { match: MatchResult }) {
   const won = match.englandGoals > match.opponentGoals || match.penaltiesWin === true;
   const lost = match.englandGoals < match.opponentGoals || match.penaltiesLoss === true;
-  const drew = match.englandGoals === match.opponentGoals && !match.penaltiesWin && !match.penaltiesLoss;
 
   const resultColor = won ? 'text-emerald-300' : lost ? 'text-red-400' : 'text-yellow-300';
   const resultLabel = won ? 'W' : lost ? 'L' : 'D';
@@ -519,4 +658,10 @@ function MatchCard({ match, stage }: { match: MatchResult; stage: 'group' | 'kno
       </div>
     </div>
   );
+}
+
+function ordinal(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }

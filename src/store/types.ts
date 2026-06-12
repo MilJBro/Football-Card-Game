@@ -46,6 +46,14 @@ export interface MatchResult {
   penaltiesLoss?: boolean;
 }
 
+/** A group fixture between the two other teams on a matchday. */
+export interface OtherGroupMatch {
+  home: Nation;
+  away: Nation;
+  homeGoals: number;
+  awayGoals: number;
+}
+
 
 // ---------------------------------------------------------------------------
 // Cards

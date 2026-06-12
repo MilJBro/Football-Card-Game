@@ -1,4 +1,4 @@
-import type { Nation, MatchResult, TournamentStage } from '@/store/types';
+import type { Nation, MatchResult, OtherGroupMatch, TournamentStage } from '@/store/types';
 
 // ============================================================================
 // World Cup match simulation — Poisson-based goal engine.
@@ -140,12 +140,33 @@ export function simulateKnockoutMatch(englandRating: number, opponent: Nation): 
 // ---------------------------------------------------------------------------
 
 export const GROUP_GAMES = 3;
-export const GROUP_QUALIFY_POINTS = 4;
 
-/** Pick the next group opponent, never repeating one already faced this group. */
-export function pickGroupOpponent(playedNames: string[]): Nation {
-  const pool = GROUP_NATIONS.filter((n) => !playedNames.includes(n.name));
-  return pickRandom(pool.length > 0 ? pool : GROUP_NATIONS);
+export const ENGLAND: Nation = { name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', rating: 0 };
+
+/** Draw England's three group opponents at the start of a run. */
+export function drawGroupOpponents(): Nation[] {
+  const shuffled = [...GROUP_NATIONS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, GROUP_GAMES);
+}
+
+/**
+ * The two other teams' fixture for a given matchday (0-based), so every team
+ * plays every other team exactly once across the three matchdays:
+ *   MD1: ENG v A · B v C — MD2: ENG v B · A v C — MD3: ENG v C · A v B
+ */
+export function otherFixtureForMatchday(opponents: Nation[], matchday: number): [Nation, Nation] {
+  const [a, b, c] = opponents;
+  if (matchday === 0) return [b, c];
+  if (matchday === 1) return [a, c];
+  return [a, b];
+}
+
+/** Simulate a fixture between two AI nations. */
+export function simulateOtherGroupMatch(home: Nation, away: Nation): OtherGroupMatch {
+  const diff = home.rating - away.rating;
+  const homeLambda = Math.max(0.3, GOAL_BASE + diff * RATING_SCALE);
+  const awayLambda = Math.max(0.3, GOAL_BASE - diff * RATING_SCALE);
+  return { home, away, homeGoals: poisson(homeLambda), awayGoals: poisson(awayLambda) };
 }
 
 /** Points earned so far across played group matches. */
@@ -158,10 +179,75 @@ export function groupPoints(matches: MatchResult[]): number {
   return points;
 }
 
-export function simulateKnockoutStage(
-  englandRating: number,
-  stage: Exclude<TournamentStage, 'group'>
-): MatchResult {
+// ---------------------------------------------------------------------------
+// Live group table
+// ---------------------------------------------------------------------------
+
+export interface GroupTableRow {
+  name: string;
+  flag: string;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  gf: number;
+  ga: number;
+  pts: number;
+  isEngland: boolean;
+}
+
+/** Top 2 of the group advance to the knockouts. */
+export const GROUP_QUALIFY_SPOTS = 2;
+
+export function computeGroupTable(
+  opponents: Nation[],
+  englandMatches: MatchResult[],
+  otherMatches: OtherGroupMatch[]
+): GroupTableRow[] {
+  const rows = new Map<string, GroupTableRow>();
+  const blank = (n: Nation, isEngland = false): GroupTableRow => ({
+    name: n.name, flag: n.flag, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, pts: 0, isEngland,
+  });
+  rows.set(ENGLAND.name, blank(ENGLAND, true));
+  for (const opp of opponents) rows.set(opp.name, blank(opp));
+
+  function apply(name: string, gf: number, ga: number) {
+    const row = rows.get(name);
+    if (!row) return;
+    row.played += 1;
+    row.gf += gf;
+    row.ga += ga;
+    if (gf > ga) { row.won += 1; row.pts += 3; }
+    else if (gf === ga) { row.drawn += 1; row.pts += 1; }
+    else row.lost += 1;
+  }
+
+  for (const m of englandMatches) {
+    apply(ENGLAND.name, m.englandGoals, m.opponentGoals);
+    apply(m.opponent.name, m.opponentGoals, m.englandGoals);
+  }
+  for (const m of otherMatches) {
+    apply(m.home.name, m.homeGoals, m.awayGoals);
+    apply(m.away.name, m.awayGoals, m.homeGoals);
+  }
+
+  return Array.from(rows.values()).sort((a, b) => {
+    if (b.pts !== a.pts) return b.pts - a.pts;
+    const gdA = a.gf - a.ga;
+    const gdB = b.gf - b.ga;
+    if (gdB !== gdA) return gdB - gdA;
+    if (b.gf !== a.gf) return b.gf - a.gf;
+    return a.name.localeCompare(b.name);
+  });
+}
+
+/** England's current position in the group (1-based). */
+export function englandGroupPosition(table: GroupTableRow[]): number {
+  return table.findIndex((r) => r.isEngland) + 1;
+}
+
+/** Draw the opponent for a knockout stage in advance, so the player knows who's next. */
+export function pickKnockoutOpponent(stage: Exclude<TournamentStage, 'group'>): Nation {
   const pools: Record<string, Nation[]> = {
     r32: R32_NATIONS,
     r16: R16_NATIONS,
@@ -169,8 +255,7 @@ export function simulateKnockoutStage(
     sf: SF_NATIONS,
     final: FINAL_NATIONS,
   };
-  const opponent = pickRandom(pools[stage]);
-  return simulateKnockoutMatch(englandRating, opponent);
+  return pickRandom(pools[stage]);
 }
 
 // ---------------------------------------------------------------------------

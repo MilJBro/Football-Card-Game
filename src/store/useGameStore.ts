@@ -8,6 +8,8 @@ import type {
   Squad,
   TournamentStage,
   MatchResult,
+  OtherGroupMatch,
+  Nation,
   EnglandManager,
 } from '@/store/types';
 
@@ -31,8 +33,14 @@ export interface GameState {
   // ---- Tournament state ----
   /** Which stage is next to simulate. null = haven't started yet. */
   currentStage: TournamentStage | null;
+  /** England's three group opponents, drawn before the tournament starts. */
+  groupOpponents: Nation[];
   /** Group matches played so far this tournament (max 3). */
   groupMatches: MatchResult[];
+  /** The other two teams' fixtures, one per matchday — feeds the live table. */
+  otherGroupMatches: OtherGroupMatch[];
+  /** Pre-drawn opponent for the next knockout stage. */
+  nextOpponent: Nation | null;
   tournamentWon: boolean;
   tournamentEliminated: boolean;
 
@@ -55,7 +63,10 @@ export interface GameState {
 
   // ---- Actions: tournament progression ----
   startTournament: () => void;
+  setGroupOpponents: (nations: Nation[]) => void;
   recordGroupMatch: (match: MatchResult) => void;
+  recordOtherGroupMatch: (match: OtherGroupMatch) => void;
+  setNextOpponent: (nation: Nation | null) => void;
   advanceStage: (nextStage: TournamentStage | null) => void;
   eliminateFromTournament: () => void;
   winTournament: () => void;
@@ -79,7 +90,10 @@ const initialState = {
   activeSquad: null as Squad | null,
   manager: null as EnglandManager | null,
   currentStage: null as TournamentStage | null,
+  groupOpponents: [] as Nation[],
   groupMatches: [] as MatchResult[],
+  otherGroupMatches: [] as OtherGroupMatch[],
+  nextOpponent: null as Nation | null,
   tournamentWon: false,
   tournamentEliminated: false,
   upgradeTokens: 0,
@@ -123,11 +137,26 @@ export const useGameStore = create<GameState>()(
       setActiveSquad: (squad) => set({ activeSquad: squad }),
       setManager: (manager) => set({ manager }),
 
+      // Keeps groupOpponents — the group is drawn before kick-off.
       startTournament: () =>
-        set({ currentStage: 'group', groupMatches: [], tournamentWon: false, tournamentEliminated: false }),
+        set({
+          currentStage: 'group',
+          groupMatches: [],
+          otherGroupMatches: [],
+          nextOpponent: null,
+          tournamentWon: false,
+          tournamentEliminated: false,
+        }),
+
+      setGroupOpponents: (nations) => set({ groupOpponents: nations }),
 
       recordGroupMatch: (match) =>
         set((s) => ({ groupMatches: [...s.groupMatches, match] })),
+
+      recordOtherGroupMatch: (match) =>
+        set((s) => ({ otherGroupMatches: [...s.otherGroupMatches, match] })),
+
+      setNextOpponent: (nation) => set({ nextOpponent: nation }),
 
       advanceStage: (nextStage) =>
         set({ currentStage: nextStage }),
@@ -144,7 +173,10 @@ export const useGameStore = create<GameState>()(
           activeSquad: null,
           manager: null,
           currentStage: null,
+          groupOpponents: [],
           groupMatches: [],
+          otherGroupMatches: [],
+          nextOpponent: null,
           tournamentWon: false,
           tournamentEliminated: false,
           upgradeTokens: 0,
@@ -175,7 +207,10 @@ export const useGameStore = create<GameState>()(
           activeSquad: null,
           manager: null,
           currentStage: null,
+          groupOpponents: [],
           groupMatches: [],
+          otherGroupMatches: [],
+          nextOpponent: null,
           tournamentWon: false,
           tournamentEliminated: false,
           upgradeTokens: 0,
