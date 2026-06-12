@@ -1,199 +1,100 @@
 'use client';
 
-import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { GAME_MODES } from '@/data/gameModes';
-import type { GameModeDef, ModeId, ModeCompletion } from '@/store/types';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
-import {
-  TrophyIcon,
-  GlobeIcon,
-  WallIcon,
-  MedalIcon,
-  ShieldIcon,
-  CrownIcon,
-} from '@/components/ui/icons';
-import { cn } from '@/lib/ui';
-
-const MODE_ICON: Record<ModeId, (props: { className?: string }) => JSX.Element> = {
-  'domestic-double': TrophyIcon,
-  'european-glory': GlobeIcon,
-  'iron-defence': WallIcon,
-  centurions: MedalIcon,
-  invincibles: ShieldIcon,
-  quadruple: CrownIcon,
-};
 
 export default function HomePage() {
   const hydrated = useHydrated();
   const completions = useGameStore((s) => s.completions);
+  const currentStage = useGameStore((s) => s.currentStage);
+  const tournamentWon = useGameStore((s) => s.tournamentWon);
+  const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
+  const mode = GAME_MODES[0];
+  const completion = hydrated ? completions[mode.id] : undefined;
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const stageLabels: Record<string, string> = {
+    group: 'Group Stage',
+    r16: 'Round of 16',
+    qf: 'Quarter-Final',
+    sf: 'Semi-Final',
+    final: 'The Final',
+  };
 
-  function onScroll() {
-    const el = scrollRef.current;
-    if (!el) return;
-    const i = Math.round(el.scrollLeft / el.clientWidth);
-    if (i !== active) setActive(i);
-  }
-
-  function goTo(i: number) {
-    const clamped = Math.max(0, Math.min(GAME_MODES.length - 1, i));
-    const el = scrollRef.current;
-    if (el) el.scrollTo({ left: clamped * el.clientWidth, behavior: 'smooth' });
-    setActive(clamped);
-  }
+  const statusLine = !hydrated ? null
+    : tournamentWon ? '🏆 Champions — play again?'
+    : tournamentEliminated ? '💔 Eliminated — try again'
+    : currentStage ? `In progress: ${stageLabels[currentStage] ?? currentStage}`
+    : 'Ready to start';
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-8">
       <header>
         <h1 className="text-3xl font-black sm:text-4xl">
-          The <span className="text-emerald-400">Challenge Ladder</span>
+          <span className="text-emerald-400">England</span> World Cup
         </h1>
         <p className="mt-1 max-w-xl text-white/70">
-          Beat each challenge to unlock the next. Build a squad, improve it season by
-          season, and hit the target before your seasons run out.
+          Build your England squad from World Cup legends, then guide them through the group stage
+          and knockouts — all the way to the final.
         </p>
       </header>
 
-      {/* Navigation row — arrows + dot indicators */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => goTo(active - 1)}
-          disabled={active === 0}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-2xl font-bold text-white transition-colors hover:bg-white/20 disabled:opacity-20"
-          aria-label="Previous challenge"
-        >
-          ‹
-        </button>
-
-        <div className="flex flex-1 items-center justify-center gap-2">
-          {GAME_MODES.map((mode, i) => (
-            <button
-              key={mode.id}
-              onClick={() => goTo(i)}
-              aria-label={`Go to ${mode.name}`}
-              className={cn(
-                'h-2.5 rounded-full transition-all duration-200',
-                i === active
-                  ? 'w-6 bg-emerald-400'
-                  : 'w-2.5 bg-white/25 hover:bg-white/50',
-              )}
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={() => goTo(active + 1)}
-          disabled={active === GAME_MODES.length - 1}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-2xl font-bold text-white transition-colors hover:bg-white/20 disabled:opacity-20"
-          aria-label="Next challenge"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* Current challenge name + count */}
-      <p className="text-center text-sm font-bold text-white/60">
-        <span className="text-white">{GAME_MODES[active].name}</span>
-        <span className="ml-2 text-white/30">· {active + 1} / {GAME_MODES.length}</span>
-      </p>
-
-      {/* Horizontal snap carousel */}
-      <div
-        ref={scrollRef}
-        onScroll={onScroll}
-        className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
-      >
-        {GAME_MODES.map((mode, i) => (
-          <ChallengeCard
-            key={mode.id}
-            mode={mode}
-            done={hydrated ? completions[mode.id] : undefined}
-            locked={hydrated && i > 0 && !completions[GAME_MODES[i - 1].id]}
-            unlockedBy={i > 0 ? GAME_MODES[i - 1].name : undefined}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function ChallengeCard({
-  mode,
-  done,
-  locked,
-  unlockedBy,
-}: {
-  mode: GameModeDef;
-  done?: ModeCompletion;
-  locked?: boolean;
-  unlockedBy?: string;
-}) {
-  const Icon = MODE_ICON[mode.id];
-
-  const inner = (
-    <>
-      {done && (
-        <span className="absolute right-4 top-4 rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-300">
-          ✓ ×{done.timesCompleted}
-        </span>
-      )}
-
-      <div className="relative flex flex-1 items-center justify-center">
-        <div className="absolute h-36 w-36 rounded-full bg-emerald-400/10 blur-2xl" />
-        <Icon
-          className={cn(
-            'relative h-28 w-28 drop-shadow-lg',
-            locked ? 'text-white/20' : 'text-emerald-300',
+      <div className="mx-auto max-w-sm space-y-4">
+        {/* Challenge card */}
+        <div className="relative overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark p-6 text-center shadow-xl">
+          {completion && (
+            <span className="absolute right-4 top-4 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-bold text-amber-300">
+              🏆 ×{completion.timesCompleted}
+            </span>
           )}
-        />
-        {locked && (
-          <span className="absolute text-5xl drop-shadow-lg">🔒</span>
-        )}
-      </div>
 
-      <div>
-        <h2 className={cn('text-2xl font-black', !locked && 'group-hover:text-emerald-300')}>
-          {mode.name}
-        </h2>
-        <p className="mx-auto mt-2 max-w-[18rem] text-sm text-white/60">{mode.description}</p>
-        <div className="mt-4 rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-3 py-2 text-xs">
-          <span className="font-bold text-emerald-300">Goal: </span>
-          <span className="text-white/70">{mode.winConditionText}</span>
-          <span className="text-white/40"> · {mode.maxSeasons} seasons</span>
+          {/* Flag / icon */}
+          <div className="relative mb-6 flex items-center justify-center">
+            <div className="absolute h-36 w-36 rounded-full bg-emerald-400/10 blur-2xl" />
+            <span className="relative text-[7rem] drop-shadow-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+          </div>
+
+          <h2 className="text-2xl font-black">England</h2>
+          <p className="mx-auto mt-2 max-w-[18rem] text-sm text-white/60">{mode.description}</p>
+
+          {/* Goal box */}
+          <div className="mt-4 rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-3 py-2 text-xs">
+            <span className="font-bold text-emerald-300">Goal: </span>
+            <span className="text-white/70">{mode.winConditionText}</span>
+          </div>
+
+          {/* Status */}
+          {statusLine && (
+            <p className="mt-3 text-xs font-bold text-white/50">{statusLine}</p>
+          )}
+
+          <Link
+            href={`/modes/${mode.id}/`}
+            className="mt-5 inline-block rounded-full bg-emerald-500 px-8 py-2.5 text-sm font-black text-emerald-950 transition-transform hover:scale-105"
+          >
+            {currentStage && !tournamentWon && !tournamentEliminated ? 'Continue →' : 'Play →'}
+          </Link>
         </div>
-        {locked ? (
-          <span className="mt-4 inline-block rounded-full bg-white/10 px-6 py-2 text-sm font-black text-white/40">
-            Beat {unlockedBy} to unlock
-          </span>
-        ) : (
-          <span className="mt-4 inline-block rounded-full bg-emerald-500 px-6 py-2 text-sm font-black text-emerald-950 transition-transform group-hover:scale-105">
-            Start Challenge →
-          </span>
-        )}
+
+        {/* Stage roadmap */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+          <div className="mb-2 text-[10px] uppercase tracking-widest text-white/40">Tournament Path</div>
+          <div className="flex items-center justify-between gap-1 text-center text-[10px] font-bold text-white/40">
+            {['Groups', 'R16', 'QF', 'SF', 'Final'].map((label, i) => (
+              <div key={label} className="flex flex-1 flex-col items-center gap-1">
+                {i > 0 && <div className="h-px w-full bg-white/10 -mt-2" />}
+                <span className="relative text-[10px]">{label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 flex gap-1">
+            {['Groups', 'R16', 'QF', 'SF', 'Final'].map((label) => (
+              <div key={label} className="h-1 flex-1 rounded-full bg-white/10" />
+            ))}
+          </div>
+        </div>
       </div>
-    </>
-  );
-
-  const cardClass = cn(
-    'group relative flex aspect-[5/7] w-full max-w-xs flex-col overflow-hidden rounded-3xl border-2 bg-gradient-to-b from-pitch-light to-pitch-dark p-6 text-center shadow-xl',
-    locked
-      ? 'border-white/10 opacity-70'
-      : 'border-white/15 transition-colors hover:border-emerald-400/60',
-  );
-
-  return (
-    <div className="flex w-full min-w-full shrink-0 snap-center justify-center px-2 py-1">
-      {locked ? (
-        <div className={cardClass}>{inner}</div>
-      ) : (
-        <Link href={`/modes/${mode.id}/`} className={cardClass}>
-          {inner}
-        </Link>
-      )}
     </div>
   );
 }

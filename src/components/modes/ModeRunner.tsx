@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { Squad } from '@/store/types';
 import { useGameStore } from '@/store/useGameStore';
-import { getMode, GAME_MODES } from '@/data/gameModes';
+import { getMode } from '@/data/gameModes';
 import { emptySquad } from '@/lib/squadUtils';
 import { SquadBuilder } from '@/components/squad/SquadBuilder';
 import { SimulationTab } from '@/components/modes/SimulationTab';
@@ -55,30 +55,13 @@ export function ModeRunner({ modeId }: { modeId: string }) {
   }, [ownedCards]);
 
   const [tab, setTab] = useState<ChallengeTab>('simulation');
-  const completions = useGameStore((s) => s.completions);
 
   if (!mode) {
     return (
       <div className="py-20 text-center">
         <p className="text-white/60">Unknown challenge.</p>
         <Link href="/" className="mt-4 inline-block text-emerald-400 underline">
-          Back to challenges
-        </Link>
-      </div>
-    );
-  }
-
-  const modeIndex = GAME_MODES.findIndex((m) => m.id === mode.id);
-  const previousMode = modeIndex > 0 ? GAME_MODES[modeIndex - 1] : null;
-  if (previousMode && !completions[previousMode.id]) {
-    return (
-      <div className="py-20 text-center">
-        <div className="text-5xl">🔒</div>
-        <p className="mt-3 text-white/60">
-          Beat <span className="font-bold text-white">{previousMode.name}</span> to unlock {mode.name}.
-        </p>
-        <Link href="/" className="mt-4 inline-block text-emerald-400 underline">
-          Back to challenges
+          Back to home
         </Link>
       </div>
     );
@@ -92,7 +75,7 @@ export function ModeRunner({ modeId }: { modeId: string }) {
     <div className="pb-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <Link href="/" className="text-sm font-semibold text-emerald-400 hover:underline">
-          ← Challenges
+          ← Home
         </Link>
         <span className="truncate text-sm font-bold text-white/70">{mode.name}</span>
       </div>

@@ -3,9 +3,10 @@ import { persist } from 'zustand/middleware';
 import type {
   OwnedCard,
   ModeCompletion,
-  ModeRunResult,
+  TournamentRunResult,
   ModeId,
   Squad,
+  TournamentStage,
 } from '@/store/types';
 
 export interface GameState {
@@ -14,7 +15,7 @@ export interface GameState {
 
   // ---- Modes ----
   completions: Record<string, ModeCompletion>;
-  history: ModeRunResult[];
+  history: TournamentRunResult[];
 
   // ---- Identity ----
   teamName: string;
@@ -22,8 +23,12 @@ export interface GameState {
   // ---- Active run ----
   activeModeId: string | null;
   activeSquad: Squad | null;
-  seasonsUsed: number;
-  runCompleted: boolean;
+
+  // ---- Tournament state ----
+  /** Which stage is next to simulate. null = haven't started yet. */
+  currentStage: TournamentStage | null;
+  tournamentWon: boolean;
+  tournamentEliminated: boolean;
 
   // ---- Upgrade tokens (current run) ----
   upgradeTokens: number;
@@ -32,7 +37,7 @@ export interface GameState {
   addCards: (cardIds: string[]) => void;
 
   // ---- Actions: modes ----
-  recordRun: (result: ModeRunResult) => void;
+  recordRun: (result: TournamentRunResult) => void;
 
   // ---- Actions: identity ----
   setTeamName: (name: string) => void;
@@ -40,7 +45,12 @@ export interface GameState {
   // ---- Actions: active run ----
   setActiveModeId: (modeId: string | null) => void;
   setActiveSquad: (squad: Squad | null) => void;
-  incrementSeason: () => void;
+
+  // ---- Actions: tournament progression ----
+  startTournament: () => void;
+  advanceStage: (nextStage: TournamentStage | null) => void;
+  eliminateFromTournament: () => void;
+  winTournament: () => void;
   restartRun: () => void;
 
   // ---- Actions: upgrade tokens ----
@@ -55,12 +65,13 @@ export interface GameState {
 const initialState = {
   ownedCards: {} as Record<string, OwnedCard>,
   completions: {} as Record<string, ModeCompletion>,
-  history: [] as ModeRunResult[],
+  history: [] as TournamentRunResult[],
   teamName: '',
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
-  seasonsUsed: 0,
-  runCompleted: false,
+  currentStage: null as TournamentStage | null,
+  tournamentWon: false,
+  tournamentEliminated: false,
   upgradeTokens: 0,
 };
 
@@ -93,11 +104,7 @@ export const useGameStore = create<GameState>()(
               firstCompletedAt: prev?.firstCompletedAt ?? Date.now(),
             };
           }
-          return {
-            history,
-            completions,
-            runCompleted: s.runCompleted || result.success,
-          };
+          return { history, completions };
         }),
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
@@ -105,15 +112,24 @@ export const useGameStore = create<GameState>()(
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
 
-      incrementSeason: () => set((s) => ({ seasonsUsed: s.seasonsUsed + 1 })),
+      startTournament: () => set({ currentStage: 'group', tournamentWon: false, tournamentEliminated: false }),
 
-      // Fresh start on the same challenge after a failed run.
+      advanceStage: (nextStage) =>
+        set({ currentStage: nextStage }),
+
+      eliminateFromTournament: () =>
+        set({ tournamentEliminated: true, currentStage: null }),
+
+      winTournament: () =>
+        set({ tournamentWon: true, currentStage: null }),
+
       restartRun: () =>
         set({
           ownedCards: {},
           activeSquad: null,
-          seasonsUsed: 0,
-          runCompleted: false,
+          currentStage: null,
+          tournamentWon: false,
+          tournamentEliminated: false,
           upgradeTokens: 0,
         }),
 
@@ -136,13 +152,13 @@ export const useGameStore = create<GameState>()(
 
       resetProgress: () => set({ ...initialState }),
 
-      // Reset run state only — keeps completions, history and team name.
       resetChallengeState: () =>
         set((s) => ({
           ownedCards: {},
           activeSquad: null,
-          seasonsUsed: 0,
-          runCompleted: false,
+          currentStage: null,
+          tournamentWon: false,
+          tournamentEliminated: false,
           upgradeTokens: 0,
           completions: s.completions,
           history: s.history,
@@ -150,13 +166,12 @@ export const useGameStore = create<GameState>()(
         })),
     }),
     {
-      name: 'football-card-game-v3',
-      version: 3,
+      name: 'football-card-game-v4',
+      version: 4,
     }
   )
 );
 
-// Convenience selector helpers (used across pages).
 export function getModeCompletion(
   completions: Record<string, ModeCompletion>,
   modeId: ModeId

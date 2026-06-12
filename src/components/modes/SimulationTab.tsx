@@ -2,23 +2,24 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { GameModeDef, Squad, SeasonResult, ModeRunResult } from '@/store/types';
+import type { GameModeDef, Squad, TournamentStage, MatchResult, GroupStageResult } from '@/store/types';
 import { summariseSquad } from '@/lib/squadUtils';
-import { simulateSeason, evaluateWinCondition, generateLeagueTable } from '@/lib/matchEngine';
-import type { LeagueTableRow } from '@/lib/matchEngine';
+import {
+  simulateGroupStage,
+  simulateKnockoutStage,
+  getStageLabel,
+  getNextStage,
+  matchWon,
+} from '@/lib/worldCupEngine';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { SeasonReward } from '@/components/modes/SeasonReward';
 import { cn } from '@/lib/ui';
 
-type Phase = 'ready' | 'sim' | 'result';
+type Phase = 'ready' | 'simulating' | 'group-result' | 'knockout-result' | 'won' | 'eliminated';
 
-interface RunOutcome {
-  season: SeasonResult;
-  success: boolean;
-  seasonNumber: number;
-}
+const STAGE_ORDER: TournamentStage[] = ['group', 'r16', 'qf', 'sf', 'final'];
 
 interface SimulationTabProps {
   mode: GameModeDef;
@@ -27,104 +28,98 @@ interface SimulationTabProps {
   onGoToSquad: () => void;
 }
 
-function shortfallText(mode: GameModeDef, s: SeasonResult): string {
-  switch (mode.id) {
-    case 'domestic-double': {
-      const missing = [!s.wonFaCup && 'FA Cup', !s.wonLeagueCup && 'League Cup'].filter(Boolean);
-      return `Didn't win: ${missing.join(' or ')}`;
-    }
-    case 'european-glory':
-      return 'Knocked out of the Champions League';
-    case 'iron-defence': {
-      const parts: string[] = [];
-      if (s.goalsAgainst >= 15) parts.push(`Conceded ${s.goalsAgainst} goals — need fewer than 15`);
-      if (!s.wonLeague) parts.push(`${s.points} pts — title not won`);
-      return parts.join(' · ');
-    }
-    case 'centurions': {
-      const parts: string[] = [];
-      if (s.points < 100) parts.push(`${s.points} pts — need 100+`);
-      if (!s.wonLeague) parts.push('Title not won');
-      return parts.join(' · ');
-    }
-    case 'invincibles': {
-      const parts: string[] = [];
-      if (!s.unbeaten) parts.push(`${s.losses} defeat${s.losses !== 1 ? 's' : ''} — need to go unbeaten`);
-      if (!s.wonLeague) parts.push('Title not won');
-      return parts.join(' · ');
-    }
-    case 'quadruple': {
-      const missing = [
-        !s.wonLeague && 'Premier League',
-        !s.wonFaCup && 'FA Cup',
-        !s.wonLeagueCup && 'League Cup',
-        !s.wonChampionsLeague && 'Champions League',
-      ].filter(Boolean);
-      return `Missed: ${missing.join(', ')}`;
-    }
-    default:
-      return 'Challenge not completed this time';
-  }
-}
-
 export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: SimulationTabProps) {
   const hydrated = useHydrated();
-  const recordRun = useGameStore((s) => s.recordRun);
   const ownedCards = useGameStore((s) => s.ownedCards);
-  const teamName = useGameStore((s) => s.teamName);
-  const setTeamName = useGameStore((s) => s.setTeamName);
-  const seasonsUsed = useGameStore((s) => s.seasonsUsed);
-  const incrementSeason = useGameStore((s) => s.incrementSeason);
-  const runCompleted = useGameStore((s) => s.runCompleted);
+  const recordRun = useGameStore((s) => s.recordRun);
+  const currentStage = useGameStore((s) => s.currentStage);
+  const tournamentWon = useGameStore((s) => s.tournamentWon);
+  const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
+  const startTournament = useGameStore((s) => s.startTournament);
+  const advanceStage = useGameStore((s) => s.advanceStage);
+  const eliminateFromTournament = useGameStore((s) => s.eliminateFromTournament);
+  const winTournament = useGameStore((s) => s.winTournament);
   const restartRun = useGameStore((s) => s.restartRun);
+  const completions = useGameStore((s) => s.completions);
 
-  const [phase, setPhase] = useState<Phase>('ready');
-  const [outcome, setOutcome] = useState<RunOutcome | null>(null);
+  const [phase, setPhase] = useState<Phase>(() => {
+    if (tournamentWon) return 'won';
+    if (tournamentEliminated) return 'eliminated';
+    return 'ready';
+  });
+
+  const [groupResult, setGroupResult] = useState<GroupStageResult | null>(null);
+  const [knockoutResult, setKnockoutResult] = useState<MatchResult | null>(null);
   const [showReward, setShowReward] = useState(false);
 
   const summary = summariseSquad(squad, ownedCards);
-  const seasonsLeft = mode.maxSeasons - seasonsUsed;
-  const runOver = seasonsLeft <= 0 && !runCompleted;
+  const stageToSimulate = currentStage ?? 'group';
+  const stageLabel = getStageLabel(stageToSimulate);
 
-  function runSeason() {
-    if (seasonsUsed >= mode.maxSeasons) return;
-    incrementSeason();
-    const seasonNumber = seasonsUsed + 1;
-    setPhase('sim');
+  function simulate() {
+    const isFirst = currentStage === null;
+    if (isFirst) startTournament();
+    setPhase('simulating');
+    setShowReward(false);
+
     setTimeout(() => {
       const sum = summariseSquad(squad, ownedCards);
-      const season = simulateSeason(sum, mode);
-      const success = evaluateWinCondition(mode, season);
+      const stage = isFirst ? 'group' : (currentStage ?? 'group');
 
-      const runResult: ModeRunResult = {
-        modeId: mode.id,
-        season,
-        success,
-        seasonNumber,
-        squadRating: sum.rating,
-        playedAt: Date.now(),
-      };
-      recordRun(runResult);
+      if (stage === 'group') {
+        const result = simulateGroupStage(sum.rating);
+        setGroupResult(result);
+        setPhase('group-result');
 
-      setOutcome({ season, success, seasonNumber });
-      setPhase('result');
-      setShowReward(false);
-    }, 1400);
+        if (!result.qualified) {
+          eliminateFromTournament();
+          recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now() });
+        } else {
+          advanceStage('r16');
+        }
+      } else {
+        const result = simulateKnockoutStage(sum.rating, stage);
+        setKnockoutResult(result);
+        setPhase('knockout-result');
+
+        if (!matchWon(result)) {
+          eliminateFromTournament();
+          recordRun({ modeId: mode.id, success: false, reachedStage: stage, squadRating: sum.rating, playedAt: Date.now() });
+        } else if (stage === 'final') {
+          winTournament();
+          recordRun({ modeId: mode.id, success: true, reachedStage: 'won', squadRating: sum.rating, playedAt: Date.now() });
+        } else {
+          const next = getNextStage(stage);
+          advanceStage(next);
+        }
+      }
+    }, 1600);
   }
 
-  function tryAgain() {
-    setOutcome(null);
-    setPhase('ready');
+  function continueToNext() {
+    setGroupResult(null);
+    setKnockoutResult(null);
+    setShowReward(false);
+
+    if (tournamentWon) {
+      setPhase('won');
+    } else if (tournamentEliminated) {
+      setPhase('eliminated');
+    } else {
+      setPhase('ready');
+    }
   }
 
   function restart() {
     restartRun();
-    setOutcome(null);
+    setGroupResult(null);
+    setKnockoutResult(null);
+    setShowReward(false);
     setPhase('ready');
   }
 
   // ---------------------------------------------------------------- Simulating
-  if (phase === 'sim') {
+  if (phase === 'simulating') {
     return (
       <div className="flex flex-col items-center justify-center gap-6 py-32 text-center">
         <motion.div
@@ -134,160 +129,61 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         >
           ⚽
         </motion.div>
-        <p className="text-lg font-bold text-white/70">Simulating the season…</p>
+        <p className="text-lg font-bold text-white/70">Simulating the {stageLabel}…</p>
       </div>
     );
   }
 
-  // ---------------------------------------------------------------- Result
-  if (phase === 'result' && outcome) {
-    const o = outcome;
-    const s = o.season;
-    const gd = s.goalsFor - s.goalsAgainst;
-    const table = generateLeagueTable(s, teamName);
-    const failedRun = !o.success && seasonsLeft <= 0;
-
+  // ---------------------------------------------------------------- Group result
+  if (phase === 'group-result' && groupResult) {
+    const qualified = groupResult.qualified;
     return (
       <div className="space-y-4">
-        {/* Win / keep going / run over header */}
-        {o.success ? (
-          <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-400/10 p-5 text-center">
-            <div className="text-5xl">🏆</div>
-            <h1 className="mt-2 text-2xl font-black">Challenge Complete!</h1>
-            <p className="mt-1 text-sm text-white/60">
-              {mode.winConditionText} — done in {o.seasonNumber} season{o.seasonNumber !== 1 ? 's' : ''}
-            </p>
-          </div>
-        ) : failedRun ? (
-          <div className="rounded-2xl border-2 border-red-400/50 bg-red-400/10 p-5 text-center">
-            <div className="text-5xl">💔</div>
-            <h1 className="mt-2 text-2xl font-black">Run Over</h1>
-            <p className="mt-1 text-sm text-white/50">{shortfallText(mode, s)}</p>
-            <p className="mt-3 text-xs text-white/40">
-              All {mode.maxSeasons} seasons used. Your squad is gone — start a fresh run.
-            </p>
-          </div>
-        ) : (
-          <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-5 text-center">
-            <div className="text-5xl">💪</div>
-            <h1 className="mt-2 text-2xl font-black">Keep Going</h1>
-            <p className="mt-1 text-sm text-white/50">{shortfallText(mode, s)}</p>
-            <p className="mt-3 text-xs font-bold text-amber-300">
-              {seasonsLeft} season{seasonsLeft !== 1 ? 's' : ''} remaining
-            </p>
-          </div>
-        )}
-
-        {/* League position hero */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
-            Season {o.seasonNumber} of {mode.maxSeasons}
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <div className={cn('text-5xl font-black tabular-nums', s.wonLeague ? 'text-emerald-400' : 'text-white')}>
-                {ordinal(s.leaguePosition)}
-              </div>
-              <div className="mt-0.5 text-[10px] text-white/40">Position</div>
-            </div>
-            <div className="flex flex-1 flex-wrap gap-x-5 gap-y-2">
-              <Stat label="Pts" value={String(s.points)} highlight={s.wonLeague} />
-              <Stat label="GD" value={(gd >= 0 ? '+' : '') + gd} highlight={gd > 0} />
-              {s.unbeaten && (
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-black text-emerald-300">
-                  UNBEATEN
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* W / D / L / GF / GA row */}
-          <div className="mt-4 grid grid-cols-5 gap-1.5">
-            <StatBox label="W" value={s.wins} color="emerald" />
-            <StatBox label="D" value={s.draws} color="yellow" />
-            <StatBox label="L" value={s.losses} color="red" />
-            <StatBox label="GF" value={s.goalsFor} color="white" />
-            <StatBox label="GA" value={s.goalsAgainst} color="white" />
-          </div>
+        <div className={cn(
+          'rounded-2xl border-2 p-5 text-center',
+          qualified ? 'border-emerald-400 bg-emerald-400/10' : 'border-red-400/50 bg-red-400/10',
+        )}>
+          <div className="text-5xl">{qualified ? '✅' : '❌'}</div>
+          <h1 className="mt-2 text-2xl font-black">
+            {qualified ? 'Qualified!' : 'Eliminated'}
+          </h1>
+          <p className="mt-1 text-sm text-white/60">
+            {qualified
+              ? `${groupResult.points} points — through to the Round of 16`
+              : `Only ${groupResult.points} points — not enough to qualify`}
+          </p>
         </div>
 
-        {/* Trophy cabinet */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Trophies</div>
-          <div className="grid grid-cols-4 gap-2">
-            {[
-              { won: s.wonLeague, label: 'PL', emoji: '🏆' },
-              { won: s.wonFaCup, label: 'FA Cup', emoji: '🏅' },
-              { won: s.wonLeagueCup, label: 'EFL Cup', emoji: '🥈' },
-              { won: s.wonChampionsLeague, label: 'UCL', emoji: '⭐' },
-            ].map((t) => (
-              <div
-                key={t.label}
-                className={cn(
-                  'rounded-xl border p-3 text-center',
-                  t.won
-                    ? 'border-amber-400/40 bg-amber-400/10'
-                    : 'border-white/5 bg-white/5 opacity-40',
-                )}
-              >
-                <div className="text-2xl">{t.won ? t.emoji : '—'}</div>
-                <div className="mt-1 text-[10px] font-bold text-white/60">{t.label}</div>
-              </div>
+          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Group Stage Results</div>
+          <div className="space-y-2">
+            {groupResult.matches.map((m, i) => (
+              <MatchCard key={i} match={m} stage="group" />
             ))}
           </div>
+          <div className="mt-3 flex items-center justify-between rounded-xl bg-black/20 px-4 py-2">
+            <span className="text-sm font-bold text-white/60">Total Points</span>
+            <span className={cn('text-xl font-black tabular-nums', qualified ? 'text-emerald-300' : 'text-red-400')}>
+              {groupResult.points} / 9
+            </span>
+          </div>
         </div>
 
-        {/* League table */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-          <div className="px-4 pt-4 pb-2 text-[10px] uppercase tracking-widest text-white/40">
-            League Table
-          </div>
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/10 text-[10px] uppercase text-white/30">
-                <th className="px-3 py-1.5 text-left">#</th>
-                <th className="px-3 py-1.5 text-left">Team</th>
-                <th className="px-3 py-1.5 text-right">W</th>
-                <th className="px-3 py-1.5 text-right">D</th>
-                <th className="px-3 py-1.5 text-right">L</th>
-                <th className="px-3 py-1.5 text-right">GD</th>
-                <th className="px-3 py-1.5 text-right font-black">Pts</th>
-              </tr>
-            </thead>
-            <tbody>
-              {table.map((row, i) => (
-                <TableRow key={row.name} row={row} pos={i + 1} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Season reward — not on a dead run; the squad is about to be wiped */}
-        {!failedRun && !showReward && (
-          <div className="flex justify-center">
-            <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
-              🎰 Spin for Reward
-            </Button>
-          </div>
+        {qualified && !showReward && (
+          <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
+            🎰 Spin for Reward
+          </Button>
         )}
 
-        {/* Actions */}
-        {o.success ? (
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button variant="secondary" onClick={onGoToSquad}>Adjust Squad</Button>
-            <Button onClick={tryAgain}>Continue</Button>
-          </div>
-        ) : failedRun ? (
-          <div className="flex justify-center">
-            <Button size="lg" variant="danger" onClick={restart}>
-              Restart Challenge
-            </Button>
+        {qualified ? (
+          <div className="flex flex-wrap gap-3">
+            <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
+            <Button className="flex-1" onClick={continueToNext}>Round of 16 →</Button>
           </div>
         ) : (
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button onClick={onGoToSquad}>Improve Squad</Button>
-            <Button variant="ghost" onClick={tryAgain}>Next Season</Button>
-          </div>
+          <Button size="lg" variant="danger" className="w-full" onClick={restart}>
+            Start Again
+          </Button>
         )}
 
         {showReward && (
@@ -301,13 +197,133 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     );
   }
 
+  // ---------------------------------------------------------------- Knockout result
+  if (phase === 'knockout-result' && knockoutResult) {
+    const won = matchWon(knockoutResult);
+    const isFinal = !won || !getNextStage(currentStage ?? 'final');
+    const nextStageName = currentStage ? getStageLabel(getNextStage(currentStage) ?? 'final') : '';
+    const wasFinale = currentStage === 'final';
+
+    return (
+      <div className="space-y-4">
+        <div className={cn(
+          'rounded-2xl border-2 p-5 text-center',
+          won && wasFinale ? 'border-amber-400 bg-amber-400/10'
+            : won ? 'border-emerald-400 bg-emerald-400/10'
+            : 'border-red-400/50 bg-red-400/10',
+        )}>
+          <div className="text-5xl">{won && wasFinale ? '🏆' : won ? '✅' : '❌'}</div>
+          <h1 className="mt-2 text-2xl font-black">
+            {won && wasFinale ? 'World Champions!' : won ? `${getStageLabel(currentStage ?? 'r16')} — Won!` : 'Eliminated'}
+          </h1>
+          {won && wasFinale && (
+            <p className="mt-1 text-sm text-white/60">
+              England are World Cup winners — incredible!
+            </p>
+          )}
+          {!won && (
+            <p className="mt-1 text-sm text-white/50">
+              England are out of the World Cup
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
+            {getStageLabel(currentStage ?? 'r16')}
+          </div>
+          <MatchCard match={knockoutResult} stage="knockout" />
+        </div>
+
+        {won && !showReward && (
+          <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
+            🎰 Spin for Reward
+          </Button>
+        )}
+
+        {won ? (
+          wasFinale ? (
+            <Button size="lg" className="w-full" onClick={restart}>
+              Play Again
+            </Button>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
+              <Button className="flex-1" onClick={continueToNext}>{nextStageName} →</Button>
+            </div>
+          )
+        ) : (
+          <Button size="lg" variant="danger" className="w-full" onClick={restart}>
+            Start Again
+          </Button>
+        )}
+
+        {showReward && (
+          <SeasonReward
+            squad={squad}
+            onClaim={(updatedSquad) => onSquadChange(updatedSquad)}
+            onDismiss={() => setShowReward(false)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------- Won (persistent state)
+  if (phase === 'won') {
+    const completion = completions[mode.id];
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl border-2 border-amber-400 bg-amber-400/10 p-6 text-center">
+          <div className="text-6xl">🏆</div>
+          <h1 className="mt-3 text-3xl font-black text-amber-300">World Champions!</h1>
+          <p className="mt-2 text-sm text-white/60">
+            England lifted the World Cup — an unforgettable achievement.
+          </p>
+          {completion && (
+            <p className="mt-3 text-xs font-bold text-amber-400">
+              Won {completion.timesCompleted} time{completion.timesCompleted !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
+        <Button size="lg" className="w-full" onClick={restart}>
+          Play Again
+        </Button>
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------- Eliminated (persistent state)
+  if (phase === 'eliminated') {
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl border-2 border-red-400/50 bg-red-400/10 p-6 text-center">
+          <div className="text-5xl">💔</div>
+          <h1 className="mt-3 text-2xl font-black">England are Out</h1>
+          <p className="mt-2 text-sm text-white/50">
+            This squad&apos;s World Cup journey is over. Build a new one and try again.
+          </p>
+        </div>
+        <Button size="lg" variant="danger" className="w-full" onClick={restart}>
+          Start Again
+        </Button>
+      </div>
+    );
+  }
+
   // ---------------------------------------------------------------- Ready
   const ratingColor =
-    summary.rating >= 85
+    summary.rating >= 88
       ? 'text-emerald-300'
-      : summary.rating >= 75
+      : summary.rating >= 80
         ? 'text-yellow-300'
         : 'text-orange-300';
+
+  const completedStages = currentStage
+    ? STAGE_ORDER.slice(0, STAGE_ORDER.indexOf(currentStage))
+    : [];
+
+  const isFirstSim = currentStage === null && !tournamentWon && !tournamentEliminated;
 
   return (
     <div className="space-y-6">
@@ -317,44 +333,37 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
       </header>
 
       <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4 text-sm">
-        <span className="font-bold text-emerald-300">Win condition: </span>
+        <span className="font-bold text-emerald-300">Objective: </span>
         {mode.winConditionText}.
       </div>
 
-      {/* Seasons remaining */}
-      <div className={cn(
-        'rounded-2xl border p-5',
-        runOver
-          ? 'border-red-400/30 bg-red-400/5'
-          : 'border-white/10 bg-white/5',
-      )}>
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Season</div>
-            <div className="text-2xl font-black tabular-nums text-white">
-              {Math.min(seasonsUsed + 1, mode.maxSeasons)}
-              <span className="text-sm text-white/40"> / {mode.maxSeasons}</span>
-            </div>
-          </div>
-          <div className="flex max-w-[55%] flex-wrap justify-end gap-1.5">
-            {Array.from({ length: mode.maxSeasons }).map((_, i) => (
-              <div
-                key={i}
-                className={cn(
-                  'h-2.5 w-2.5 rounded-full',
-                  i < seasonsUsed ? 'bg-white/20' : 'bg-emerald-400',
-                )}
-              />
-            ))}
-          </div>
+      {/* Tournament progress */}
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Tournament Path</div>
+        <div className="flex items-center gap-1">
+          {STAGE_ORDER.map((s, i) => {
+            const isDone = completedStages.includes(s);
+            const isCurrent = s === stageToSimulate;
+            const isPending = !isDone && !isCurrent;
+            return (
+              <div key={s} className="flex flex-1 flex-col items-center gap-1">
+                <div className={cn(
+                  'h-2 w-full rounded-full',
+                  isDone ? 'bg-emerald-400' : isCurrent ? 'bg-white/50' : 'bg-white/10',
+                )} />
+                <span className={cn(
+                  'text-[9px] font-bold text-center leading-tight',
+                  isDone ? 'text-emerald-400' : isCurrent ? 'text-white' : 'text-white/30',
+                )}>
+                  {s === 'group' ? 'Groups' : s === 'r16' ? 'R16' : s === 'qf' ? 'QF' : s === 'sf' ? 'SF' : 'Final'}
+                </span>
+              </div>
+            );
+          })}
         </div>
-        {!runOver && seasonsLeft <= 3 && (
-          <p className="mt-3 text-xs font-bold text-amber-300">
-            Only {seasonsLeft} season{seasonsLeft !== 1 ? 's' : ''} left — make them count.
-          </p>
-        )}
       </div>
 
+      {/* Squad rating */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
         <div className="flex items-center gap-4">
           <div className="text-center">
@@ -373,34 +382,18 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         </Button>
       </div>
 
-      {/* Team name */}
-      <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-5">
-        <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Your Team Name</div>
-        <input
-          value={teamName}
-          onChange={(e) => setTeamName(e.target.value)}
-          maxLength={25}
-          placeholder="e.g. FC Legends"
-          className="w-full border-b-2 border-white/20 bg-transparent pb-2 text-2xl font-black text-white outline-none transition-colors placeholder:text-white/25 focus:border-emerald-400"
-        />
-        <p className="mt-2 text-xs text-white/30">Shown in the league table</p>
-      </div>
-
-      {runOver ? (
-        <div className="rounded-2xl border-2 border-red-400/30 bg-red-400/5 p-6 text-center">
-          <div className="text-4xl">💔</div>
-          <p className="mt-2 font-black text-red-300">Run over — all seasons used</p>
-          <p className="mt-1 text-xs text-white/50">
-            Restarting wipes your squad and tokens for a fresh attempt.
-          </p>
-          <Button size="lg" variant="danger" className="mt-4" onClick={restart}>
-            Restart Challenge
-          </Button>
+      {/* Next stage callout */}
+      {!isFirstSim && (
+        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+          <div className="text-[10px] uppercase tracking-widest text-white/40">Next Stage</div>
+          <div className="mt-0.5 text-lg font-black text-white">{stageLabel}</div>
         </div>
-      ) : summary.isComplete ? (
+      )}
+
+      {summary.isComplete ? (
         <div className="flex justify-center">
-          <Button size="lg" onClick={runSeason} disabled={!hydrated}>
-            Simulate Season {Math.min(seasonsUsed + 1, mode.maxSeasons)} of {mode.maxSeasons}
+          <Button size="lg" className="w-full" onClick={simulate} disabled={!hydrated}>
+            {isFirstSim ? '🌍 Start the World Cup' : `⚽ Simulate ${stageLabel}`}
           </Button>
         </div>
       ) : (
@@ -415,72 +408,43 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   );
 }
 
-function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className="text-center">
-      <div className={cn('text-xl font-black tabular-nums', highlight ? 'text-emerald-300' : 'text-white')}>
-        {value}
-      </div>
-      <div className="text-[10px] uppercase tracking-wide text-white/40">{label}</div>
-    </div>
-  );
-}
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
 
-function StatBox({ label, value, color }: { label: string; value: number; color: 'emerald' | 'yellow' | 'red' | 'white' }) {
-  const textColor = {
-    emerald: 'text-emerald-300',
-    yellow: 'text-yellow-300',
-    red: 'text-red-400',
-    white: 'text-white',
-  }[color];
-  return (
-    <div className="rounded-xl bg-black/20 py-2 text-center">
-      <div className={cn('text-lg font-black tabular-nums', textColor)}>{value}</div>
-      <div className="text-[10px] uppercase tracking-wide text-white/40">{label}</div>
-    </div>
-  );
-}
+function MatchCard({ match, stage }: { match: MatchResult; stage: 'group' | 'knockout' }) {
+  const won = match.englandGoals > match.opponentGoals || match.penaltiesWin === true;
+  const lost = match.englandGoals < match.opponentGoals || match.penaltiesLoss === true;
+  const drew = match.englandGoals === match.opponentGoals && !match.penaltiesWin && !match.penaltiesLoss;
 
-function TableRow({ row, pos }: { row: LeagueTableRow; pos: number }) {
-  const gd = row.gf - row.ga;
-  const isTop4 = pos <= 4;
-  const isEuropa = pos === 5;
-  const isRelegation = pos >= 18;
+  const resultColor = won ? 'text-emerald-300' : lost ? 'text-red-400' : 'text-yellow-300';
+  const resultLabel = won ? 'W' : lost ? 'L' : 'D';
+
+  const isPens = match.penaltiesWin || match.penaltiesLoss;
 
   return (
-    <tr className={cn('border-b border-white/5 text-xs last:border-0', row.isUser && 'bg-emerald-500/10')}>
-      <td className="px-3 py-2">
+    <div className="flex items-center gap-3 rounded-xl bg-black/20 px-4 py-3">
+      <span className={cn('w-5 text-center text-sm font-black', resultColor)}>{resultLabel}</span>
+      <div className="flex flex-1 items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
-          <span
-            className={cn(
-              'h-3.5 w-1 shrink-0 rounded-full',
-              isTop4 ? 'bg-blue-400' : isEuropa ? 'bg-amber-400' : isRelegation ? 'bg-red-500' : 'bg-transparent',
-            )}
-          />
-          <span className="tabular-nums text-white/40">{pos}</span>
+          <span className="text-lg">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+          <span className="text-xs font-bold text-white">England</span>
         </div>
-      </td>
-      <td className={cn('px-3 py-2 font-bold', row.isUser ? 'text-emerald-300' : 'text-white')}>
-        {row.name}
-      </td>
-      <td className="px-3 py-2 text-right tabular-nums text-white/70">{row.won}</td>
-      <td className="px-3 py-2 text-right tabular-nums text-white/70">{row.drawn}</td>
-      <td className="px-3 py-2 text-right tabular-nums text-white/70">{row.lost}</td>
-      <td className={cn(
-        'px-3 py-2 text-right tabular-nums',
-        gd > 0 ? 'text-emerald-400' : gd < 0 ? 'text-red-400' : 'text-white/40',
-      )}>
-        {gd > 0 ? '+' : ''}{gd}
-      </td>
-      <td className={cn('px-3 py-2 text-right tabular-nums font-black', row.isUser ? 'text-emerald-300' : 'text-white')}>
-        {row.points}
-      </td>
-    </tr>
+        <div className="text-center">
+          <div className="text-lg font-black tabular-nums text-white">
+            {match.englandGoals} – {match.opponentGoals}
+          </div>
+          {isPens && (
+            <div className="text-[10px] text-white/40">
+              {match.penaltiesWin ? '(ENG pens)' : '(OPP pens)'}
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 justify-end">
+          <span className="text-xs font-bold text-white">{match.opponent.name}</span>
+          <span className="text-lg">{match.opponent.flag}</span>
+        </div>
+      </div>
+    </div>
   );
-}
-
-function ordinal(n: number): string {
-  const s = ['th', 'st', 'nd', 'rd'];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }

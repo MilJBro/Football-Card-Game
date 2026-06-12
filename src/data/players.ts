@@ -1,12 +1,9 @@
 import type { PlayerCardDef, Position, Tier, PackCategory } from '@/store/types';
 
 // ============================================================================
-// Compact source data. Each player has three career-era entries (tiers).
-// Positions and ratings evolve to tell the player's story:
-//   Rising  = debut / breakthrough era
-//   Star    = establishing greatness
-//   Legend  = peak years (highest rating; 2nd position unlocked if applicable)
-// Expanded into 960 PlayerCardDef cards below (320 players × 3 tiers).
+// England World Cup internationals — 3 players per position (8 positions = 24).
+// Each player has three era entries across Rising / Star / Legend tiers,
+// representing their England career at different World Cups.
 // ============================================================================
 
 interface TierSource {
@@ -27,281 +24,281 @@ const PLAYERS: PlayerSource[] = [
 
   // ── GK ──────────────────────────────────────────────────────────────────────
   {
-    playerId: 'schmeichel',
-    playerName: 'Peter Schmeichel',
-    nationality: 'Denmark',
+    playerId: 'shilton',
+    playerName: 'Peter Shilton',
+    nationality: 'England',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Man Utd · 1993', positions: ['GK'], rating: 82 },
-      Star:   { era: 'Man Utd · 1996', positions: ['GK'], rating: 88 },
-      Legend: { era: 'Man Utd · 1999', positions: ['GK'], rating: 92 },
+      Rising: { era: 'England · 1982', positions: ['GK'], rating: 80 },
+      Star:   { era: 'England · 1986', positions: ['GK'], rating: 85 },
+      Legend: { era: 'England · 1990', positions: ['GK'], rating: 89 },
     },
   },
   {
-    playerId: 'davidseaman',
+    playerId: 'seaman',
     playerName: 'David Seaman',
     nationality: 'England',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Arsenal · 1993', positions: ['GK'], rating: 80 },
-      Star:   { era: 'Arsenal · 1998', positions: ['GK'], rating: 84 },
-      Legend: { era: 'Arsenal · 2002', positions: ['GK'], rating: 88 },
+      Rising: { era: 'England · 1996', positions: ['GK'], rating: 78 },
+      Star:   { era: 'England · 1998', positions: ['GK'], rating: 83 },
+      Legend: { era: 'England · 2002', positions: ['GK'], rating: 87 },
     },
   },
   {
-    playerId: 'petrcech',
-    playerName: 'Petr Čech',
-    nationality: 'Czech Republic',
+    playerId: 'pickford',
+    playerName: 'Jordan Pickford',
+    nationality: 'England',
     pack: 'GK',
     tiers: {
-      Rising: { era: 'Chelsea · 2005', positions: ['GK'], rating: 82 },
-      Star:   { era: 'Chelsea · 2008', positions: ['GK'], rating: 87 },
-      Legend: { era: 'Chelsea · 2012', positions: ['GK'], rating: 91 },
+      Rising: { era: 'England · 2018', positions: ['GK'], rating: 76 },
+      Star:   { era: 'England · 2021', positions: ['GK'], rating: 82 },
+      Legend: { era: 'England · 2022', positions: ['GK'], rating: 86 },
     },
   },
 
   // ── RB ──────────────────────────────────────────────────────────────────────
   {
-    playerId: 'garyneville',
+    playerId: 'gneville',
     playerName: 'Gary Neville',
     nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Man Utd · 1996', positions: ['RB'], rating: 76 },
-      Star:   { era: 'Man Utd · 2000', positions: ['RB'], rating: 82 },
-      Legend: { era: 'Man Utd · 2006', positions: ['RB'], rating: 86 },
+      Rising: { era: 'England · 1998', positions: ['RB'], rating: 75 },
+      Star:   { era: 'England · 2002', positions: ['RB'], rating: 81 },
+      Legend: { era: 'England · 2006', positions: ['RB'], rating: 85 },
     },
   },
   {
-    playerId: 'zabaleta',
-    playerName: 'Pablo Zabaleta',
-    nationality: 'Argentina',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Man City · 2009', positions: ['RB'], rating: 74 },
-      Star:   { era: 'Man City · 2012', positions: ['RB'], rating: 82 },
-      Legend: { era: 'Man City · 2014', positions: ['RB'], rating: 85 },
-    },
-  },
-  {
-    playerId: 'trentaa',
-    playerName: 'Trent Alexander-Arnold',
+    playerId: 'gjohnson',
+    playerName: 'Glen Johnson',
     nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Liverpool · 2018', positions: ['RB'], rating: 79 },
-      Star:   { era: 'Liverpool · 2020', positions: ['RB'], rating: 86 },
-      Legend: { era: 'Liverpool · 2022', positions: ['RB'], rating: 89 },
+      Rising: { era: 'England · 2006', positions: ['RB'], rating: 73 },
+      Star:   { era: 'England · 2010', positions: ['RB'], rating: 79 },
+      Legend: { era: 'England · 2014', positions: ['RB'], rating: 82 },
+    },
+  },
+  {
+    playerId: 'trippier',
+    playerName: 'Kieran Trippier',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'England · 2018', positions: ['RB'], rating: 76 },
+      Star:   { era: 'England · 2021', positions: ['RB'], rating: 82 },
+      Legend: { era: 'England · 2022', positions: ['RB'], rating: 86 },
     },
   },
 
   // ── CB ──────────────────────────────────────────────────────────────────────
+  {
+    playerId: 'bobbymoore',
+    playerName: 'Bobby Moore',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'England · 1962', positions: ['CB'], rating: 80 },
+      Star:   { era: 'England · 1966', positions: ['CB'], rating: 88 },
+      Legend: { era: 'England · 1970', positions: ['CB'], rating: 92 },
+    },
+  },
+  {
+    playerId: 'solcampbell',
+    playerName: 'Sol Campbell',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'England · 1998', positions: ['CB'], rating: 78 },
+      Star:   { era: 'England · 2002', positions: ['CB'], rating: 84 },
+      Legend: { era: 'England · 2006', positions: ['CB'], rating: 88 },
+    },
+  },
   {
     playerId: 'rioferd',
     playerName: 'Rio Ferdinand',
     nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Leeds · 2001',    positions: ['CB'], rating: 80 },
-      Star:   { era: 'Man Utd · 2004',  positions: ['CB'], rating: 88 },
-      Legend: { era: 'Man Utd · 2009',  positions: ['CB'], rating: 91 },
-    },
-  },
-  {
-    playerId: 'johnterry',
-    playerName: 'John Terry',
-    nationality: 'England',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Chelsea · 2002', positions: ['CB'], rating: 78 },
-      Star:   { era: 'Chelsea · 2006', positions: ['CB'], rating: 87 },
-      Legend: { era: 'Chelsea · 2010', positions: ['CB'], rating: 91 },
-    },
-  },
-  {
-    playerId: 'vandijk',
-    playerName: 'Virgil van Dijk',
-    nationality: 'Netherlands',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Southampton · 2016', positions: ['CB'], rating: 78 },
-      Star:   { era: 'Liverpool · 2019',   positions: ['CB'], rating: 88 },
-      Legend: { era: 'Liverpool · 2020',   positions: ['CB'], rating: 92 },
+      Rising: { era: 'England · 1998', positions: ['CB'], rating: 78 },
+      Star:   { era: 'England · 2002', positions: ['CB'], rating: 85 },
+      Legend: { era: 'England · 2006', positions: ['CB'], rating: 90 },
     },
   },
 
   // ── LB ──────────────────────────────────────────────────────────────────────
+  {
+    playerId: 'stuartpearce',
+    playerName: 'Stuart Pearce',
+    nationality: 'England',
+    pack: 'DEF',
+    tiers: {
+      Rising: { era: 'England · 1986', positions: ['LB'], rating: 75 },
+      Star:   { era: 'England · 1990', positions: ['LB'], rating: 82 },
+      Legend: { era: 'England · 1996', positions: ['LB'], rating: 86 },
+    },
+  },
   {
     playerId: 'ashleycole',
     playerName: 'Ashley Cole',
     nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Arsenal · 2002', positions: ['LB'], rating: 78 },
-      Star:   { era: 'Arsenal · 2004', positions: ['LB'], rating: 86 },
-      Legend: { era: 'Chelsea · 2010', positions: ['LB'], rating: 91 },
+      Rising: { era: 'England · 2002', positions: ['LB'], rating: 77 },
+      Star:   { era: 'England · 2006', positions: ['LB'], rating: 85 },
+      Legend: { era: 'England · 2010', positions: ['LB'], rating: 90 },
     },
   },
   {
-    playerId: 'patricevra',
-    playerName: 'Patrice Evra',
-    nationality: 'France',
+    playerId: 'lukeshaw',
+    playerName: 'Luke Shaw',
+    nationality: 'England',
     pack: 'DEF',
     tiers: {
-      Rising: { era: 'Man Utd · 2007', positions: ['LB'], rating: 76 },
-      Star:   { era: 'Man Utd · 2009', positions: ['LB'], rating: 83 },
-      Legend: { era: 'Man Utd · 2013', positions: ['LB'], rating: 87 },
-    },
-  },
-  {
-    playerId: 'andrewrobertson',
-    playerName: 'Andrew Robertson',
-    nationality: 'Scotland',
-    pack: 'DEF',
-    tiers: {
-      Rising: { era: 'Liverpool · 2018', positions: ['LB'], rating: 78 },
-      Star:   { era: 'Liverpool · 2019', positions: ['LB'], rating: 86 },
-      Legend: { era: 'Liverpool · 2020', positions: ['LB'], rating: 89 },
+      Rising: { era: 'England · 2018', positions: ['LB'], rating: 75 },
+      Star:   { era: 'England · 2021', positions: ['LB'], rating: 82 },
+      Legend: { era: 'England · 2022', positions: ['LB'], rating: 86 },
     },
   },
 
   // ── CM ──────────────────────────────────────────────────────────────────────
   {
-    playerId: 'paulscholes',
-    playerName: 'Paul Scholes',
+    playerId: 'bobbycharlton',
+    playerName: 'Bobby Charlton',
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Man Utd · 1996', positions: ['CM'], rating: 79 },
-      Star:   { era: 'Man Utd · 2001', positions: ['CM'], rating: 87 },
-      Legend: { era: 'Man Utd · 2009', positions: ['CM'], rating: 91 },
+      Rising: { era: 'England · 1962', positions: ['CM'], rating: 82 },
+      Star:   { era: 'England · 1966', positions: ['CM'], rating: 89 },
+      Legend: { era: 'England · 1970', positions: ['CM'], rating: 93 },
     },
   },
   {
-    playerId: 'stevengerrard',
+    playerId: 'gerrard',
     playerName: 'Steven Gerrard',
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Liverpool · 2001', positions: ['CM'], rating: 81 },
-      Star:   { era: 'Liverpool · 2006', positions: ['CM'], rating: 89 },
-      Legend: { era: 'Liverpool · 2009', positions: ['CM'], rating: 92 },
+      Rising: { era: 'England · 2004', positions: ['CM'], rating: 80 },
+      Star:   { era: 'England · 2006', positions: ['CM'], rating: 87 },
+      Legend: { era: 'England · 2010', positions: ['CM'], rating: 91 },
     },
   },
   {
-    playerId: 'franklampard',
-    playerName: 'Frank Lampard',
+    playerId: 'decrice',
+    playerName: 'Declan Rice',
     nationality: 'England',
     pack: 'MID',
     tiers: {
-      Rising: { era: 'Chelsea · 2002', positions: ['CM'], rating: 80 },
-      Star:   { era: 'Chelsea · 2006', positions: ['CM'], rating: 88 },
-      Legend: { era: 'Chelsea · 2010', positions: ['CM'], rating: 91 },
+      Rising: { era: 'England · 2022', positions: ['CM'], rating: 78 },
+      Star:   { era: 'England · 2024', positions: ['CM'], rating: 84 },
+      Legend: { era: 'England · 2026', positions: ['CM'], rating: 88 },
     },
   },
 
   // ── RW ──────────────────────────────────────────────────────────────────────
   {
-    playerId: 'davidbeckham',
+    playerId: 'beckham',
     playerName: 'David Beckham',
     nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Man Utd · 1996', positions: ['RW'], rating: 78 },
-      Star:   { era: 'Man Utd · 1999', positions: ['RW'], rating: 87 },
-      Legend: { era: 'Man Utd · 2001', positions: ['RW'], rating: 89 },
+      Rising: { era: 'England · 1998', positions: ['RW'], rating: 78 },
+      Star:   { era: 'England · 2002', positions: ['RW'], rating: 85 },
+      Legend: { era: 'England · 2006', positions: ['RW'], rating: 89 },
     },
   },
   {
-    playerId: 'salah',
-    playerName: 'Mohamed Salah',
-    nationality: 'Egypt',
+    playerId: 'saka',
+    playerName: 'Bukayo Saka',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Liverpool · 2018', positions: ['RW'], rating: 83 },
-      Star:   { era: 'Liverpool · 2020', positions: ['RW'], rating: 89 },
-      Legend: { era: 'Liverpool · 2022', positions: ['RW'], rating: 93 },
+      Rising: { era: 'England · 2021', positions: ['RW'], rating: 79 },
+      Star:   { era: 'England · 2022', positions: ['RW'], rating: 85 },
+      Legend: { era: 'England · 2024', positions: ['RW'], rating: 89 },
     },
   },
   {
-    playerId: 'ronaldo',
-    playerName: 'Cristiano Ronaldo',
-    nationality: 'Portugal',
+    playerId: 'foden',
+    playerName: 'Phil Foden',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Man Utd · 2004', positions: ['RW'], rating: 79 },
-      Star:   { era: 'Man Utd · 2007', positions: ['RW'], rating: 89 },
-      Legend: { era: 'Man Utd · 2008', positions: ['RW'], rating: 93 },
+      Rising: { era: 'England · 2022', positions: ['RW'], rating: 80 },
+      Star:   { era: 'England · 2024', positions: ['RW'], rating: 86 },
+      Legend: { era: 'England · 2026', positions: ['RW'], rating: 90 },
     },
   },
 
   // ── LW ──────────────────────────────────────────────────────────────────────
   {
-    playerId: 'ryangiggs',
-    playerName: 'Ryan Giggs',
-    nationality: 'Wales',
+    playerId: 'johnbarnes',
+    playerName: 'John Barnes',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Man Utd · 1994', positions: ['LW'], rating: 82 },
-      Star:   { era: 'Man Utd · 1999', positions: ['LW'], rating: 89 },
-      Legend: { era: 'Man Utd · 2008', positions: ['LW'], rating: 90 },
+      Rising: { era: 'England · 1986', positions: ['LW'], rating: 78 },
+      Star:   { era: 'England · 1990', positions: ['LW'], rating: 84 },
+      Legend: { era: 'England · 1992', positions: ['LW'], rating: 88 },
     },
   },
   {
-    playerId: 'edenhazard',
-    playerName: 'Eden Hazard',
-    nationality: 'Belgium',
+    playerId: 'sterling',
+    playerName: 'Raheem Sterling',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Chelsea · 2013', positions: ['LW'], rating: 82 },
-      Star:   { era: 'Chelsea · 2015', positions: ['LW'], rating: 89 },
-      Legend: { era: 'Chelsea · 2019', positions: ['LW'], rating: 92 },
+      Rising: { era: 'England · 2016', positions: ['LW'], rating: 78 },
+      Star:   { era: 'England · 2018', positions: ['LW'], rating: 84 },
+      Legend: { era: 'England · 2022', positions: ['LW'], rating: 88 },
     },
   },
   {
-    playerId: 'sadiomane',
-    playerName: 'Sadio Mané',
-    nationality: 'Senegal',
+    playerId: 'rashford',
+    playerName: 'Marcus Rashford',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Liverpool · 2017', positions: ['LW'], rating: 81 },
-      Star:   { era: 'Liverpool · 2019', positions: ['LW'], rating: 89 },
-      Legend: { era: 'Liverpool · 2020', positions: ['LW'], rating: 91 },
+      Rising: { era: 'England · 2018', positions: ['LW'], rating: 77 },
+      Star:   { era: 'England · 2022', positions: ['LW'], rating: 83 },
+      Legend: { era: 'England · 2024', positions: ['LW'], rating: 87 },
     },
   },
 
   // ── ST ──────────────────────────────────────────────────────────────────────
   {
-    playerId: 'alanshearer',
-    playerName: 'Alan Shearer',
+    playerId: 'hurst',
+    playerName: 'Geoff Hurst',
     nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Blackburn · 1995', positions: ['ST'], rating: 82 },
-      Star:   { era: 'Newcastle · 1997', positions: ['ST'], rating: 88 },
-      Legend: { era: 'Newcastle · 2002', positions: ['ST'], rating: 91 },
+      Rising: { era: 'England · 1966', positions: ['ST'], rating: 82 },
+      Star:   { era: 'England · 1970', positions: ['ST'], rating: 87 },
+      Legend: { era: 'England · 1970', positions: ['ST'], rating: 91 },
     },
   },
   {
-    playerId: 'thierryhenry',
-    playerName: 'Thierry Henry',
-    nationality: 'France',
+    playerId: 'lineker',
+    playerName: 'Gary Lineker',
+    nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Arsenal · 2000', positions: ['ST'], rating: 83 },
-      Star:   { era: 'Arsenal · 2002', positions: ['ST'], rating: 90 },
-      Legend: { era: 'Arsenal · 2004', positions: ['ST'], rating: 94 },
+      Rising: { era: 'England · 1986', positions: ['ST'], rating: 81 },
+      Star:   { era: 'England · 1990', positions: ['ST'], rating: 87 },
+      Legend: { era: 'England · 1992', positions: ['ST'], rating: 90 },
     },
   },
   {
-    playerId: 'waynerooney',
+    playerId: 'rooney',
     playerName: 'Wayne Rooney',
     nationality: 'England',
     pack: 'ATT',
     tiers: {
-      Rising: { era: 'Everton · 2004',   positions: ['ST'], rating: 80 },
-      Star:   { era: 'Man Utd · 2008',   positions: ['ST'], rating: 88 },
-      Legend: { era: 'Man Utd · 2012',   positions: ['ST'], rating: 91 },
+      Rising: { era: 'England · 2006', positions: ['ST'], rating: 80 },
+      Star:   { era: 'England · 2010', positions: ['ST'], rating: 86 },
+      Legend: { era: 'England · 2014', positions: ['ST'], rating: 89 },
     },
   },
 
@@ -309,7 +306,7 @@ const PLAYERS: PlayerSource[] = [
 
 
 // ---------------------------------------------------------------------------
-// One card per player — upgrade data embedded. (320 cards total)
+// Build PlayerCardDef from the compact source data.
 // ---------------------------------------------------------------------------
 
 function splitEra(era: string): { club: string; season: string } {
@@ -381,15 +378,15 @@ export function getEffectiveCardData(card: PlayerCardDef, upgradeLevel: 0 | 1 | 
 
 /**
  * Pack draw pool — quality band is determined by the card's max (level-2) rating:
- *   Rising  ≤ 84 · Star 85–88 · Legend ≥ 89
+ *   Rising ≤ 86 · Star 87–89 · Legend ≥ 90
  */
 export function getPool(pack: PlayerCardDef['pack'], tier: Tier): PlayerCardDef[] {
   const maxRating = (c: PlayerCardDef) => c.upgrades[1].rating;
   return ALL_CARDS.filter((c) => {
     if (c.pack !== pack) return false;
     const max = maxRating(c);
-    if (tier === 'Legend') return max >= 89;
-    if (tier === 'Star')   return max >= 85 && max <= 88;
-    return max <= 84; // Rising
+    if (tier === 'Legend') return max >= 90;
+    if (tier === 'Star')   return max >= 87 && max <= 89;
+    return max <= 86; // Rising
   });
 }

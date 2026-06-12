@@ -7,20 +7,42 @@ export type Position = 'GK' | 'RB' | 'CB' | 'LB' | 'CM' | 'RW' | 'LW' | 'ST';
 /** Broad category — used for pack grouping and out-of-position penalties. */
 export type PositionCategory = 'GK' | 'DEF' | 'MID' | 'ATT';
 
-/** The pack categories players are grouped into in the shop. */
+/** The pack categories players are grouped into. */
 export type PackCategory = 'GK' | 'DEF' | 'MID' | 'ATT';
 
 export type Tier = 'Rising' | 'Star' | 'Legend';
 
 export type Formation = '4-3-3' | '4-4-2' | '3-5-2';
 
-export type ModeId =
-  | 'domestic-double'
-  | 'european-glory'
-  | 'quadruple'
-  | 'iron-defence'
-  | 'invincibles'
-  | 'centurions';
+export type ModeId = 'england';
+
+// ---------------------------------------------------------------------------
+// World Cup tournament types
+// ---------------------------------------------------------------------------
+
+export type TournamentStage = 'group' | 'r16' | 'qf' | 'sf' | 'final';
+
+export interface Nation {
+  name: string;
+  flag: string;
+  rating: number;
+}
+
+export interface MatchResult {
+  opponent: Nation;
+  englandGoals: number;
+  opponentGoals: number;
+  /** Knockout only — won on penalties after a draw */
+  penaltiesWin?: boolean;
+  /** Knockout only — lost on penalties after a draw */
+  penaltiesLoss?: boolean;
+}
+
+export interface GroupStageResult {
+  matches: [MatchResult, MatchResult, MatchResult];
+  points: number;
+  qualified: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Cards
@@ -47,7 +69,7 @@ export interface PlayerCardDef {
   club: string;
   /** Base (level 0) season year. */
   season: string;
-  /** Base (level 0) era string, e.g. "Man Utd · 2011". */
+  /** Base (level 0) era string, e.g. "England · 1966". */
   era: string;
   pack: PackCategory;
   /** Base (level 0) positions. */
@@ -102,34 +124,17 @@ export interface GameModeDef {
   description: string;
   /** Human-readable win condition. */
   winConditionText: string;
-  /** Number of seasons allowed per run before the run fails. */
-  maxSeasons: number;
 }
 
-/** A simulated season's results. */
-export interface SeasonResult {
-  // League
-  leaguePosition: number;
-  points: number;
-  wins: number;
-  draws: number;
-  losses: number;
-  goalsFor: number;
-  goalsAgainst: number;
-  // Cups: did we win them?
-  wonLeague: boolean;
-  wonFaCup: boolean;
-  wonLeagueCup: boolean;
-  wonChampionsLeague: boolean;
-  unbeaten: boolean;
-}
+// ---------------------------------------------------------------------------
+// Tournament run history
+// ---------------------------------------------------------------------------
 
-export interface ModeRunResult {
+export interface TournamentRunResult {
   modeId: ModeId;
-  season: SeasonResult;
   success: boolean;
-  /** Which season of the run this was (1-based). */
-  seasonNumber: number;
+  /** How far England got (or 'won' on completion). */
+  reachedStage: TournamentStage | 'won';
   squadRating: number;
   playedAt: number;
 }
