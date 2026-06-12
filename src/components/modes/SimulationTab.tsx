@@ -19,7 +19,7 @@ import { cn } from '@/lib/ui';
 
 type Phase = 'ready' | 'simulating' | 'group-result' | 'knockout-result' | 'won' | 'eliminated';
 
-const STAGE_ORDER: TournamentStage[] = ['group', 'r16', 'qf', 'sf', 'final'];
+const STAGE_ORDER: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'final'];
 
 interface SimulationTabProps {
   mode: GameModeDef;
@@ -50,6 +50,8 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
 
   const [groupResult, setGroupResult] = useState<GroupStageResult | null>(null);
   const [knockoutResult, setKnockoutResult] = useState<MatchResult | null>(null);
+  /** Stage the result on screen belongs to — currentStage may have already advanced. */
+  const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
   const [showReward, setShowReward] = useState(false);
 
   const summary = summariseSquad(squad, ownedCards);
@@ -65,6 +67,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
     setTimeout(() => {
       const sum = summariseSquad(squad, ownedCards);
       const stage = isFirst ? 'group' : (currentStage ?? 'group');
+      setPlayedStage(stage);
 
       if (stage === 'group') {
         const result = simulateGroupStage(sum.rating);
@@ -75,7 +78,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           eliminateFromTournament();
           recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now() });
         } else {
-          advanceStage('r16');
+          advanceStage('r32');
         }
       } else {
         const result = simulateKnockoutStage(sum.rating, stage);
@@ -149,7 +152,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           </h1>
           <p className="mt-1 text-sm text-white/60">
             {qualified
-              ? `${groupResult.points} points — through to the Round of 16`
+              ? `${groupResult.points} points — through to the Round of 32`
               : `Only ${groupResult.points} points — not enough to qualify`}
           </p>
         </div>
@@ -178,7 +181,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         {qualified ? (
           <div className="flex flex-wrap gap-3">
             <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
-            <Button className="flex-1" onClick={continueToNext}>Round of 16 →</Button>
+            <Button className="flex-1" onClick={continueToNext}>Round of 32 →</Button>
           </div>
         ) : (
           <Button size="lg" variant="danger" className="w-full" onClick={restart}>
@@ -200,9 +203,9 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   // ---------------------------------------------------------------- Knockout result
   if (phase === 'knockout-result' && knockoutResult) {
     const won = matchWon(knockoutResult);
-    const isFinal = !won || !getNextStage(currentStage ?? 'final');
-    const nextStageName = currentStage ? getStageLabel(getNextStage(currentStage) ?? 'final') : '';
-    const wasFinale = currentStage === 'final';
+    const nextAfterPlayed = getNextStage(playedStage);
+    const nextStageName = nextAfterPlayed ? getStageLabel(nextAfterPlayed) : '';
+    const wasFinale = playedStage === 'final';
 
     return (
       <div className="space-y-4">
@@ -214,7 +217,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         )}>
           <div className="text-5xl">{won && wasFinale ? '🏆' : won ? '✅' : '❌'}</div>
           <h1 className="mt-2 text-2xl font-black">
-            {won && wasFinale ? 'World Champions!' : won ? `${getStageLabel(currentStage ?? 'r16')} — Won!` : 'Eliminated'}
+            {won && wasFinale ? 'World Champions!' : won ? `${getStageLabel(playedStage)} — Won!` : 'Eliminated'}
           </h1>
           {won && wasFinale && (
             <p className="mt-1 text-sm text-white/60">
@@ -230,7 +233,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
-            {getStageLabel(currentStage ?? 'r16')}
+            {getStageLabel(playedStage)}
           </div>
           <MatchCard match={knockoutResult} stage="knockout" />
         </div>
@@ -355,7 +358,7 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
                   'text-[9px] font-bold text-center leading-tight',
                   isDone ? 'text-emerald-400' : isCurrent ? 'text-white' : 'text-white/30',
                 )}>
-                  {s === 'group' ? 'Groups' : s === 'r16' ? 'R16' : s === 'qf' ? 'QF' : s === 'sf' ? 'SF' : 'Final'}
+                  {s === 'group' ? 'Groups' : s === 'r32' ? 'R32' : s === 'r16' ? 'R16' : s === 'qf' ? 'QF' : s === 'sf' ? 'SF' : 'Final'}
                 </span>
               </div>
             );

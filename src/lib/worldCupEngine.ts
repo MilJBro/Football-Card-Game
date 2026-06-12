@@ -46,6 +46,19 @@ const GROUP_NATIONS: Nation[] = [
   { name: 'Switzerland', flag: '🇨🇭', rating: 80 },
 ];
 
+const R32_NATIONS: Nation[] = [
+  { name: 'Saudi Arabia', flag: '🇸🇦', rating: 69 },
+  { name: 'South Korea',  flag: '🇰🇷', rating: 74 },
+  { name: 'Costa Rica',   flag: '🇨🇷', rating: 72 },
+  { name: 'Nigeria',      flag: '🇳🇬', rating: 75 },
+  { name: 'Ghana',        flag: '🇬🇭', rating: 74 },
+  { name: 'Australia',    flag: '🇦🇺', rating: 71 },
+  { name: 'USA',          flag: '🇺🇸', rating: 73 },
+  { name: 'Japan',        flag: '🇯🇵', rating: 76 },
+  { name: 'Morocco',      flag: '🇲🇦', rating: 77 },
+  { name: 'Poland',       flag: '🇵🇱', rating: 77 },
+];
+
 const R16_NATIONS: Nation[] = [
   { name: 'USA',         flag: '🇺🇸', rating: 73 },
   { name: 'Japan',       flag: '🇯🇵', rating: 76 },
@@ -151,6 +164,7 @@ export function simulateKnockoutStage(
   stage: Exclude<TournamentStage, 'group'>
 ): MatchResult {
   const pools: Record<string, Nation[]> = {
+    r32: R32_NATIONS,
     r16: R16_NATIONS,
     qf: QF_NATIONS,
     sf: SF_NATIONS,
@@ -167,6 +181,7 @@ export function simulateKnockoutStage(
 export function getStageLabel(stage: TournamentStage): string {
   const labels: Record<TournamentStage, string> = {
     group: 'Group Stage',
+    r32: 'Round of 32',
     r16: 'Round of 16',
     qf: 'Quarter-Final',
     sf: 'Semi-Final',
@@ -176,7 +191,7 @@ export function getStageLabel(stage: TournamentStage): string {
 }
 
 export function getNextStage(stage: TournamentStage): TournamentStage | null {
-  const order: TournamentStage[] = ['group', 'r16', 'qf', 'sf', 'final'];
+  const order: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'final'];
   const idx = order.indexOf(stage);
   return idx < order.length - 1 ? order[idx + 1] : null;
 }

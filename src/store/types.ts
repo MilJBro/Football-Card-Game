@@ -20,7 +20,7 @@ export type ModeId = 'england';
 // World Cup tournament types
 // ---------------------------------------------------------------------------
 
-export type TournamentStage = 'group' | 'r16' | 'qf' | 'sf' | 'final';
+export type TournamentStage = 'group' | 'r32' | 'r16' | 'qf' | 'sf' | 'final';
 
 export interface Nation {
   name: string;

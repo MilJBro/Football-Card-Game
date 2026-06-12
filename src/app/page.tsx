@@ -16,6 +16,7 @@ export default function HomePage() {
 
   const stageLabels: Record<string, string> = {
     group: 'Group Stage',
+    r32: 'Round of 32',
     r16: 'Round of 16',
     qf: 'Quarter-Final',
     sf: 'Semi-Final',
@@ -81,7 +82,7 @@ export default function HomePage() {
         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
           <div className="mb-2 text-[10px] uppercase tracking-widest text-white/40">Tournament Path</div>
           <div className="flex items-center justify-between gap-1 text-center text-[10px] font-bold text-white/40">
-            {['Groups', 'R16', 'QF', 'SF', 'Final'].map((label, i) => (
+            {['Groups', 'R32', 'R16', 'QF', 'SF', 'Final'].map((label, i) => (
               <div key={label} className="flex flex-1 flex-col items-center gap-1">
                 {i > 0 && <div className="h-px w-full bg-white/10 -mt-2" />}
                 <span className="relative text-[10px]">{label}</span>
@@ -89,7 +90,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="mt-2 flex gap-1">
-            {['Groups', 'R16', 'QF', 'SF', 'Final'].map((label) => (
+            {['Groups', 'R32', 'R16', 'QF', 'SF', 'Final'].map((label) => (
               <div key={label} className="h-1 flex-1 rounded-full bg-white/10" />
             ))}
           </div>
