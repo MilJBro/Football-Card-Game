@@ -61,29 +61,9 @@ export interface PlayerCardDef {
 /** A card the player owns in their collection. */
 export interface OwnedCard {
   cardId: string;
-  quantity: number;
   /** How many times this card has been upgraded (0 = base, 2 = max). */
   upgradeLevel: 0 | 1 | 2;
-  /** True once a duplicate has been acquired (quantity >= 2). */
-  isFoilUnlocked: boolean;
-  /** Whether the user is displaying the foil skin. */
-  isFoilEquipped: boolean;
   acquiredAt: number;
-}
-
-// ---------------------------------------------------------------------------
-// Packs
-// ---------------------------------------------------------------------------
-
-export interface PackDef {
-  id: string; // e.g. "att"
-  name: string; // e.g. "Attacker Pack"
-  pack: PackCategory;
-  cost: number;
-  cardCount: number;
-  description: string;
-  /** Draw odds across the three card grades (weights, need not sum to 100). */
-  weights: Record<Tier, number>;
 }
 
 // ---------------------------------------------------------------------------
@@ -122,8 +102,8 @@ export interface GameModeDef {
   description: string;
   /** Human-readable win condition. */
   winConditionText: string;
-  /** Coins deducted upfront to run this simulation. */
-  entryCost: number;
+  /** Number of seasons allowed per run before the run fails. */
+  maxSeasons: number;
 }
 
 /** A simulated season's results. */
@@ -148,8 +128,8 @@ export interface ModeRunResult {
   modeId: ModeId;
   season: SeasonResult;
   success: boolean;
-  reward: number;
-  entryCost: number;
+  /** Which season of the run this was (1-based). */
+  seasonNumber: number;
   squadRating: number;
   playedAt: number;
 }
@@ -159,14 +139,4 @@ export interface ModeCompletion {
   timesCompleted: number;
   bestSquadRating: number;
   firstCompletedAt: number;
-}
-
-// ---------------------------------------------------------------------------
-// Coins / transactions
-// ---------------------------------------------------------------------------
-
-export interface CoinTransaction {
-  amount: number; // positive = earned, negative = spent
-  reason: string;
-  at: number;
 }

@@ -1,7 +1,8 @@
 import type { GameModeDef, ModeId } from '@/store/types';
 
-// The 6 standalone challenges. Each is a separate season simulation; squads do
-// not carry over between them.
+// The challenge ladder, ordered easiest -> hardest. Each must be beaten to
+// unlock the next. A run allows a limited number of seasons; squads do not
+// carry over between challenges.
 export const GAME_MODES: GameModeDef[] = [
   {
     id: 'domestic-double',
@@ -9,7 +10,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Back-to-back knockout runs in a single season. Go the distance in both domestic cups and lift two trophies.',
     winConditionText: 'Win the FA Cup and the League Cup',
-    entryCost: 500,
+    maxSeasons: 8,
   },
   {
     id: 'european-glory',
@@ -17,7 +18,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Take on the best clubs on the continent. Navigate the knockout stages and bring the Champions League trophy home.',
     winConditionText: 'Win the Champions League',
-    entryCost: 600,
+    maxSeasons: 10,
   },
   {
     id: 'iron-defence',
@@ -25,7 +26,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       "Build an impenetrable backline. Concede fewer than 15 goals across the entire season and claim the title — you'll need an elite squad, not just good defenders.",
     winConditionText: 'Concede under 15 goals and win the Premier League',
-    entryCost: 600,
+    maxSeasons: 10,
   },
   {
     id: 'centurions',
@@ -33,7 +34,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Record-breaking dominance. Reach 100 points or more and win the Premier League.',
     winConditionText: 'Reach 100+ points and win the Premier League',
-    entryCost: 600,
+    maxSeasons: 10,
   },
   {
     id: 'invincibles',
@@ -41,7 +42,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Go the entire league season unbeaten and win the title. No defeats allowed.',
     winConditionText: 'Go unbeaten and win the Premier League',
-    entryCost: 700,
+    maxSeasons: 10,
   },
   {
     id: 'quadruple',
@@ -49,7 +50,7 @@ export const GAME_MODES: GameModeDef[] = [
     description:
       'Football immortality. Win the Premier League, FA Cup, League Cup and Champions League in one season.',
     winConditionText: 'Win the Premier League, FA Cup, League Cup and Champions League',
-    entryCost: 1000,
+    maxSeasons: 12,
   },
 ];
 

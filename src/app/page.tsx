@@ -50,10 +50,11 @@ export default function HomePage() {
     <div className="space-y-5">
       <header>
         <h1 className="text-3xl font-black sm:text-4xl">
-          Pick a <span className="text-emerald-400">Challenge</span>
+          The <span className="text-emerald-400">Challenge Ladder</span>
         </h1>
         <p className="mt-1 max-w-xl text-white/70">
-          Choose one of the six challenges below, build your squad, and simulate a season to complete it.
+          Beat each challenge to unlock the next. Build a squad, improve it season by
+          season, and hit the target before your seasons run out.
         </p>
       </header>
 
@@ -106,11 +107,13 @@ export default function HomePage() {
         onScroll={onScroll}
         className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
       >
-        {GAME_MODES.map((mode) => (
+        {GAME_MODES.map((mode, i) => (
           <ChallengeCard
             key={mode.id}
             mode={mode}
             done={hydrated ? completions[mode.id] : undefined}
+            locked={hydrated && i > 0 && !completions[GAME_MODES[i - 1].id]}
+            unlockedBy={i > 0 ? GAME_MODES[i - 1].name : undefined}
           />
         ))}
       </div>
@@ -118,37 +121,79 @@ export default function HomePage() {
   );
 }
 
-function ChallengeCard({ mode, done }: { mode: GameModeDef; done?: ModeCompletion }) {
+function ChallengeCard({
+  mode,
+  done,
+  locked,
+  unlockedBy,
+}: {
+  mode: GameModeDef;
+  done?: ModeCompletion;
+  locked?: boolean;
+  unlockedBy?: string;
+}) {
   const Icon = MODE_ICON[mode.id];
-  return (
-    <div className="flex w-full min-w-full shrink-0 snap-center justify-center px-2 py-1">
-      <Link
-        href={`/modes/${mode.id}/`}
-        className="group relative flex aspect-[5/7] w-full max-w-xs flex-col overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark p-6 text-center shadow-xl transition-colors hover:border-emerald-400/60"
-      >
-        {done && (
-          <span className="absolute right-4 top-4 rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-300">
-            ✓ ×{done.timesCompleted}
-          </span>
+
+  const inner = (
+    <>
+      {done && (
+        <span className="absolute right-4 top-4 rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-bold text-emerald-300">
+          ✓ ×{done.timesCompleted}
+        </span>
+      )}
+
+      <div className="relative flex flex-1 items-center justify-center">
+        <div className="absolute h-36 w-36 rounded-full bg-emerald-400/10 blur-2xl" />
+        <Icon
+          className={cn(
+            'relative h-28 w-28 drop-shadow-lg',
+            locked ? 'text-white/20' : 'text-emerald-300',
+          )}
+        />
+        {locked && (
+          <span className="absolute text-5xl drop-shadow-lg">🔒</span>
         )}
+      </div>
 
-        <div className="relative flex flex-1 items-center justify-center">
-          <div className="absolute h-36 w-36 rounded-full bg-emerald-400/10 blur-2xl" />
-          <Icon className="relative h-28 w-28 text-emerald-300 drop-shadow-lg" />
+      <div>
+        <h2 className={cn('text-2xl font-black', !locked && 'group-hover:text-emerald-300')}>
+          {mode.name}
+        </h2>
+        <p className="mx-auto mt-2 max-w-[18rem] text-sm text-white/60">{mode.description}</p>
+        <div className="mt-4 rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-3 py-2 text-xs">
+          <span className="font-bold text-emerald-300">Goal: </span>
+          <span className="text-white/70">{mode.winConditionText}</span>
+          <span className="text-white/40"> · {mode.maxSeasons} seasons</span>
         </div>
-
-        <div>
-          <h2 className="text-2xl font-black group-hover:text-emerald-300">{mode.name}</h2>
-          <p className="mx-auto mt-2 max-w-[18rem] text-sm text-white/60">{mode.description}</p>
-          <div className="mt-4 rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-3 py-2 text-xs">
-            <span className="font-bold text-emerald-300">Goal: </span>
-            <span className="text-white/70">{mode.winConditionText}</span>
-          </div>
+        {locked ? (
+          <span className="mt-4 inline-block rounded-full bg-white/10 px-6 py-2 text-sm font-black text-white/40">
+            Beat {unlockedBy} to unlock
+          </span>
+        ) : (
           <span className="mt-4 inline-block rounded-full bg-emerald-500 px-6 py-2 text-sm font-black text-emerald-950 transition-transform group-hover:scale-105">
             Start Challenge →
           </span>
-        </div>
-      </Link>
+        )}
+      </div>
+    </>
+  );
+
+  const cardClass = cn(
+    'group relative flex aspect-[5/7] w-full max-w-xs flex-col overflow-hidden rounded-3xl border-2 bg-gradient-to-b from-pitch-light to-pitch-dark p-6 text-center shadow-xl',
+    locked
+      ? 'border-white/10 opacity-70'
+      : 'border-white/15 transition-colors hover:border-emerald-400/60',
+  );
+
+  return (
+    <div className="flex w-full min-w-full shrink-0 snap-center justify-center px-2 py-1">
+      {locked ? (
+        <div className={cardClass}>{inner}</div>
+      ) : (
+        <Link href={`/modes/${mode.id}/`} className={cardClass}>
+          {inner}
+        </Link>
+      )}
     </div>
   );
 }

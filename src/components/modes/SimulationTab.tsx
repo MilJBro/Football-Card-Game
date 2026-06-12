@@ -6,19 +6,18 @@ import type { GameModeDef, Squad, SeasonResult, ModeRunResult } from '@/store/ty
 import { summariseSquad } from '@/lib/squadUtils';
 import { simulateSeason, evaluateWinCondition, generateLeagueTable } from '@/lib/matchEngine';
 import type { LeagueTableRow } from '@/lib/matchEngine';
-import { seasonFinishReward } from '@/lib/coinRewards';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { SeasonReward } from '@/components/modes/SeasonReward';
-import { cn, formatCoins } from '@/lib/ui';
+import { cn } from '@/lib/ui';
 
 type Phase = 'ready' | 'sim' | 'result';
 
 interface RunOutcome {
   season: SeasonResult;
   success: boolean;
-  reward: number;
+  seasonNumber: number;
 }
 
 interface SimulationTabProps {
@@ -70,50 +69,56 @@ function shortfallText(mode: GameModeDef, s: SeasonResult): string {
 
 export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: SimulationTabProps) {
   const hydrated = useHydrated();
-  const coins = useGameStore((s) => s.coins);
-  const addCoins = useGameStore((s) => s.addCoins);
-  const spendCoins = useGameStore((s) => s.spendCoins);
   const recordRun = useGameStore((s) => s.recordRun);
   const ownedCards = useGameStore((s) => s.ownedCards);
   const teamName = useGameStore((s) => s.teamName);
   const setTeamName = useGameStore((s) => s.setTeamName);
+  const seasonsUsed = useGameStore((s) => s.seasonsUsed);
+  const incrementSeason = useGameStore((s) => s.incrementSeason);
+  const runCompleted = useGameStore((s) => s.runCompleted);
+  const restartRun = useGameStore((s) => s.restartRun);
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
   const [showReward, setShowReward] = useState(false);
 
   const summary = summariseSquad(squad, ownedCards);
-  const canAfford = coins >= mode.entryCost;
+  const seasonsLeft = mode.maxSeasons - seasonsUsed;
+  const runOver = seasonsLeft <= 0 && !runCompleted;
 
   function runSeason() {
-    if (!spendCoins(mode.entryCost, `Entry fee: ${mode.name}`)) return;
+    if (seasonsUsed >= mode.maxSeasons) return;
+    incrementSeason();
+    const seasonNumber = seasonsUsed + 1;
     setPhase('sim');
     setTimeout(() => {
       const sum = summariseSquad(squad, ownedCards);
       const season = simulateSeason(sum, mode);
       const success = evaluateWinCondition(mode, season);
 
-      const reward = seasonFinishReward(season);
-      addCoins(reward, `Season payout: ${mode.name}`);
-
       const runResult: ModeRunResult = {
         modeId: mode.id,
         season,
         success,
-        reward,
-        entryCost: mode.entryCost,
+        seasonNumber,
         squadRating: sum.rating,
         playedAt: Date.now(),
       };
       recordRun(runResult);
 
-      setOutcome({ season, success, reward });
+      setOutcome({ season, success, seasonNumber });
       setPhase('result');
       setShowReward(false);
     }, 1400);
   }
 
   function tryAgain() {
+    setOutcome(null);
+    setPhase('ready');
+  }
+
+  function restart() {
+    restartRun();
     setOutcome(null);
     setPhase('ready');
   }
@@ -138,54 +143,46 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
   if (phase === 'result' && outcome) {
     const o = outcome;
     const s = o.season;
-    const net = o.reward - mode.entryCost;
     const gd = s.goalsFor - s.goalsAgainst;
     const table = generateLeagueTable(s, teamName);
+    const failedRun = !o.success && seasonsLeft <= 0;
 
     return (
       <div className="space-y-4">
-        {/* Win / keep going header */}
+        {/* Win / keep going / run over header */}
         {o.success ? (
           <div className="rounded-2xl border-2 border-emerald-400 bg-emerald-400/10 p-5 text-center">
             <div className="text-5xl">🏆</div>
             <h1 className="mt-2 text-2xl font-black">Challenge Complete!</h1>
-            <p className="mt-1 text-sm text-white/60">{mode.winConditionText}</p>
+            <p className="mt-1 text-sm text-white/60">
+              {mode.winConditionText} — done in {o.seasonNumber} season{o.seasonNumber !== 1 ? 's' : ''}
+            </p>
+          </div>
+        ) : failedRun ? (
+          <div className="rounded-2xl border-2 border-red-400/50 bg-red-400/10 p-5 text-center">
+            <div className="text-5xl">💔</div>
+            <h1 className="mt-2 text-2xl font-black">Run Over</h1>
+            <p className="mt-1 text-sm text-white/50">{shortfallText(mode, s)}</p>
+            <p className="mt-3 text-xs text-white/40">
+              All {mode.maxSeasons} seasons used. Your squad is gone — start a fresh run.
+            </p>
           </div>
         ) : (
           <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-5 text-center">
             <div className="text-5xl">💪</div>
             <h1 className="mt-2 text-2xl font-black">Keep Going</h1>
             <p className="mt-1 text-sm text-white/50">{shortfallText(mode, s)}</p>
-            <p className="mt-3 text-xs text-white/30">
-              Open more packs or upgrade your squad — then simulate again
+            <p className="mt-3 text-xs font-bold text-amber-300">
+              {seasonsLeft} season{seasonsLeft !== 1 ? 's' : ''} remaining
             </p>
           </div>
         )}
 
-        {/* Coin summary */}
-        <div className="grid grid-cols-3 gap-2">
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Entry fee</div>
-            <div className="mt-1 text-sm font-black text-red-400">−🪙 {formatCoins(mode.entryCost)}</div>
-          </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center">
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Payout</div>
-            <div className="mt-1 text-sm font-black text-emerald-300">+🪙 {formatCoins(o.reward)}</div>
-          </div>
-          <div className={cn(
-            'rounded-xl border p-3 text-center',
-            net >= 0 ? 'border-emerald-400/30 bg-emerald-400/5' : 'border-red-400/30 bg-red-400/5',
-          )}>
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Net</div>
-            <div className={cn('mt-1 text-sm font-black', net >= 0 ? 'text-emerald-300' : 'text-red-400')}>
-              {net >= 0 ? '+' : ''}🪙 {formatCoins(net)}
-            </div>
-          </div>
-        </div>
-
         {/* League position hero */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Season Stats</div>
+          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
+            Season {o.seasonNumber} of {mode.maxSeasons}
+          </div>
           <div className="flex items-center gap-4">
             <div className="text-center">
               <div className={cn('text-5xl font-black tabular-nums', s.wonLeague ? 'text-emerald-400' : 'text-white')}>
@@ -265,9 +262,8 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           </table>
         </div>
 
-        {/* Actions */}
-        {/* Season reward */}
-        {!showReward && (
+        {/* Season reward — not on a dead run; the squad is about to be wiped */}
+        {!failedRun && !showReward && (
           <div className="flex justify-center">
             <Button size="lg" className="w-full" onClick={() => setShowReward(true)}>
               🎰 Spin for Reward
@@ -275,15 +271,22 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
           </div>
         )}
 
+        {/* Actions */}
         {o.success ? (
           <div className="flex flex-wrap justify-center gap-3">
             <Button variant="secondary" onClick={onGoToSquad}>Adjust Squad</Button>
-            <Button onClick={tryAgain}>Simulate Again</Button>
+            <Button onClick={tryAgain}>Continue</Button>
+          </div>
+        ) : failedRun ? (
+          <div className="flex justify-center">
+            <Button size="lg" variant="danger" onClick={restart}>
+              Restart Challenge
+            </Button>
           </div>
         ) : (
           <div className="flex flex-wrap justify-center gap-3">
             <Button onClick={onGoToSquad}>Improve Squad</Button>
-            <Button variant="ghost" onClick={tryAgain}>Try Again</Button>
+            <Button variant="ghost" onClick={tryAgain}>Next Season</Button>
           </div>
         )}
 
@@ -318,6 +321,40 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         {mode.winConditionText}.
       </div>
 
+      {/* Seasons remaining */}
+      <div className={cn(
+        'rounded-2xl border p-5',
+        runOver
+          ? 'border-red-400/30 bg-red-400/5'
+          : 'border-white/10 bg-white/5',
+      )}>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[10px] uppercase tracking-wide text-white/40">Season</div>
+            <div className="text-2xl font-black tabular-nums text-white">
+              {Math.min(seasonsUsed + 1, mode.maxSeasons)}
+              <span className="text-sm text-white/40"> / {mode.maxSeasons}</span>
+            </div>
+          </div>
+          <div className="flex max-w-[55%] flex-wrap justify-end gap-1.5">
+            {Array.from({ length: mode.maxSeasons }).map((_, i) => (
+              <div
+                key={i}
+                className={cn(
+                  'h-2.5 w-2.5 rounded-full',
+                  i < seasonsUsed ? 'bg-white/20' : 'bg-emerald-400',
+                )}
+              />
+            ))}
+          </div>
+        </div>
+        {!runOver && seasonsLeft <= 3 && (
+          <p className="mt-3 text-xs font-bold text-amber-300">
+            Only {seasonsLeft} season{seasonsLeft !== 1 ? 's' : ''} left — make them count.
+          </p>
+        )}
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
         <div className="flex items-center gap-4">
           <div className="text-center">
@@ -349,47 +386,21 @@ export function SimulationTab({ mode, squad, onSquadChange, onGoToSquad }: Simul
         <p className="mt-2 text-xs text-white/30">Shown in the league table</p>
       </div>
 
-      {/* Entry cost panel */}
-      <div className={cn(
-        'rounded-2xl border p-5',
-        canAfford
-          ? 'border-amber-400/20 bg-amber-400/5'
-          : 'border-red-400/20 bg-red-400/5',
-      )}>
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Entry Fee</div>
-            <div className={cn('text-2xl font-black tabular-nums', canAfford ? 'text-amber-300' : 'text-red-400')}>
-              🪙 {formatCoins(mode.entryCost)}
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Your Coins</div>
-            <div className={cn('text-2xl font-black tabular-nums', canAfford ? 'text-white' : 'text-red-400')}>
-              🪙 {formatCoins(coins)}
-            </div>
-          </div>
+      {runOver ? (
+        <div className="rounded-2xl border-2 border-red-400/30 bg-red-400/5 p-6 text-center">
+          <div className="text-4xl">💔</div>
+          <p className="mt-2 font-black text-red-300">Run over — all seasons used</p>
+          <p className="mt-1 text-xs text-white/50">
+            Restarting wipes your squad and tokens for a fresh attempt.
+          </p>
+          <Button size="lg" variant="danger" className="mt-4" onClick={restart}>
+            Restart Challenge
+          </Button>
         </div>
-        {!canAfford && (
-          <div className="mt-4 rounded-xl border border-red-400/20 bg-red-400/10 p-3 text-center text-sm">
-            <p className="font-bold text-red-300">Not enough coins to enter</p>
-            <p className="mt-1 text-xs text-white/50">
-              Need 🪙 {formatCoins(mode.entryCost - coins)} more — sell cards to raise funds
-            </p>
-            <button
-              onClick={onGoToSquad}
-              className="mt-3 rounded-lg bg-white/10 px-4 py-2 text-xs font-bold text-white hover:bg-white/20"
-            >
-              Go to Squad →
-            </button>
-          </div>
-        )}
-      </div>
-
-      {summary.isComplete ? (
+      ) : summary.isComplete ? (
         <div className="flex justify-center">
-          <Button size="lg" onClick={runSeason} disabled={!hydrated || !canAfford}>
-            Simulate Season · 🪙 {formatCoins(mode.entryCost)}
+          <Button size="lg" onClick={runSeason} disabled={!hydrated}>
+            Simulate Season {Math.min(seasonsUsed + 1, mode.maxSeasons)} of {mode.maxSeasons}
           </Button>
         </div>
       ) : (

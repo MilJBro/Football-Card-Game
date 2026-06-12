@@ -2,29 +2,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type {
   OwnedCard,
-  CoinTransaction,
   ModeCompletion,
   ModeRunResult,
   ModeId,
   Squad,
 } from '@/store/types';
-import { getCard } from '@/data/players';
-import { STARTING_COINS, discardValue, upgradeCost } from '@/lib/coinRewards';
-
-export interface UpgradeResult {
-  ok: boolean;
-  reason?: string;
-  newCardId?: string;
-  foilUnlocked?: boolean;
-}
 
 export interface GameState {
-  // ---- Coins ----
-  coins: number;
-  totalEarned: number;
-  transactions: CoinTransaction[];
-
-  // ---- Collection ----
+  // ---- Collection (current run) ----
   ownedCards: Record<string, OwnedCard>;
 
   // ---- Modes ----
@@ -34,22 +19,17 @@ export interface GameState {
   // ---- Identity ----
   teamName: string;
 
-  // ---- Active challenge ----
+  // ---- Active run ----
   activeModeId: string | null;
   activeSquad: Squad | null;
+  seasonsUsed: number;
+  runCompleted: boolean;
 
-  // ---- Upgrade tokens ----
+  // ---- Upgrade tokens (current run) ----
   upgradeTokens: number;
 
-  // ---- Actions: coins ----
-  addCoins: (amount: number, reason: string) => void;
-  spendCoins: (amount: number, reason: string) => boolean;
-
   // ---- Actions: collection ----
-  addCards: (cardIds: string[]) => { newCards: string[]; foilsUnlocked: string[] };
-  discardCard: (cardId: string) => number; // returns coins gained, 0 if none
-  toggleFoilEquipped: (cardId: string) => void;
-  upgradeCard: (cardId: string) => UpgradeResult;
+  addCards: (cardIds: string[]) => void;
 
   // ---- Actions: modes ----
   recordRun: (result: ModeRunResult) => void;
@@ -57,9 +37,11 @@ export interface GameState {
   // ---- Actions: identity ----
   setTeamName: (name: string) => void;
 
-  // ---- Actions: active challenge ----
+  // ---- Actions: active run ----
   setActiveModeId: (modeId: string | null) => void;
   setActiveSquad: (squad: Squad | null) => void;
+  incrementSeason: () => void;
+  restartRun: () => void;
 
   // ---- Actions: upgrade tokens ----
   addUpgradeToken: () => void;
@@ -71,15 +53,14 @@ export interface GameState {
 }
 
 const initialState = {
-  coins: STARTING_COINS,
-  totalEarned: STARTING_COINS,
-  transactions: [] as CoinTransaction[],
   ownedCards: {} as Record<string, OwnedCard>,
   completions: {} as Record<string, ModeCompletion>,
   history: [] as ModeRunResult[],
   teamName: '',
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
+  seasonsUsed: 0,
+  runCompleted: false,
   upgradeTokens: 0,
 };
 
@@ -88,127 +69,16 @@ export const useGameStore = create<GameState>()(
     (set, get) => ({
       ...initialState,
 
-      addCoins: (amount, reason) =>
-        set((s) => ({
-          coins: s.coins + amount,
-          totalEarned: s.totalEarned + Math.max(0, amount),
-          transactions: [{ amount, reason, at: Date.now() }, ...s.transactions].slice(0, 100),
-        })),
-
-      spendCoins: (amount, reason) => {
-        const s = get();
-        if (s.coins < amount) return false;
-        set({
-          coins: s.coins - amount,
-          transactions: [
-            { amount: -amount, reason, at: Date.now() },
-            ...s.transactions,
-          ].slice(0, 100),
-        });
-        return true;
-      },
-
-      addCards: (cardIds) => {
-        const newCards: string[] = [];
-        const foilsUnlocked: string[] = [];
+      addCards: (cardIds) =>
         set((s) => {
           const owned = { ...s.ownedCards };
           for (const cardId of cardIds) {
-            const existing = owned[cardId];
-            if (!existing) {
-              owned[cardId] = {
-                cardId,
-                quantity: 1,
-                upgradeLevel: 0,
-                isFoilUnlocked: false,
-                isFoilEquipped: false,
-                acquiredAt: Date.now(),
-              };
-              newCards.push(cardId);
-            } else {
-              const quantity = existing.quantity + 1;
-              const justUnlockedFoil = quantity >= 2 && !existing.isFoilUnlocked;
-              if (justUnlockedFoil) foilsUnlocked.push(cardId);
-              owned[cardId] = {
-                ...existing,
-                quantity,
-                isFoilUnlocked: existing.isFoilUnlocked || quantity >= 2,
-              };
+            if (!owned[cardId]) {
+              owned[cardId] = { cardId, upgradeLevel: 0, acquiredAt: Date.now() };
             }
           }
           return { ownedCards: owned };
-        });
-        return { newCards, foilsUnlocked };
-      },
-
-      discardCard: (cardId) => {
-        const s = get();
-        const owned = s.ownedCards[cardId];
-        const card = getCard(cardId);
-        if (!owned || !card || owned.quantity < 1) return 0;
-        const upgradeLevel = (owned.upgradeLevel ?? 0) as 0 | 1 | 2;
-        const value = discardValue(card, upgradeLevel);
-
-        const nextOwned = { ...s.ownedCards };
-        if (owned.quantity <= 1) {
-          delete nextOwned[cardId];
-        } else {
-          nextOwned[cardId] = { ...owned, quantity: owned.quantity - 1 };
-        }
-
-        set({
-          ownedCards: nextOwned,
-          coins: s.coins + value,
-          totalEarned: s.totalEarned + value,
-          transactions: [
-            { amount: value, reason: `Sold ${card.playerName}`, at: Date.now() },
-            ...s.transactions,
-          ].slice(0, 100),
-        });
-        return value;
-      },
-
-      toggleFoilEquipped: (cardId) =>
-        set((s) => {
-          const owned = s.ownedCards[cardId];
-          if (!owned || !owned.isFoilUnlocked) return s;
-          return {
-            ownedCards: {
-              ...s.ownedCards,
-              [cardId]: { ...owned, isFoilEquipped: !owned.isFoilEquipped },
-            },
-          };
         }),
-
-      upgradeCard: (cardId) => {
-        const s = get();
-        const card = getCard(cardId);
-        if (!card) return { ok: false, reason: 'Unknown card' };
-
-        const owned = s.ownedCards[cardId];
-        if (!owned || owned.quantity < 1) return { ok: false, reason: 'You do not own this card' };
-
-        const currentLevel = (owned.upgradeLevel ?? 0) as 0 | 1 | 2;
-        if (currentLevel >= 2) return { ok: false, reason: 'Already at max level' };
-
-        const cost = upgradeCost(currentLevel);
-        if (s.coins < cost) return { ok: false, reason: 'Not enough coins' };
-
-        const newLevel = (currentLevel + 1) as 0 | 1 | 2;
-        set({
-          ownedCards: {
-            ...s.ownedCards,
-            [cardId]: { ...owned, upgradeLevel: newLevel },
-          },
-          coins: s.coins - cost,
-          transactions: [
-            { amount: -cost, reason: `Upgraded ${card.playerName} to level ${newLevel}`, at: Date.now() },
-            ...s.transactions,
-          ].slice(0, 100),
-        });
-
-        return { ok: true };
-      },
 
       recordRun: (result) =>
         set((s) => {
@@ -223,13 +93,29 @@ export const useGameStore = create<GameState>()(
               firstCompletedAt: prev?.firstCompletedAt ?? Date.now(),
             };
           }
-          return { history, completions };
+          return {
+            history,
+            completions,
+            runCompleted: s.runCompleted || result.success,
+          };
         }),
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
+
+      incrementSeason: () => set((s) => ({ seasonsUsed: s.seasonsUsed + 1 })),
+
+      // Fresh start on the same challenge after a failed run.
+      restartRun: () =>
+        set({
+          ownedCards: {},
+          activeSquad: null,
+          seasonsUsed: 0,
+          runCompleted: false,
+          upgradeTokens: 0,
+        }),
 
       addUpgradeToken: () => set((s) => ({ upgradeTokens: s.upgradeTokens + 1 })),
 
@@ -250,21 +136,22 @@ export const useGameStore = create<GameState>()(
 
       resetProgress: () => set({ ...initialState }),
 
+      // Reset run state only — keeps completions, history and team name.
       resetChallengeState: () =>
         set((s) => ({
-          coins: STARTING_COINS,
-          totalEarned: STARTING_COINS,
-          transactions: [],
           ownedCards: {},
           activeSquad: null,
+          seasonsUsed: 0,
+          runCompleted: false,
+          upgradeTokens: 0,
           completions: s.completions,
           history: s.history,
           teamName: s.teamName,
         })),
     }),
     {
-      name: 'football-card-game-v2',
-      version: 2,
+      name: 'football-card-game-v3',
+      version: 3,
     }
   )
 );
