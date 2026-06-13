@@ -539,7 +539,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             onClick={onGoToSquad}
             disabled={!onGoToSquad}
           >
-            👥 Select Your 11
+            Select Your 11
           </Button>
           <p className="text-center text-xs text-white/40">
             {summary.filledSlots}/{summary.totalSlots} players selected — fill all slots to start
