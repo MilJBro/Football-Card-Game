@@ -77,7 +77,7 @@ export function ModeRunner({ modeId }: { modeId: string }) {
       )}
       {tab === 'squad' && (
         manager ? (
-          <SquadBuilder squad={squad} onChange={setSquad} manager={manager} />
+          <SquadBuilder squad={squad} onChange={setSquad} manager={manager} onGoToSimulation={() => setTab('simulation')} />
         ) : (
           <ManagerWheel
             onComplete={(m) => {

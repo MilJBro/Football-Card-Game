@@ -34,9 +34,10 @@ interface SquadBuilderProps {
   onChange: (squad: Squad) => void;
   /** When set, the formation is locked to the manager's preferred shape. */
   manager?: EnglandManager | null;
+  onGoToSimulation?: () => void;
 }
 
-export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
+export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: SquadBuilderProps) {
   const ownedCards = useGameStore((s) => s.ownedCards);
   const addCards = useGameStore((s) => s.addCards);
   const formation = getFormation(squad.formation);
@@ -302,6 +303,18 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Go to simulation — fixed bar above the bottom tabs, appears when squad is full */}
+      {summary.isComplete && onGoToSimulation && (
+        <div className="fixed inset-x-0 bottom-14 z-[55] px-4 pb-2">
+          <button
+            onClick={onGoToSimulation}
+            className="w-full rounded-2xl bg-emerald-500 py-3.5 text-base font-black text-emerald-950 shadow-lg transition-transform hover:scale-[1.02]"
+          >
+            Simulate →
+          </button>
         </div>
       )}
     </div>
