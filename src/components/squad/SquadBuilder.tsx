@@ -226,8 +226,8 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
             onClick={(e) => e.stopPropagation()}
           >
             {activeCard ? (
-              /* Filled slot — view only, no changes allowed */
-              <div className="flex flex-col items-center gap-4">
+              /* Filled slot — view only, fixed height matches empty slot */
+              <div className="flex min-h-[292px] flex-col items-center justify-between">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
                     <span className="text-emerald-300">{activeSlotDef.label}</span>
@@ -237,10 +237,11 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
                   </Button>
                 </div>
                 <PlayerCard card={activeCard} upgradeLevel={activeUpgradeLevel} size="sm" />
+                <div /> {/* spacer — keeps height equal to the empty-slot button row */}
               </div>
             ) : (
               /* Empty slot — layout stays fixed whether idle or flipping */
-              <div className="flex flex-col items-center gap-5">
+              <div className="flex min-h-[292px] flex-col items-center justify-between">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
                     Get a <span className="text-emerald-300">{activeSlotDef.label}</span>
