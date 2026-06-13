@@ -224,7 +224,7 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
       {activeSlotDef && (
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center"
-          onClick={() => { if (!isFlipping) { setActiveSlot(null); setDrawnCard(null); } }}
+          onClick={() => { setActiveSlot(null); setDrawnCard(null); setIsFlipping(false); }}
         >
           <div
             className="w-full max-w-sm rounded-t-2xl border border-white/15 bg-pitch-dark p-6 sm:rounded-2xl"
