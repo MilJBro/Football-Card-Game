@@ -358,8 +358,8 @@ export interface NeutralResult {
 }
 
 export interface TournamentEndSummary {
-  sf1: NeutralResult;
-  sf2: NeutralResult;
+  qf: NeutralResult[];
+  sf: NeutralResult[];
   final: NeutralResult;
   champion: Nation;
 }
@@ -383,23 +383,46 @@ function neutralWinner(r: NeutralResult): Nation {
   return r.homeGoals > r.awayGoals || r.pens === 'home' ? r.home : r.away;
 }
 
-/** Simulate the two semi-finals and final.
- *  If `eliminator` is provided (the team that knocked England out) they are
- *  seeded into SF1 so they always appear in the remaining bracket. */
-export function simulateTournamentEnd(eliminator?: Nation): TournamentEndSummary {
-  const elite = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
+/** Simulate QF → SF → Final.
+ *  If `eliminator` is provided it is seeded into the bracket at the
+ *  appropriate entry point:
+ *  - eliminated at group/r32/r16/qf → seeded into QF1
+ *  - eliminated at sf               → seeded directly into SF1 (bypasses QF) */
+export function simulateTournamentEnd(eliminator?: Nation, eliminatedAt?: TournamentStage): TournamentEndSummary {
+  const qfCandidates = [...ALL_NATIONS.filter((n) => n.rating >= 78)].sort(() => Math.random() - 0.5);
+  const sfCandidates = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
 
-  let sf1: NeutralResult, sf2: NeutralResult;
-  if (eliminator) {
-    const others = elite.filter((n) => n.name !== eliminator.name);
-    sf1 = simulateNeutral(eliminator, others[0]);
-    sf2 = simulateNeutral(others[1], others[2]);
+  // ---- Quarter-finals (8 teams) ----
+  let qfTeams: Nation[];
+  if (eliminator && eliminatedAt !== 'sf') {
+    const rest = qfCandidates.filter((n) => n.name !== eliminator.name).slice(0, 7);
+    qfTeams = [eliminator, ...rest];
   } else {
-    const [a, b, c, d] = elite;
-    sf1 = simulateNeutral(a, b);
-    sf2 = simulateNeutral(c, d);
+    qfTeams = qfCandidates.slice(0, 8);
   }
 
-  const final = simulateNeutral(neutralWinner(sf1), neutralWinner(sf2));
-  return { sf1, sf2, final, champion: neutralWinner(final) };
+  const qf = [
+    simulateNeutral(qfTeams[0], qfTeams[1]),
+    simulateNeutral(qfTeams[2], qfTeams[3]),
+    simulateNeutral(qfTeams[4], qfTeams[5]),
+    simulateNeutral(qfTeams[6], qfTeams[7]),
+  ];
+
+  // ---- Semi-finals (4 teams) ----
+  let sfTeams: Nation[];
+  if (eliminator && eliminatedAt === 'sf') {
+    // Eliminator goes straight into SF1 alongside elite opponents
+    const rest = sfCandidates.filter((n) => n.name !== eliminator.name);
+    sfTeams = [eliminator, rest[0], rest[1], rest[2]];
+  } else {
+    sfTeams = qf.map(neutralWinner);
+  }
+
+  const sf = [
+    simulateNeutral(sfTeams[0], sfTeams[1]),
+    simulateNeutral(sfTeams[2], sfTeams[3]),
+  ];
+
+  const final = simulateNeutral(neutralWinner(sf[0]), neutralWinner(sf[1]));
+  return { qf, sf, final, champion: neutralWinner(final) };
 }

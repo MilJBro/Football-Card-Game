@@ -346,7 +346,7 @@ export function SimulationTab({ mode, squad }: SimulationTabProps) {
               variant="secondary"
               className="w-full"
               onClick={() => {
-                setTournamentEnd(simulateTournamentEnd(knockoutResult.opponent));
+                setTournamentEnd(simulateTournamentEnd(knockoutResult.opponent, playedStage));
                 setPhase('how-it-ended');
               }}
             >
@@ -415,14 +415,17 @@ export function SimulationTab({ mode, squad }: SimulationTabProps) {
 
   // ---------------------------------------------------------------- How it ended
   if (phase === 'how-it-ended' && tournamentEnd) {
-    const { sf1, sf2, final, champion } = tournamentEnd;
+    const { qf, sf, final, champion } = tournamentEnd;
     return (
       <div className="space-y-3">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Semi-Finals</p>
+          <p className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Quarter-Finals</p>
           <div className="space-y-2">
-            <NeutralMatchRow result={sf1} />
-            <NeutralMatchRow result={sf2} />
+            {qf.map((r, i) => <NeutralMatchRow key={i} result={r} />)}
+          </div>
+          <p className="mb-3 mt-4 text-[10px] uppercase tracking-widest text-white/40">Semi-Finals</p>
+          <div className="space-y-2">
+            {sf.map((r, i) => <NeutralMatchRow key={i} result={r} />)}
           </div>
           <p className="mb-3 mt-4 text-[10px] uppercase tracking-widest text-white/40">The Final</p>
           <NeutralMatchRow result={final} />
