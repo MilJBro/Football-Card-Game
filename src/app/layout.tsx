@@ -3,9 +3,9 @@ import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 
 export const metadata: Metadata = {
-  title: 'Footy Pack Challenge',
+  title: 'Golden XI',
   description:
-    'Collect Premier League legends across their careers, build a squad, and simulate a season to complete challenges.',
+    'Build a squad from World Cup legends, guide them through the tournament, and lift the trophy.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

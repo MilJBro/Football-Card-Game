@@ -49,7 +49,7 @@ export default function HomePage() {
 
           {/* Title + status chips */}
           <div className="flex flex-col items-center gap-2">
-            <h2 className="text-2xl font-black">England World Cup</h2>
+            <h2 className="text-2xl font-black">Golden XI</h2>
 
             {hydrated && runInProgress && manager && (
               <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1">

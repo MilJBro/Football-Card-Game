@@ -3,7 +3,7 @@ import type { GameModeDef, ModeId } from '@/store/types';
 export const GAME_MODES: GameModeDef[] = [
   {
     id: 'england',
-    name: 'England World Cup',
+    name: 'Golden XI',
     description:
       'Build your England squad from historic internationals and guide them through the World Cup — group stage, knockouts, all the way to the final.',
     winConditionText: 'Win the World Cup Final',
