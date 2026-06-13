@@ -12,7 +12,7 @@ export type PackCategory = 'GK' | 'DEF' | 'MID' | 'ATT';
 
 export type Tier = 'Rising' | 'Star' | 'Legend';
 
-export type Formation = '4-3-3' | '4-4-2' | '3-5-2';
+export type Formation = '4-3-3' | '4-4-2' | '3-5-2' | '4-2-3-1' | '4-3-2-1';
 
 /** A past England manager — the wheel assigns one per run, locking the formation. */
 export interface EnglandManager {

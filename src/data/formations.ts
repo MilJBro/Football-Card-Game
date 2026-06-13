@@ -66,10 +66,46 @@ export const FORMATIONS: Record<Formation, PitchFormation> = {
       slot('rst', 'ST', 'ST', 62, 20),
     ],
   },
+  '4-2-3-1': {
+    formation: '4-2-3-1',
+    slots: [
+      slot('gk',   'GK',  'GK', 50, 90),
+      slot('lb',   'LB',  'LB', 15, 73),
+      slot('lcb',  'CB',  'CB', 37, 75),
+      slot('rcb',  'CB',  'CB', 63, 75),
+      slot('rb',   'RB',  'RB', 85, 73),
+      // Two holding midfielders — mapped to CM (closest available position).
+      slot('ldm',  'CM',  'CM', 35, 58),
+      slot('rdm',  'CM',  'CM', 65, 58),
+      // Attacking trio.
+      slot('lw',   'LW',  'LW', 18, 32),
+      slot('am',   'CM',  'CM', 50, 30),
+      slot('rw',   'RW',  'RW', 82, 32),
+      slot('st',   'ST',  'ST', 50, 14),
+    ],
+  },
+  '4-3-2-1': {
+    formation: '4-3-2-1',
+    slots: [
+      slot('gk',   'GK',  'GK', 50, 90),
+      slot('lb',   'LB',  'LB', 15, 73),
+      slot('lcb',  'CB',  'CB', 37, 75),
+      slot('rcb',  'CB',  'CB', 63, 75),
+      slot('rb',   'RB',  'RB', 85, 73),
+      // Three central midfielders.
+      slot('lcm',  'CM',  'CM', 27, 54),
+      slot('ccm',  'CM',  'CM', 50, 52),
+      slot('rcm',  'CM',  'CM', 73, 54),
+      // Two second-strikers (Christmas tree — mapped to ATT positions).
+      slot('lss',  'LW',  'LW', 34, 30),
+      slot('rss',  'RW',  'RW', 66, 30),
+      slot('st',   'ST',  'ST', 50, 14),
+    ],
+  },
 };
 
 export function getFormation(formation: Formation): PitchFormation {
   return FORMATIONS[formation];
 }
 
-export const FORMATION_LIST: Formation[] = ['4-3-3', '4-4-2', '3-5-2'];
+export const FORMATION_LIST: Formation[] = ['4-3-3', '4-4-2', '3-5-2', '4-2-3-1', '4-3-2-1'];
