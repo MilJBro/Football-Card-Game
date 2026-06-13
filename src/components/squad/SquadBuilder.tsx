@@ -262,8 +262,8 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
                   <div style={{ perspective: 800 }}>
                     <motion.div
                       initial={{ rotateY: 0 }}
-                      animate={{ rotateY: 180 }}
-                      transition={{ duration: 1, ease: 'easeInOut' }}
+                      animate={{ rotateY: 900 }}
+                      transition={{ duration: 2.2, ease: [0.15, 0.05, 0.2, 1] }}
                       onAnimationComplete={onFlipComplete}
                       style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
                     >
