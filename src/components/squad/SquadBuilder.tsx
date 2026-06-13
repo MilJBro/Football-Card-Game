@@ -296,12 +296,9 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
                             </motion.div>
                           </div>
                         ) : (
-                          <>
+                          <button onClick={() => pickCard(card)} className="transition-transform hover:scale-105 active:scale-95">
                             <PlayerCard card={card} upgradeLevel={0} size="sm" />
-                            <Button size="sm" className="w-[120px]" onClick={() => pickCard(card)}>
-                              Pick
-                            </Button>
-                          </>
+                          </button>
                         )}
                       </div>
                     ))
