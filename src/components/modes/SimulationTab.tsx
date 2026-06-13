@@ -524,6 +524,8 @@ function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: st
             <th className="px-1.5 py-1 text-right">W</th>
             <th className="px-1.5 py-1 text-right">D</th>
             <th className="px-1.5 py-1 text-right">L</th>
+            <th className="px-1.5 py-1 text-right">GF</th>
+            <th className="px-1.5 py-1 text-right">GA</th>
             <th className="px-1.5 py-1 text-right">GD</th>
             <th className="px-2.5 py-1 text-right font-black">Pts</th>
           </tr>
@@ -558,6 +560,8 @@ function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: st
                 <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.won}</td>
                 <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.drawn}</td>
                 <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.lost}</td>
+                <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.gf}</td>
+                <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.ga}</td>
                 <td className={cn(
                   'px-1.5 py-1.5 text-right tabular-nums',
                   gd > 0 ? 'text-emerald-400' : gd < 0 ? 'text-red-400' : 'text-white/40',
