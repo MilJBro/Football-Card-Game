@@ -51,12 +51,6 @@ export default function HomePage() {
 
         <h2 className="text-xl font-black">England World Cup</h2>
 
-        {/* Goal box */}
-        <div className="mt-3 rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-3 py-2 text-xs">
-          <span className="font-bold text-emerald-300">Goal: </span>
-          <span className="text-white/70">{mode.winConditionText}</span>
-        </div>
-
         {/* Status */}
         {statusLine && (
           <p className="mt-2 text-xs font-bold text-white/50">{statusLine}</p>
