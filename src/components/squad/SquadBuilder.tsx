@@ -67,7 +67,6 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
   }
 
   function drawCard(slotId: string, position: Position) {
-    // Remove current card from slot so it's not excluded from the pool
     const excludeIds = new Set(
       Object.entries(squad.assignments)
         .filter(([id, cardId]) => id !== slotId && cardId)
@@ -226,8 +225,8 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
             className="w-full max-w-sm rounded-t-2xl border border-white/15 bg-pitch-dark p-6 sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {activeCard && !isFlipping ? (
-              /* Filled slot — show card + replace only (no remove) */
+            {activeCard ? (
+              /* Filled slot — view only, no changes allowed */
               <div className="flex flex-col items-center gap-4">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
@@ -238,12 +237,6 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
                   </Button>
                 </div>
                 <PlayerCard card={activeCard} upgradeLevel={activeUpgradeLevel} size="sm" />
-                <Button
-                  className="w-full"
-                  onClick={() => drawCard(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
-                >
-                  Replace
-                </Button>
               </div>
             ) : (
               /* Empty slot — layout stays fixed whether idle or flipping */
