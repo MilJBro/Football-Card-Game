@@ -347,9 +347,22 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             </div>
           )
         ) : (
-          <Button size="lg" variant="danger" className="w-full" onClick={restart}>
-            Start Again
-          </Button>
+          <div className="space-y-2">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="w-full"
+              onClick={() => {
+                setTournamentEnd(simulateTournamentEnd());
+                setPhase('how-it-ended');
+              }}
+            >
+              See How It Ended →
+            </Button>
+            <Button size="lg" variant="danger" className="w-full" onClick={restart}>
+              Start Again
+            </Button>
+          </div>
         )}
       </div>
     );
