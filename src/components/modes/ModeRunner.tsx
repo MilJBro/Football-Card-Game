@@ -73,7 +73,7 @@ export function ModeRunner({ modeId }: { modeId: string }) {
       </div>
 
       {tab === 'simulation' && (
-        <SimulationTab mode={mode} squad={squad} />
+        <SimulationTab mode={mode} squad={squad} onGoToSquad={() => setTab('squad')} />
       )}
       {tab === 'squad' && (
         manager ? (

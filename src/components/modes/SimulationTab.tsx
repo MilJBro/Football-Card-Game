@@ -37,9 +37,10 @@ const STAGE_ORDER: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'fina
 interface SimulationTabProps {
   mode: GameModeDef;
   squad: Squad;
+  onGoToSquad?: () => void;
 }
 
-export function SimulationTab({ mode, squad }: SimulationTabProps) {
+export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) {
   const hydrated = useHydrated();
   const ownedCards = useGameStore((s) => s.ownedCards);
   const recordRun = useGameStore((s) => s.recordRun);
@@ -531,9 +532,18 @@ export function SimulationTab({ mode, squad }: SimulationTabProps) {
           {isFirstSim ? '🌍 Start the World Cup' : `⚽ Simulate ${stageLabel}`}
         </Button>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/5 py-6 text-center">
-          <p className="text-sm text-white/60">Your squad isn&apos;t complete yet.</p>
-          <p className="mt-2 text-xs text-white/40">Go to the Squad tab to fill your lineup.</p>
+        <div className="space-y-2">
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={onGoToSquad}
+            disabled={!onGoToSquad}
+          >
+            👥 Select Your 11
+          </Button>
+          <p className="text-center text-xs text-white/40">
+            {summary.filledSlots}/{summary.totalSlots} players selected — fill all slots to start
+          </p>
         </div>
       )}
     </div>
