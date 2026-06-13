@@ -44,6 +44,9 @@ export interface MatchResult {
   penaltiesWin?: boolean;
   /** Knockout only — lost on penalties after a draw */
   penaltiesLoss?: boolean;
+  /** Penalty shootout scores when applicable */
+  englandPens?: number;
+  opponentPens?: number;
 }
 
 /** A group fixture between the two other teams on a matchday. */

@@ -272,9 +272,22 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         )}
 
         {eliminated ? (
-          <Button size="lg" variant="danger" className="w-full" onClick={restart}>
-            Start Again
-          </Button>
+          <div className="space-y-2">
+            <Button
+              size="lg"
+              variant="secondary"
+              className="w-full"
+              onClick={() => {
+                setTournamentEnd(simulateTournamentEnd());
+                setPhase('how-it-ended');
+              }}
+            >
+              See How It Ended →
+            </Button>
+            <Button size="lg" variant="danger" className="w-full" onClick={restart}>
+              Start Again
+            </Button>
+          </div>
         ) : (
           <div className="flex flex-wrap gap-3">
             <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
@@ -646,7 +659,7 @@ function MatchCard({ match }: { match: MatchResult }) {
           </div>
           {isPens && (
             <div className="text-[10px] text-white/40">
-              {match.penaltiesWin ? '(ENG pens)' : '(OPP pens)'}
+              {match.englandPens}–{match.opponentPens} pens
             </div>
           )}
         </div>
@@ -666,10 +679,16 @@ function NeutralMatchRow({ result }: { result: NeutralResult }) {
       <span className={cn('flex-1 text-right font-bold', homeWon ? 'text-white' : 'text-white/40')}>
         {result.home.flag} {result.home.name}
       </span>
-      <span className="shrink-0 font-black tabular-nums text-white">
-        {result.homeGoals} – {result.awayGoals}
-        {result.pens && <span className="ml-1 text-[10px] font-normal text-white/40">(pens)</span>}
-      </span>
+      <div className="shrink-0 text-center">
+        <div className="font-black tabular-nums text-white">
+          {result.homeGoals} – {result.awayGoals}
+        </div>
+        {result.pens && (
+          <div className="text-[9px] font-normal text-white/40">
+            {result.homePens}–{result.awayPens} pens
+          </div>
+        )}
+      </div>
       <span className={cn('flex-1 font-bold', !homeWon ? 'text-white' : 'text-white/40')}>
         {result.away.flag} {result.away.name}
       </span>

@@ -27,6 +27,23 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Returns [winner_pens, loser_pens] — realistic shootout at ~75% conversion.
+function simulatePenShootout(): [number, number] {
+  const HIT = 0.75;
+  for (;;) {
+    let a = 0, b = 0;
+    for (let i = 0; i < 5; i++) {
+      if (Math.random() < HIT) a++;
+      if (Math.random() < HIT) b++;
+    }
+    while (a === b) {
+      if (Math.random() < HIT) a++;
+      if (Math.random() < HIT) b++;
+    }
+    if (a > b) return [a, b];
+  }
+}
+
 // ---------------------------------------------------------------------------
 // All 47 non-England 2026 World Cup nations
 // ---------------------------------------------------------------------------
@@ -125,12 +142,15 @@ export function simulateKnockoutMatch(englandRating: number, opponent: Nation): 
   const diff = englandRating - opponent.rating;
   const penWinProb = Math.max(0.3, Math.min(0.7, 0.5 + diff * 0.005));
   const penWin = Math.random() < penWinProb;
+  const [winPens, losePens] = simulatePenShootout();
   return {
     opponent,
     englandGoals,
     opponentGoals,
     penaltiesWin: penWin,
     penaltiesLoss: !penWin,
+    englandPens:  penWin ? winPens : losePens,
+    opponentPens: penWin ? losePens : winPens,
   };
 }
 
@@ -333,6 +353,8 @@ export interface NeutralResult {
   homeGoals: number;
   awayGoals: number;
   pens?: 'home' | 'away';
+  homePens?: number;
+  awayPens?: number;
 }
 
 export interface TournamentEndSummary {
@@ -349,7 +371,12 @@ function simulateNeutral(home: Nation, away: Nation): NeutralResult {
   if (homeGoals !== awayGoals) return { home, away, homeGoals, awayGoals };
   const penWinProb = Math.max(0.3, Math.min(0.7, 0.5 + diff * 0.005));
   const pens: 'home' | 'away' = Math.random() < penWinProb ? 'home' : 'away';
-  return { home, away, homeGoals, awayGoals, pens };
+  const [winPens, losePens] = simulatePenShootout();
+  return {
+    home, away, homeGoals, awayGoals, pens,
+    homePens: pens === 'home' ? winPens : losePens,
+    awayPens: pens === 'away' ? winPens : losePens,
+  };
 }
 
 function neutralWinner(r: NeutralResult): Nation {
