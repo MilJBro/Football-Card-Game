@@ -2,11 +2,10 @@ import type { Nation, MatchResult, OtherGroupMatch, TournamentStage } from '@/st
 
 // ============================================================================
 // World Cup match simulation — Poisson-based goal engine.
-// Squad rating vs opponent rating drives expected goals per match.
 // ============================================================================
 
 const GOAL_BASE = 1.3;
-const RATING_SCALE = 0.025; // goals per rating-point advantage
+const RATING_SCALE = 0.025;
 
 function poisson(lambda: number): number {
   const L = Math.exp(-lambda);
@@ -24,81 +23,82 @@ function expectedGoals(englandRating: number, opponentRating: number) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Nation pools by stage
-// ---------------------------------------------------------------------------
-
-const GROUP_NATIONS: Nation[] = [
-  { name: 'Iran',        flag: '🇮🇷', rating: 70 },
-  { name: 'Australia',   flag: '🇦🇺', rating: 71 },
-  { name: 'Qatar',       flag: '🇶🇦', rating: 70 },
-  { name: 'Canada',      flag: '🇨🇦', rating: 73 },
-  { name: 'USA',         flag: '🇺🇸', rating: 73 },
-  { name: 'Ecuador',     flag: '🇪🇨', rating: 74 },
-  { name: 'Japan',       flag: '🇯🇵', rating: 76 },
-  { name: 'Senegal',     flag: '🇸🇳', rating: 76 },
-  { name: 'Wales',       flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', rating: 77 },
-  { name: 'Morocco',     flag: '🇲🇦', rating: 77 },
-  { name: 'Poland',      flag: '🇵🇱', rating: 77 },
-  { name: 'Mexico',      flag: '🇲🇽', rating: 78 },
-  { name: 'Serbia',      flag: '🇷🇸', rating: 79 },
-  { name: 'Denmark',     flag: '🇩🇰', rating: 80 },
-  { name: 'Switzerland', flag: '🇨🇭', rating: 80 },
-];
-
-const R32_NATIONS: Nation[] = [
-  { name: 'Saudi Arabia', flag: '🇸🇦', rating: 69 },
-  { name: 'South Korea',  flag: '🇰🇷', rating: 74 },
-  { name: 'Costa Rica',   flag: '🇨🇷', rating: 72 },
-  { name: 'Nigeria',      flag: '🇳🇬', rating: 75 },
-  { name: 'Ghana',        flag: '🇬🇭', rating: 74 },
-  { name: 'Australia',    flag: '🇦🇺', rating: 71 },
-  { name: 'USA',          flag: '🇺🇸', rating: 73 },
-  { name: 'Japan',        flag: '🇯🇵', rating: 76 },
-  { name: 'Morocco',      flag: '🇲🇦', rating: 77 },
-  { name: 'Poland',       flag: '🇵🇱', rating: 77 },
-];
-
-const R16_NATIONS: Nation[] = [
-  { name: 'USA',         flag: '🇺🇸', rating: 73 },
-  { name: 'Japan',       flag: '🇯🇵', rating: 76 },
-  { name: 'Senegal',     flag: '🇸🇳', rating: 76 },
-  { name: 'Mexico',      flag: '🇲🇽', rating: 78 },
-  { name: 'Colombia',    flag: '🇨🇴', rating: 78 },
-  { name: 'Sweden',      flag: '🇸🇪', rating: 79 },
-  { name: 'Denmark',     flag: '🇩🇰', rating: 80 },
-  { name: 'Switzerland', flag: '🇨🇭', rating: 80 },
-  { name: 'Uruguay',     flag: '🇺🇾', rating: 81 },
-];
-
-const QF_NATIONS: Nation[] = [
-  { name: 'Croatia',     flag: '🇭🇷', rating: 83 },
-  { name: 'Uruguay',     flag: '🇺🇾', rating: 83 },
-  { name: 'Italy',       flag: '🇮🇹', rating: 84 },
-  { name: 'Belgium',     flag: '🇧🇪', rating: 85 },
-  { name: 'Netherlands', flag: '🇳🇱', rating: 85 },
-  { name: 'Portugal',    flag: '🇵🇹', rating: 86 },
-];
-
-const SF_NATIONS: Nation[] = [
-  { name: 'Spain',     flag: '🇪🇸', rating: 88 },
-  { name: 'Germany',   flag: '🇩🇪', rating: 88 },
-  { name: 'Argentina', flag: '🇦🇷', rating: 89 },
-  { name: 'France',    flag: '🇫🇷', rating: 90 },
-  { name: 'Brazil',    flag: '🇧🇷', rating: 90 },
-];
-
-const FINAL_NATIONS: Nation[] = [
-  { name: 'Germany',   flag: '🇩🇪', rating: 89 },
-  { name: 'Spain',     flag: '🇪🇸', rating: 89 },
-  { name: 'Argentina', flag: '🇦🇷', rating: 91 },
-  { name: 'France',    flag: '🇫🇷', rating: 91 },
-  { name: 'Brazil',    flag: '🇧🇷', rating: 92 },
-];
-
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
+
+// ---------------------------------------------------------------------------
+// All 47 non-England 2026 World Cup nations
+// ---------------------------------------------------------------------------
+
+export const ALL_NATIONS: Nation[] = [
+  // UEFA
+  { name: 'Germany',      flag: '🇩🇪', rating: 87 },
+  { name: 'France',       flag: '🇫🇷', rating: 92 },
+  { name: 'Spain',        flag: '🇪🇸', rating: 90 },
+  { name: 'Portugal',     flag: '🇵🇹', rating: 88 },
+  { name: 'Netherlands',  flag: '🇳🇱', rating: 86 },
+  { name: 'Italy',        flag: '🇮🇹', rating: 81 },
+  { name: 'Belgium',      flag: '🇧🇪', rating: 82 },
+  { name: 'Croatia',      flag: '🇭🇷', rating: 80 },
+  { name: 'Switzerland',  flag: '🇨🇭', rating: 80 },
+  { name: 'Denmark',      flag: '🇩🇰', rating: 80 },
+  { name: 'Serbia',       flag: '🇷🇸', rating: 77 },
+  { name: 'Austria',      flag: '🇦🇹', rating: 76 },
+  { name: 'Turkey',       flag: '🇹🇷', rating: 75 },
+  { name: 'Poland',       flag: '🇵🇱', rating: 75 },
+  { name: 'Ukraine',      flag: '🇺🇦', rating: 74 },
+  { name: 'Scotland',     flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', rating: 69 },
+  // CONMEBOL
+  { name: 'Argentina',    flag: '🇦🇷', rating: 94 },
+  { name: 'Brazil',       flag: '🇧🇷', rating: 91 },
+  { name: 'Colombia',     flag: '🇨🇴', rating: 82 },
+  { name: 'Uruguay',      flag: '🇺🇾', rating: 80 },
+  { name: 'Ecuador',      flag: '🇪🇨', rating: 74 },
+  { name: 'Venezuela',    flag: '🇻🇪', rating: 70 },
+  // CONCACAF
+  { name: 'USA',          flag: '🇺🇸', rating: 80 },
+  { name: 'Mexico',       flag: '🇲🇽', rating: 77 },
+  { name: 'Canada',       flag: '🇨🇦', rating: 76 },
+  { name: 'Panama',       flag: '🇵🇦', rating: 67 },
+  { name: 'Costa Rica',   flag: '🇨🇷', rating: 67 },
+  { name: 'Honduras',     flag: '🇭🇳', rating: 65 },
+  // CAF
+  { name: 'Morocco',      flag: '🇲🇦', rating: 81 },
+  { name: 'Senegal',      flag: '🇸🇳', rating: 79 },
+  { name: 'Nigeria',      flag: '🇳🇬', rating: 74 },
+  { name: 'Egypt',        flag: '🇪🇬', rating: 73 },
+  { name: 'Ivory Coast',  flag: '🇨🇮', rating: 73 },
+  { name: 'Cameroon',     flag: '🇨🇲', rating: 72 },
+  { name: 'Algeria',      flag: '🇩🇿', rating: 72 },
+  { name: 'Ghana',        flag: '🇬🇭', rating: 71 },
+  { name: 'South Africa', flag: '🇿🇦', rating: 66 },
+  // AFC
+  { name: 'Japan',        flag: '🇯🇵', rating: 78 },
+  { name: 'South Korea',  flag: '🇰🇷', rating: 75 },
+  { name: 'Iran',         flag: '🇮🇷', rating: 73 },
+  { name: 'Saudi Arabia', flag: '🇸🇦', rating: 71 },
+  { name: 'Australia',    flag: '🇦🇺', rating: 72 },
+  { name: 'Uzbekistan',   flag: '🇺🇿', rating: 67 },
+  { name: 'Iraq',         flag: '🇮🇶', rating: 66 },
+  { name: 'Qatar',        flag: '🇶🇦', rating: 68 },
+  // OFC
+  { name: 'New Zealand',  flag: '🇳🇿', rating: 62 },
+  // Intercontinental playoffs
+  { name: 'Jamaica',      flag: '🇯🇲', rating: 65 },
+];
+
+// ---------------------------------------------------------------------------
+// Seeded group draw
+// England is a Pot 1 team — opponents come from Pots 2, 3 and 4 only,
+// so elite nations never share England's group.
+// ---------------------------------------------------------------------------
+
+// Pot 1 (85+): Argentina, Brazil, Spain, Portugal, Germany, Netherlands,
+// France — plus England itself. These are never drawn as England's opponents.
+const GROUP_POT2 = ALL_NATIONS.filter((n) => n.rating >= 75 && n.rating <= 84);
+const GROUP_POT3 = ALL_NATIONS.filter((n) => n.rating >= 68 && n.rating < 75);
+const GROUP_POT4 = ALL_NATIONS.filter((n) => n.rating < 68);
 
 // ---------------------------------------------------------------------------
 // Match simulation
@@ -122,7 +122,6 @@ export function simulateKnockoutMatch(englandRating: number, opponent: Nation): 
     return { opponent, englandGoals, opponentGoals };
   }
 
-  // Draw — penalty shootout with slight bias toward higher-rated side
   const diff = englandRating - opponent.rating;
   const penWinProb = Math.max(0.3, Math.min(0.7, 0.5 + diff * 0.005));
   const penWin = Math.random() < penWinProb;
@@ -143,17 +142,15 @@ export const GROUP_GAMES = 3;
 
 export const ENGLAND: Nation = { name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', rating: 0 };
 
-/** Draw England's three group opponents at the start of a run. */
+/** Draw England's three group opponents — one from each seeding pot. */
 export function drawGroupOpponents(): Nation[] {
-  const shuffled = [...GROUP_NATIONS].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, GROUP_GAMES);
+  return [
+    pickRandom(GROUP_POT2),
+    pickRandom(GROUP_POT3),
+    pickRandom(GROUP_POT4),
+  ];
 }
 
-/**
- * The two other teams' fixture for a given matchday (0-based), so every team
- * plays every other team exactly once across the three matchdays:
- *   MD1: ENG v A · B v C — MD2: ENG v B · A v C — MD3: ENG v C · A v B
- */
 export function otherFixtureForMatchday(opponents: Nation[], matchday: number): [Nation, Nation] {
   const [a, b, c] = opponents;
   if (matchday === 0) return [b, c];
@@ -161,7 +158,6 @@ export function otherFixtureForMatchday(opponents: Nation[], matchday: number): 
   return [a, b];
 }
 
-/** Simulate a fixture between two AI nations. */
 export function simulateOtherGroupMatch(home: Nation, away: Nation): OtherGroupMatch {
   const diff = home.rating - away.rating;
   const homeLambda = Math.max(0.3, GOAL_BASE + diff * RATING_SCALE);
@@ -169,7 +165,6 @@ export function simulateOtherGroupMatch(home: Nation, away: Nation): OtherGroupM
   return { home, away, homeGoals: poisson(homeLambda), awayGoals: poisson(awayLambda) };
 }
 
-/** Points earned so far across played group matches. */
 export function groupPoints(matches: MatchResult[]): number {
   let points = 0;
   for (const m of matches) {
@@ -196,7 +191,6 @@ export interface GroupTableRow {
   isEngland: boolean;
 }
 
-/** Top 2 of the group advance to the knockouts. */
 export const GROUP_QUALIFY_SPOTS = 2;
 
 export function computeGroupTable(
@@ -241,24 +235,19 @@ export function computeGroupTable(
   });
 }
 
-/** England's current position in the group (1-based). */
 export function englandGroupPosition(table: GroupTableRow[]): number {
   return table.findIndex((r) => r.isEngland) + 1;
 }
 
 // ---------------------------------------------------------------------------
-// Best third-placed teams (48-team format: 8 of the 12 thirds advance)
+// Best third-placed teams (8 of 12 thirds advance)
 // ---------------------------------------------------------------------------
 
-interface ThirdPlaceRecord {
-  pts: number;
-  gd: number;
-  gf: number;
-}
+interface ThirdPlaceRecord { pts: number; gd: number; gf: number; }
 
-/** Simulate one rival group (round robin of 4) and return its 3rd-place record. */
 function simulateRivalThirdPlace(): ThirdPlaceRecord {
-  const teams = [...GROUP_NATIONS].sort(() => Math.random() - 0.5).slice(0, 4);
+  const pool = ALL_NATIONS.filter((n) => n.rating < 85);
+  const teams = [...pool].sort(() => Math.random() - 0.5).slice(0, 4);
   const stats = new Map<string, ThirdPlaceRecord>(
     teams.map((t) => [t.name, { pts: 0, gd: 0, gf: 0 }])
   );
@@ -284,10 +273,6 @@ function simulateRivalThirdPlace(): ThirdPlaceRecord {
   return sorted[2];
 }
 
-/**
- * Did England's 3rd-place record make the cut as one of the 8 best thirds?
- * The other 11 groups are simulated to rank England's record among the 12.
- */
 export function thirdPlaceQualifies(england: ThirdPlaceRecord): boolean {
   const rivals = Array.from({ length: 11 }, simulateRivalThirdPlace);
   const beatenBy = rivals.filter(
@@ -298,16 +283,18 @@ export function thirdPlaceQualifies(england: ThirdPlaceRecord): boolean {
   return beatenBy < 8;
 }
 
-/** Draw the opponent for a knockout stage in advance, so the player knows who's next. */
+/** Pre-draw the opponent for a knockout stage — escalating difficulty. */
 export function pickKnockoutOpponent(stage: Exclude<TournamentStage, 'group'>): Nation {
-  const pools: Record<string, Nation[]> = {
-    r32: R32_NATIONS,
-    r16: R16_NATIONS,
-    qf: QF_NATIONS,
-    sf: SF_NATIONS,
-    final: FINAL_NATIONS,
+  const ranges: Record<Exclude<TournamentStage, 'group'>, [number, number]> = {
+    r32:   [65, 82],
+    r16:   [72, 86],
+    qf:    [78, 91],
+    sf:    [84, 93],
+    final: [88, 95],
   };
-  return pickRandom(pools[stage]);
+  const [min, max] = ranges[stage];
+  const pool = ALL_NATIONS.filter((n) => n.rating >= min && n.rating <= max);
+  return pickRandom(pool.length > 0 ? pool : ALL_NATIONS);
 }
 
 // ---------------------------------------------------------------------------
@@ -317,10 +304,10 @@ export function pickKnockoutOpponent(stage: Exclude<TournamentStage, 'group'>): 
 export function getStageLabel(stage: TournamentStage): string {
   const labels: Record<TournamentStage, string> = {
     group: 'Group Stage',
-    r32: 'Round of 32',
-    r16: 'Round of 16',
-    qf: 'Quarter-Final',
-    sf: 'Semi-Final',
+    r32:   'Round of 32',
+    r16:   'Round of 16',
+    qf:    'Quarter-Final',
+    sf:    'Semi-Final',
     final: 'The Final',
   };
   return labels[stage];
