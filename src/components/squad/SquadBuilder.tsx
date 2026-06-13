@@ -66,11 +66,6 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
     onChange({ ...squad, assignments: { ...squad.assignments, [slotId]: cardId } });
   }
 
-  function clearSlot(slotId: string) {
-    onChange({ ...squad, assignments: { ...squad.assignments, [slotId]: null } });
-    setActiveSlot(null);
-  }
-
   function drawCard(slotId: string, position: Position) {
     // Remove current card from slot so it's not excluded from the pool
     const excludeIds = new Set(
@@ -231,43 +226,8 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
             className="w-full max-w-sm rounded-t-2xl border border-white/15 bg-pitch-dark p-6 sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            {isFlipping && drawnCard ? (
-              /* Card flip reveal */
-              <div className="flex flex-col items-center gap-4">
-                <p className="text-sm font-bold uppercase tracking-widest text-white/50">
-                  {activeSlotDef.label}
-                </p>
-                <div style={{ perspective: 800 }}>
-                  <motion.div
-                    initial={{ rotateY: 0 }}
-                    animate={{ rotateY: 180 }}
-                    transition={{ duration: 1, ease: 'easeInOut' }}
-                    onAnimationComplete={onFlipComplete}
-                    style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
-                  >
-                    {/* Card back */}
-                    <div
-                      style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                      className="flex items-center justify-center rounded-xl border-2 border-white/20 bg-gradient-to-br from-emerald-900 to-pitch-dark"
-                    >
-                      <span className="text-3xl font-black text-white/20">⚽</span>
-                    </div>
-                    {/* Card front */}
-                    <div
-                      style={{
-                        backfaceVisibility: 'hidden',
-                        transform: 'rotateY(180deg)',
-                        position: 'absolute',
-                        inset: 0,
-                      }}
-                    >
-                      <PlayerCard card={drawnCard} upgradeLevel={0} size="sm" />
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-            ) : activeCard ? (
-              /* Filled slot — show card + actions */
+            {activeCard && !isFlipping ? (
+              /* Filled slot — show card + replace only (no remove) */
               <div className="flex flex-col items-center gap-4">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
@@ -278,53 +238,67 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
                   </Button>
                 </div>
                 <PlayerCard card={activeCard} upgradeLevel={activeUpgradeLevel} size="sm" />
-
-                <div className="flex w-full gap-2">
-                  <Button
-                    className="flex-1"
-                    onClick={() => drawCard(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
-                  >
-                    Replace
-                  </Button>
-                  <Button
-                    className="flex-1"
-                    variant="danger"
-                    onClick={() => clearSlot(activeSlotDef.slotId)}
-                  >
-                    Remove
-                  </Button>
-                </div>
+                <Button
+                  className="w-full"
+                  onClick={() => drawCard(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
+                >
+                  Replace
+                </Button>
               </div>
             ) : (
-              /* Empty slot — get card */
+              /* Empty slot — layout stays fixed whether idle or flipping */
               <div className="flex flex-col items-center gap-5">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
                     Get a <span className="text-emerald-300">{activeSlotDef.label}</span>
                   </h3>
-                  <Button size="sm" variant="ghost" onClick={() => setActiveSlot(null)}>
+                  <Button size="sm" variant="ghost" onClick={() => setActiveSlot(null)} disabled={isFlipping}>
                     Close
                   </Button>
                 </div>
-                <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
-                  <span className="text-4xl text-white/20">?</span>
-                </div>
+
+                {/* Card area — same 120×168 whether showing placeholder or flip */}
+                {isFlipping && drawnCard ? (
+                  <div style={{ perspective: 800 }}>
+                    <motion.div
+                      initial={{ rotateY: 0 }}
+                      animate={{ rotateY: 180 }}
+                      transition={{ duration: 1, ease: 'easeInOut' }}
+                      onAnimationComplete={onFlipComplete}
+                      style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
+                    >
+                      <div
+                        style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
+                        className="flex items-center justify-center rounded-xl border-2 border-white/20 bg-gradient-to-br from-emerald-900 to-pitch-dark"
+                      >
+                        <span className="text-3xl font-black text-white/20">⚽</span>
+                      </div>
+                      <div
+                        style={{
+                          backfaceVisibility: 'hidden',
+                          transform: 'rotateY(180deg)',
+                          position: 'absolute',
+                          inset: 0,
+                        }}
+                      >
+                        <PlayerCard card={drawnCard} upgradeLevel={0} size="sm" />
+                      </div>
+                    </motion.div>
+                  </div>
+                ) : (
+                  <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
+                    <span className="text-4xl text-white/20">?</span>
+                  </div>
+                )}
+
                 <Button
                   size="lg"
                   className="w-full"
+                  disabled={isFlipping}
                   onClick={() => drawCard(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
                 >
                   Get Card
                 </Button>
-                {ALL_CARDS.filter(
-                  (c) =>
-                    c.pack === POSITION_TO_PACK[activeSlotDef.naturalPosition] &&
-                    c.positions.includes(activeSlotDef.naturalPosition)
-                ).length === 0 && (
-                  <p className="text-center text-xs text-white/40">
-                    No {activeSlotDef.label} players available yet
-                  </p>
-                )}
               </div>
             )}
           </div>
