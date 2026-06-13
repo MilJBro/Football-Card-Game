@@ -271,9 +271,9 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
                 <div className="flex justify-center gap-4">
                   {drawnCards.length > 0 ? (
                     drawnCards.map((card, i) => (
-                      <div key={card.id} className="flex flex-col items-center gap-2">
+                      <div key={card.id} style={{ width: 120, height: 168, flexShrink: 0 }}>
                         {isFlipping ? (
-                          <div style={{ perspective: 800 }}>
+                          <div style={{ perspective: 800, width: 120, height: 168 }}>
                             <motion.div
                               initial={{ rotateY: 0 }}
                               animate={{ rotateY: 900 }}
@@ -296,7 +296,11 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
                             </motion.div>
                           </div>
                         ) : (
-                          <button onClick={() => pickCard(card)} className="transition-transform hover:scale-105 active:scale-95">
+                          <button
+                            onClick={() => pickCard(card)}
+                            style={{ width: 120, height: 168, display: 'block' }}
+                            className="transition-transform hover:scale-105 active:scale-95"
+                          >
                             <PlayerCard card={card} upgradeLevel={0} size="sm" />
                           </button>
                         )}
