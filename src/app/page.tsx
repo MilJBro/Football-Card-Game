@@ -6,15 +6,13 @@ import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 
 const STAGE_LABELS: Record<string, string> = {
-  group: 'Groups',
-  r32: 'R32',
-  r16: 'R16',
-  qf: 'QF',
-  sf: 'SF',
-  final: 'Final',
+  group: 'Group Stage',
+  r32: 'Round of 32',
+  r16: 'Round of 16',
+  qf: 'Quarter-Final',
+  sf: 'Semi-Final',
+  final: 'The Final',
 };
-
-const STAGE_ORDER = ['group', 'r32', 'r16', 'qf', 'sf', 'final'];
 
 export default function HomePage() {
   const hydrated = useHydrated();
@@ -30,8 +28,6 @@ export default function HomePage() {
     : tournamentEliminated ? 'Eliminated — try again'
     : currentStage ? `In progress: ${STAGE_LABELS[currentStage] ?? currentStage}`
     : null;
-
-  const currentStageIndex = currentStage ? STAGE_ORDER.indexOf(currentStage) : -1;
 
   return (
     /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
@@ -66,41 +62,6 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* Stage roadmap */}
-      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-        <div className="mb-2 text-[10px] uppercase tracking-widest text-white/40">Tournament Path</div>
-        <div className="flex items-end gap-1">
-          {STAGE_ORDER.map((stage, i) => {
-            const isPast = currentStageIndex > i || tournamentWon;
-            const isCurrent = currentStageIndex === i && !tournamentWon && !tournamentEliminated;
-            return (
-              <div key={stage} className="flex flex-1 flex-col items-center gap-1">
-                <span
-                  className={
-                    isCurrent
-                      ? 'text-[10px] font-black text-emerald-400'
-                      : isPast
-                        ? 'text-[10px] font-bold text-white/60'
-                        : 'text-[10px] font-bold text-white/25'
-                  }
-                >
-                  {STAGE_LABELS[stage]}
-                </span>
-                <div
-                  className={
-                    'h-1 w-full rounded-full ' +
-                    (isCurrent
-                      ? 'bg-emerald-400'
-                      : isPast
-                        ? 'bg-emerald-800'
-                        : 'bg-white/10')
-                  }
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
