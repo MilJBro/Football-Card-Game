@@ -383,12 +383,23 @@ function neutralWinner(r: NeutralResult): Nation {
   return r.homeGoals > r.awayGoals || r.pens === 'home' ? r.home : r.away;
 }
 
-/** Simulate the two semi-finals and final with elite nations. */
-export function simulateTournamentEnd(): TournamentEndSummary {
-  const pool = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
-  const [a, b, c, d] = pool;
-  const sf1 = simulateNeutral(a, b);
-  const sf2 = simulateNeutral(c, d);
+/** Simulate the two semi-finals and final.
+ *  If `eliminator` is provided (the team that knocked England out) they are
+ *  seeded into SF1 so they always appear in the remaining bracket. */
+export function simulateTournamentEnd(eliminator?: Nation): TournamentEndSummary {
+  const elite = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
+
+  let sf1: NeutralResult, sf2: NeutralResult;
+  if (eliminator) {
+    const others = elite.filter((n) => n.name !== eliminator.name);
+    sf1 = simulateNeutral(eliminator, others[0]);
+    sf2 = simulateNeutral(others[1], others[2]);
+  } else {
+    const [a, b, c, d] = elite;
+    sf1 = simulateNeutral(a, b);
+    sf2 = simulateNeutral(c, d);
+  }
+
   const final = simulateNeutral(neutralWinner(sf1), neutralWinner(sf2));
   return { sf1, sf2, final, champion: neutralWinner(final) };
 }

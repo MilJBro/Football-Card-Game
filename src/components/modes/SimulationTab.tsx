@@ -346,7 +346,7 @@ export function SimulationTab({ mode, squad }: SimulationTabProps) {
               variant="secondary"
               className="w-full"
               onClick={() => {
-                setTournamentEnd(simulateTournamentEnd());
+                setTournamentEnd(simulateTournamentEnd(knockoutResult.opponent));
                 setPhase('how-it-ended');
               }}
             >
