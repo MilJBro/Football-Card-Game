@@ -17,49 +17,88 @@ const STAGE_LABELS: Record<string, string> = {
 export default function HomePage() {
   const hydrated = useHydrated();
   const completions = useGameStore((s) => s.completions);
+  const history = useGameStore((s) => s.history);
   const currentStage = useGameStore((s) => s.currentStage);
   const tournamentWon = useGameStore((s) => s.tournamentWon);
   const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
+  const manager = useGameStore((s) => s.manager);
   const mode = GAME_MODES[0];
   const completion = hydrated ? completions[mode.id] : undefined;
 
-  const statusLine = !hydrated ? null
-    : tournamentWon ? 'Champions — play again?'
-    : tournamentEliminated ? 'Eliminated — try again'
-    : currentStage ? `In progress: ${STAGE_LABELS[currentStage] ?? currentStage}`
-    : null;
+  const runInProgress = hydrated && currentStage && !tournamentWon && !tournamentEliminated;
+
+  const wins = completion?.timesCompleted ?? 0;
+  const played = hydrated ? history.length : 0;
+  const bestRating = completion?.bestSquadRating ?? 0;
 
   return (
     /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
     <div className="mx-auto flex max-w-sm flex-col gap-3" style={{ minHeight: 'calc(100svh - 10.5rem)' }}>
 
       {/* Challenge card — grows to fill available space */}
-      <div className="relative flex flex-1 flex-col items-center justify-evenly overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark px-6 py-8 text-center shadow-xl">
-        {completion && (
-          <span className="absolute right-3 top-3 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-bold text-amber-300">
-            🏆 ×{completion.timesCompleted}
-          </span>
+      <div className="relative flex flex-1 flex-col overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark shadow-xl">
+
+        {/* Main content — centred and evenly spaced */}
+        <div className="flex flex-1 flex-col items-center justify-evenly px-6 py-8 text-center">
+
+          {/* Flag */}
+          <div className="relative flex items-center justify-center">
+            <div className="absolute h-32 w-32 rounded-full bg-emerald-400/10 blur-2xl" />
+            <span className="relative text-[6.5rem] leading-none drop-shadow-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+          </div>
+
+          {/* Title + status chips */}
+          <div className="flex flex-col items-center gap-2">
+            <h2 className="text-2xl font-black">England World Cup</h2>
+
+            {hydrated && runInProgress && manager && (
+              <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                <span className="text-xs font-bold text-white/70">{manager.name}</span>
+                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300">
+                  {manager.formation}
+                </span>
+              </div>
+            )}
+
+            {hydrated && (tournamentWon || tournamentEliminated) && (
+              <span className={`rounded-full px-3 py-1 text-xs font-black ${tournamentWon ? 'bg-amber-500/20 text-amber-300' : 'bg-red-500/20 text-red-300'}`}>
+                {tournamentWon ? '🏆 Champions' : '💔 Eliminated'}
+              </span>
+            )}
+
+            {hydrated && runInProgress && currentStage && (
+              <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-black text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                {STAGE_LABELS[currentStage]}
+              </span>
+            )}
+          </div>
+
+          <Link
+            href={`/modes/${mode.id}/`}
+            className="rounded-full bg-emerald-500 px-10 py-3 text-base font-black text-emerald-950 transition-transform hover:scale-105"
+          >
+            {runInProgress ? 'Continue →' : 'Play →'}
+          </Link>
+        </div>
+
+        {/* Stats row */}
+        {hydrated && played > 0 && (
+          <div className="flex border-t border-white/10">
+            <div className="flex flex-1 flex-col items-center py-3">
+              <span className="text-lg font-black text-amber-300">{wins}</span>
+              <span className="text-[10px] uppercase tracking-wide text-white/40">Wins</span>
+            </div>
+            <div className="flex flex-1 flex-col items-center border-x border-white/10 py-3">
+              <span className="text-lg font-black text-emerald-300">{bestRating || '—'}</span>
+              <span className="text-[10px] uppercase tracking-wide text-white/40">Best Rating</span>
+            </div>
+            <div className="flex flex-1 flex-col items-center py-3">
+              <span className="text-lg font-black text-white">{played}</span>
+              <span className="text-[10px] uppercase tracking-wide text-white/40">Played</span>
+            </div>
+          </div>
         )}
-
-        {/* Flag */}
-        <div className="relative flex items-center justify-center">
-          <div className="absolute h-32 w-32 rounded-full bg-emerald-400/10 blur-2xl" />
-          <span className="relative text-[6.5rem] leading-none drop-shadow-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
-        </div>
-
-        <div>
-          <h2 className="text-2xl font-black">England World Cup</h2>
-          {statusLine && (
-            <p className="mt-1.5 text-xs font-bold text-white/50">{statusLine}</p>
-          )}
-        </div>
-
-        <Link
-          href={`/modes/${mode.id}/`}
-          className="rounded-full bg-emerald-500 px-10 py-3 text-base font-black text-emerald-950 transition-transform hover:scale-105"
-        >
-          {currentStage && !tournamentWon && !tournamentEliminated ? 'Continue →' : 'Play →'}
-        </Link>
       </div>
 
     </div>
