@@ -223,7 +223,7 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
       {/* Slot drawer */}
       {activeSlotDef && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 pb-16 sm:items-center sm:pb-0"
           onClick={() => { setActiveSlot(null); setDrawnCard(null); setIsFlipping(false); }}
         >
           <div
