@@ -45,7 +45,8 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
 
   const [activeSlot, setActiveSlot] = useState<string | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
-  const [drawnCard, setDrawnCard] = useState<PlayerCardDef | null>(null);
+  const [drawnCards, setDrawnCards] = useState<PlayerCardDef[]>([]);
+  const [flipsDone, setFlipsDone] = useState(0);
 
   const usedCardIds = useMemo(
     () => new Set(Object.values(squad.assignments).filter(Boolean) as string[]),
@@ -60,41 +61,53 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
   function openSlot(slotId: string) {
     setActiveSlot(slotId);
     setIsFlipping(false);
-    setDrawnCard(null);
+    setDrawnCards([]);
+    setFlipsDone(0);
+  }
+
+  function closeDrawer() {
+    setActiveSlot(null);
+    setIsFlipping(false);
+    setDrawnCards([]);
+    setFlipsDone(0);
   }
 
   function assign(slotId: string, cardId: string) {
     onChange({ ...squad, assignments: { ...squad.assignments, [slotId]: cardId } });
   }
 
-  function drawCard(slotId: string, position: Position) {
+  function drawTwoCards(slotId: string, position: Position) {
     const excludeIds = new Set(
       Object.entries(squad.assignments)
         .filter(([id, cardId]) => id !== slotId && cardId)
         .map(([, cardId]) => cardId as string)
     );
 
-    const card = getRandomCardForPosition(position, excludeIds);
-    if (!card) return;
+    const card1 = getRandomCardForPosition(position, excludeIds);
+    if (!card1) return;
+    const card2 = getRandomCardForPosition(position, new Set(Array.from(excludeIds).concat(card1.id)));
+    const cards = card2 ? [card1, card2] : [card1];
 
-    addCards([card.id]);
-    setDrawnCard(card);
+    setDrawnCards(cards);
+    setFlipsDone(0);
     setIsFlipping(true);
   }
 
-  function onFlipComplete() {
-    if (!activeSlot || !drawnCard) return;
-    const slotId = activeSlot;
-    const cardId = drawnCard.id;
-    // Hold the revealed card in place, then assign + close together in one
-    // render so the drawer never swaps to the filled-slot layout while open
-    // (that swap repositions the card and causes a visible shift).
-    setTimeout(() => {
-      assign(slotId, cardId);
-      setActiveSlot(null);
-      setIsFlipping(false);
-      setDrawnCard(null);
-    }, 600);
+  function handleFlipComplete(totalCards: number) {
+    setFlipsDone((prev) => {
+      const next = prev + 1;
+      if (next >= totalCards) {
+        setTimeout(() => setIsFlipping(false), 300);
+      }
+      return next;
+    });
+  }
+
+  function pickCard(card: PlayerCardDef) {
+    if (!activeSlot) return;
+    addCards([card.id]);
+    assign(activeSlot, card.id);
+    closeDrawer();
   }
 
   const activeSlotDef = activeSlot
@@ -225,81 +238,95 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
       {activeSlotDef && (
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 pb-16 sm:items-center sm:pb-0"
-          onClick={() => { setActiveSlot(null); setDrawnCard(null); setIsFlipping(false); }}
+          onClick={closeDrawer}
         >
           <div
             className="w-full max-w-sm rounded-t-2xl border border-white/15 bg-pitch-dark p-6 sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {activeCard ? (
-              /* Filled slot — view only, fixed height matches empty slot */
-              <div className="flex min-h-[292px] flex-col items-center justify-between">
+              /* Filled slot — view only */
+              <div className="flex flex-col items-center gap-4">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
                     <span className="text-emerald-300">{activeSlotDef.label}</span>
                   </h3>
-                  <Button size="sm" variant="ghost" onClick={() => setActiveSlot(null)}>
-                    Close
-                  </Button>
+                  <Button size="sm" variant="ghost" onClick={closeDrawer}>Close</Button>
                 </div>
                 <PlayerCard card={activeCard} upgradeLevel={activeUpgradeLevel} size="sm" />
-                <div /> {/* spacer — keeps height equal to the empty-slot button row */}
               </div>
             ) : (
-              /* Empty slot — layout stays fixed whether idle or flipping */
-              <div className="flex min-h-[292px] flex-col items-center justify-between">
+              /* Empty slot — pick from two drawn cards */
+              <div className="flex flex-col gap-4">
                 <div className="flex w-full items-center justify-between">
                   <h3 className="text-lg font-bold">
                     Get a <span className="text-emerald-300">{activeSlotDef.label}</span>
                   </h3>
-                  <Button size="sm" variant="ghost" onClick={() => setActiveSlot(null)} disabled={isFlipping}>
+                  <Button size="sm" variant="ghost" onClick={closeDrawer} disabled={isFlipping}>
                     Close
                   </Button>
                 </div>
 
-                {/* Card area — same 120×168 whether showing placeholder or flip */}
-                {isFlipping && drawnCard ? (
-                  <div style={{ perspective: 800 }}>
-                    <motion.div
-                      initial={{ rotateY: 0 }}
-                      animate={{ rotateY: 900 }}
-                      transition={{ duration: 2.2, ease: [0.15, 0.05, 0.2, 1] }}
-                      onAnimationComplete={onFlipComplete}
-                      style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
-                    >
-                      <div
-                        style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                        className="flex items-center justify-center rounded-xl border-2 border-white/20 bg-gradient-to-br from-emerald-900 to-pitch-dark"
-                      >
-                        <span className="text-3xl font-black text-white/20">⚽</span>
+                {/* Card area */}
+                <div className="flex justify-center gap-4">
+                  {drawnCards.length > 0 ? (
+                    drawnCards.map((card, i) => (
+                      <div key={card.id} className="flex flex-col items-center gap-2">
+                        {isFlipping ? (
+                          <div style={{ perspective: 800 }}>
+                            <motion.div
+                              initial={{ rotateY: 0 }}
+                              animate={{ rotateY: 900 }}
+                              transition={{ duration: 2.2, delay: i * 0.15, ease: [0.15, 0.05, 0.2, 1] }}
+                              onAnimationComplete={() => handleFlipComplete(drawnCards.length)}
+                              style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
+                            >
+                              <div
+                                style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
+                                className="flex items-center justify-center rounded-xl border-2 border-white/20 bg-gradient-to-br from-emerald-900 to-pitch-dark"
+                              >
+                                <span className="text-3xl font-black text-white/20">⚽</span>
+                              </div>
+                              <div
+                                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
+                                className="flex items-center justify-center"
+                              >
+                                <PlayerCard card={card} upgradeLevel={0} size="sm" />
+                              </div>
+                            </motion.div>
+                          </div>
+                        ) : (
+                          <>
+                            <PlayerCard card={card} upgradeLevel={0} size="sm" />
+                            <Button size="sm" className="w-[120px]" onClick={() => pickCard(card)}>
+                              Pick
+                            </Button>
+                          </>
+                        )}
                       </div>
-                      <div
-                        style={{
-                          backfaceVisibility: 'hidden',
-                          transform: 'rotateY(180deg)',
-                          position: 'absolute',
-                          inset: 0,
-                        }}
-                        className="flex items-center justify-center"
-                      >
-                        <PlayerCard card={drawnCard} upgradeLevel={0} size="sm" />
+                    ))
+                  ) : (
+                    /* Idle placeholders */
+                    <>
+                      <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
+                        <span className="text-4xl text-white/20">?</span>
                       </div>
-                    </motion.div>
-                  </div>
-                ) : (
-                  <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
-                    <span className="text-4xl text-white/20">?</span>
-                  </div>
-                )}
+                      <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
+                        <span className="text-4xl text-white/20">?</span>
+                      </div>
+                    </>
+                  )}
+                </div>
 
-                <Button
-                  size="lg"
-                  className="w-full"
-                  disabled={isFlipping}
-                  onClick={() => drawCard(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
-                >
-                  Get Card
-                </Button>
+                {drawnCards.length === 0 && (
+                  <Button
+                    size="lg"
+                    className="w-full"
+                    onClick={() => drawTwoCards(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
+                  >
+                    Get Cards
+                  </Button>
+                )}
               </div>
             )}
           </div>
