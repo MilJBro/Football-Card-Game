@@ -34,9 +34,11 @@ export default function HomePage() {
   const currentStageIndex = currentStage ? STAGE_ORDER.indexOf(currentStage) : -1;
 
   return (
-    <div className="mx-auto max-w-sm space-y-3">
-      {/* Challenge card */}
-      <div className="relative overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark p-5 text-center shadow-xl">
+    /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
+    <div className="mx-auto flex max-w-sm flex-col gap-3" style={{ minHeight: 'calc(100svh - 10.5rem)' }}>
+
+      {/* Challenge card — grows to fill available space */}
+      <div className="relative flex flex-1 flex-col items-center justify-evenly overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark px-6 py-8 text-center shadow-xl">
         {completion && (
           <span className="absolute right-3 top-3 rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-bold text-amber-300">
             🏆 ×{completion.timesCompleted}
@@ -44,21 +46,21 @@ export default function HomePage() {
         )}
 
         {/* Flag */}
-        <div className="relative mb-3 flex items-center justify-center">
-          <div className="absolute h-24 w-24 rounded-full bg-emerald-400/10 blur-2xl" />
-          <span className="relative text-[5rem] drop-shadow-2xl leading-none">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+        <div className="relative flex items-center justify-center">
+          <div className="absolute h-32 w-32 rounded-full bg-emerald-400/10 blur-2xl" />
+          <span className="relative text-[6.5rem] leading-none drop-shadow-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
         </div>
 
-        <h2 className="text-xl font-black">England World Cup</h2>
-
-        {/* Status */}
-        {statusLine && (
-          <p className="mt-2 text-xs font-bold text-white/50">{statusLine}</p>
-        )}
+        <div>
+          <h2 className="text-2xl font-black">England World Cup</h2>
+          {statusLine && (
+            <p className="mt-1.5 text-xs font-bold text-white/50">{statusLine}</p>
+          )}
+        </div>
 
         <Link
           href={`/modes/${mode.id}/`}
-          className="mt-4 inline-block rounded-full bg-emerald-500 px-8 py-2.5 text-sm font-black text-emerald-950 transition-transform hover:scale-105"
+          className="rounded-full bg-emerald-500 px-10 py-3 text-base font-black text-emerald-950 transition-transform hover:scale-105"
         >
           {currentStage && !tournamentWon && !tournamentEliminated ? 'Continue →' : 'Play →'}
         </Link>
