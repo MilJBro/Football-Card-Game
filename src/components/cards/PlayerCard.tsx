@@ -31,12 +31,6 @@ const SIZES: Record<Size, {
   lg: { w: 'w-44',  rating: 'text-5xl', pos: 'text-[13px]', label: 'text-[8px]',  val: 'text-[12px]', name: 'text-sm',     pad: 'p-3',   dot: 'h-3 w-3',    rowPy: 'py-1.5' },
 };
 
-/** "2008" → "2007/08", "1993" → "1992/93" */
-function toSeason(year: string): string {
-  const y = parseInt(year, 10);
-  if (isNaN(y)) return year;
-  return `${y - 1}/${String(y).slice(2).padStart(2, '0')}`;
-}
 
 export function PlayerCard({
   card,
@@ -115,7 +109,7 @@ export function PlayerCard({
       {/* SEASON / CLUB / NATION rows */}
       <div className="relative">
         {([
-          { label: 'SEASON', value: toSeason(eff.season) },
+          { label: 'WC',     value: eff.season            },
           { label: 'CLUB',   value: eff.club             },
           { label: 'NATION', value: card.nationality     },
         ] as const).map(({ label, value }) => (
