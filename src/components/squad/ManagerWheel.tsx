@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import type { EnglandManager } from '@/store/types';
 import { ENGLAND_MANAGERS } from '@/data/managers';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +23,18 @@ export function ManagerWheel({ onComplete }: ManagerWheelProps) {
   const [current, setCurrent] = useState<EnglandManager>(ENGLAND_MANAGERS[0]);
   const delayIdx = useRef(0);
   const reelIdx = useRef(0);
+  const tickerRef = useRef<HTMLDivElement>(null);
+
+  // Restart the CSS animation on every tick — single DOM node, no AnimatePresence thrash.
+  useLayoutEffect(() => {
+    if (!spinning || !tickerRef.current) return;
+    const el = tickerRef.current;
+    const idx = Math.max(0, delayIdx.current - 1);
+    const d = Math.min(SPIN_DELAYS[idx] * 0.6, 150);
+    el.style.animation = 'none';
+    void el.offsetHeight; // force reflow so the browser sees the reset
+    el.style.animation = `slot-tick ${d}ms ease-out forwards`;
+  }, [current, spinning]);
 
   useEffect(() => {
     function tick() {
@@ -51,31 +63,22 @@ export function ManagerWheel({ onComplete }: ManagerWheelProps) {
         </p>
       </div>
 
-      {/* Manager reel */}
+      {/* Manager reel — single DOM node, CSS animation restarted on each tick */}
       <div className={`relative flex h-32 w-full max-w-xs items-center justify-center overflow-hidden rounded-2xl border-2 bg-black/40 transition-colors duration-300 ${spinning ? 'border-white/20' : 'border-emerald-400'}`}>
         <div className="pointer-events-none absolute inset-x-0 top-0 h-6 bg-gradient-to-b from-black/60 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/60 to-transparent" />
 
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            key={current.name + String(delayIdx.current)}
-            initial={{ y: 34, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -34, opacity: 0 }}
-            transition={{ duration: 0.06 }}
-            className="flex flex-col items-center gap-0.5"
-          >
-            <span className={`text-xl font-black ${spinning ? 'text-white/50 blur-[0.5px]' : 'text-white'}`}>
-              {current.name}
-            </span>
-            <span className={`text-xs ${spinning ? 'text-white/25' : 'text-white/50'}`}>
-              England {current.era}
-            </span>
-            <span className={`mt-1 rounded-full px-3 py-0.5 text-sm font-black ${spinning ? 'bg-white/10 text-white/40' : 'bg-emerald-500/20 text-emerald-300'}`}>
-              {current.formation}
-            </span>
-          </motion.div>
-        </AnimatePresence>
+        <div ref={tickerRef} className="flex flex-col items-center gap-0.5">
+          <span className={`text-xl font-black ${spinning ? 'text-white/50 blur-[0.5px]' : 'text-white'}`}>
+            {current.name}
+          </span>
+          <span className={`text-xs ${spinning ? 'text-white/25' : 'text-white/50'}`}>
+            England {current.era}
+          </span>
+          <span className={`mt-1 rounded-full px-3 py-0.5 text-sm font-black ${spinning ? 'bg-white/10 text-white/40' : 'bg-emerald-500/20 text-emerald-300'}`}>
+            {current.formation}
+          </span>
+        </div>
       </div>
 
       {spinning ? (
