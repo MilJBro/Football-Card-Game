@@ -322,3 +322,46 @@ export function getNextStage(stage: TournamentStage): TournamentStage | null {
 export function matchWon(m: MatchResult): boolean {
   return m.englandGoals > m.opponentGoals || m.penaltiesWin === true;
 }
+
+// ---------------------------------------------------------------------------
+// Simulate the rest of the tournament after England's elimination
+// ---------------------------------------------------------------------------
+
+export interface NeutralResult {
+  home: Nation;
+  away: Nation;
+  homeGoals: number;
+  awayGoals: number;
+  pens?: 'home' | 'away';
+}
+
+export interface TournamentEndSummary {
+  sf1: NeutralResult;
+  sf2: NeutralResult;
+  final: NeutralResult;
+  champion: Nation;
+}
+
+function simulateNeutral(home: Nation, away: Nation): NeutralResult {
+  const diff = home.rating - away.rating;
+  const homeGoals = poisson(Math.max(0.3, GOAL_BASE + diff * RATING_SCALE));
+  const awayGoals = poisson(Math.max(0.3, GOAL_BASE - diff * RATING_SCALE));
+  if (homeGoals !== awayGoals) return { home, away, homeGoals, awayGoals };
+  const penWinProb = Math.max(0.3, Math.min(0.7, 0.5 + diff * 0.005));
+  const pens: 'home' | 'away' = Math.random() < penWinProb ? 'home' : 'away';
+  return { home, away, homeGoals, awayGoals, pens };
+}
+
+function neutralWinner(r: NeutralResult): Nation {
+  return r.homeGoals > r.awayGoals || r.pens === 'home' ? r.home : r.away;
+}
+
+/** Simulate the two semi-finals and final with elite nations. */
+export function simulateTournamentEnd(): TournamentEndSummary {
+  const pool = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
+  const [a, b, c, d] = pool;
+  const sf1 = simulateNeutral(a, b);
+  const sf2 = simulateNeutral(c, d);
+  const final = simulateNeutral(neutralWinner(sf1), neutralWinner(sf2));
+  return { sf1, sf2, final, champion: neutralWinner(final) };
+}

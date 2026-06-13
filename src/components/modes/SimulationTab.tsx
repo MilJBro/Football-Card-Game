@@ -15,19 +15,22 @@ import {
   pickKnockoutOpponent,
   thirdPlaceQualifies,
   groupPoints,
+  simulateTournamentEnd,
   GROUP_GAMES,
   GROUP_QUALIFY_SPOTS,
   getStageLabel,
   getNextStage,
   matchWon,
   type GroupTableRow,
+  type TournamentEndSummary,
+  type NeutralResult,
 } from '@/lib/worldCupEngine';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/ui';
 
-type Phase = 'ready' | 'simulating' | 'group-match-result' | 'knockout-result' | 'won' | 'eliminated';
+type Phase = 'ready' | 'simulating' | 'group-match-result' | 'knockout-result' | 'won' | 'eliminated' | 'how-it-ended';
 
 const STAGE_ORDER: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'final'];
 
@@ -70,6 +73,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const [knockoutResult, setKnockoutResult] = useState<MatchResult | null>(null);
   /** Stage the result on screen belongs to — currentStage may have already advanced. */
   const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
+  const [tournamentEnd, setTournamentEnd] = useState<TournamentEndSummary | null>(null);
 
   // Draw the group before kick-off so the player can see it; backfill a missing
   // knockout opponent (e.g. saves from before opponents were pre-drawn).
@@ -365,13 +369,52 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   // ---------------------------------------------------------------- Eliminated (persistent state)
   if (phase === 'eliminated') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className="rounded-2xl border-2 border-red-400/50 bg-red-400/10 p-6 text-center">
           <h1 className="text-2xl font-black">England are Out</h1>
           <p className="mt-2 text-sm text-white/50">
-            This squad&apos;s World Cup journey is over. Build a new one and try again.
+            This squad&apos;s World Cup journey is over.
           </p>
         </div>
+        <Button
+          size="lg"
+          className="w-full"
+          variant="secondary"
+          onClick={() => {
+            setTournamentEnd(simulateTournamentEnd());
+            setPhase('how-it-ended');
+          }}
+        >
+          See How It Ended →
+        </Button>
+        <Button size="lg" variant="danger" className="w-full" onClick={restart}>
+          Start Again
+        </Button>
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------- How it ended
+  if (phase === 'how-it-ended' && tournamentEnd) {
+    const { sf1, sf2, final, champion } = tournamentEnd;
+    return (
+      <div className="space-y-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Semi-Finals</p>
+          <div className="space-y-2">
+            <NeutralMatchRow result={sf1} />
+            <NeutralMatchRow result={sf2} />
+          </div>
+          <p className="mb-3 mt-4 text-[10px] uppercase tracking-widest text-white/40">The Final</p>
+          <NeutralMatchRow result={final} />
+        </div>
+
+        <div className="rounded-2xl border-2 border-amber-400 bg-amber-400/10 p-5 text-center">
+          <div className="text-5xl">{champion.flag}</div>
+          <p className="mt-2 text-xl font-black text-amber-300">{champion.name}</p>
+          <p className="mt-1 text-sm text-white/50">are the 2026 World Champions</p>
+        </div>
+
         <Button size="lg" variant="danger" className="w-full" onClick={restart}>
           Start Again
         </Button>
@@ -612,6 +655,24 @@ function MatchCard({ match }: { match: MatchResult }) {
           <span className="text-lg">{match.opponent.flag}</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+function NeutralMatchRow({ result }: { result: NeutralResult }) {
+  const homeWon = result.homeGoals > result.awayGoals || result.pens === 'home';
+  return (
+    <div className="flex items-center gap-2 rounded-xl bg-black/20 px-3 py-2 text-sm">
+      <span className={cn('flex-1 text-right font-bold', homeWon ? 'text-white' : 'text-white/40')}>
+        {result.home.flag} {result.home.name}
+      </span>
+      <span className="shrink-0 font-black tabular-nums text-white">
+        {result.homeGoals} – {result.awayGoals}
+        {result.pens && <span className="ml-1 text-[10px] font-normal text-white/40">(pens)</span>}
+      </span>
+      <span className={cn('flex-1 font-bold', !homeWon ? 'text-white' : 'text-white/40')}>
+        {result.away.flag} {result.away.name}
+      </span>
     </div>
   );
 }
