@@ -19,6 +19,9 @@ export function ModeRunner({ modeId }: { modeId: string }) {
   const ownedCards = useGameStore((s) => s.ownedCards);
   const manager = useGameStore((s) => s.manager);
   const setManager = useGameStore((s) => s.setManager);
+  const currentStage = useGameStore((s) => s.currentStage);
+  const tournamentWon = useGameStore((s) => s.tournamentWon);
+  const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
 
   useEffect(() => {
     const { activeModeId } = useGameStore.getState();
@@ -53,6 +56,12 @@ export function ModeRunner({ modeId }: { modeId: string }) {
 
   const [tab, setTab] = useState<ChallengeTab>('simulation');
 
+  // Once the tournament starts, lock to simulation — no more squad editing.
+  const tournamentStarted = !!(currentStage || tournamentWon || tournamentEliminated);
+  useEffect(() => {
+    if (tournamentStarted && tab === 'squad') setTab('simulation');
+  }, [tournamentStarted]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!mode) {
     return (
       <div className="py-20 text-center">
@@ -74,11 +83,7 @@ export function ModeRunner({ modeId }: { modeId: string }) {
       </div>
 
       {tab === 'simulation' && (
-        <SimulationTab
-          mode={mode}
-          squad={squad}
-          onGoToSquad={() => setTab('squad')}
-        />
+        <SimulationTab mode={mode} squad={squad} />
       )}
       {tab === 'squad' && (
         manager ? (
@@ -93,7 +98,8 @@ export function ModeRunner({ modeId }: { modeId: string }) {
         )
       )}
 
-      <BottomTabs active={tab} onChange={setTab} />
+      {/* Squad tab is hidden once the tournament is underway */}
+      {!tournamentStarted && <BottomTabs active={tab} onChange={setTab} />}
     </div>
   );
 }

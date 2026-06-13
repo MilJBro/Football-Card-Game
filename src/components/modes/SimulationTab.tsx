@@ -37,10 +37,9 @@ const STAGE_ORDER: TournamentStage[] = ['group', 'r32', 'r16', 'qf', 'sf', 'fina
 interface SimulationTabProps {
   mode: GameModeDef;
   squad: Squad;
-  onGoToSquad: () => void;
 }
 
-export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) {
+export function SimulationTab({ mode, squad }: SimulationTabProps) {
   const hydrated = useHydrated();
   const ownedCards = useGameStore((s) => s.ownedCards);
   const recordRun = useGameStore((s) => s.recordRun);
@@ -289,12 +288,9 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             </Button>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-3">
-            <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
-            <Button className="flex-1" onClick={continueToNext}>
-              {qualified ? 'Round of 32 →' : `Group Game ${gameNumber + 1} →`}
-            </Button>
-          </div>
+          <Button className="w-full" onClick={continueToNext}>
+            {qualified ? 'Round of 32 →' : `Group Game ${gameNumber + 1} →`}
+          </Button>
         )}
       </div>
     );
@@ -341,10 +337,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
               Play Again
             </Button>
           ) : (
-            <div className="flex flex-wrap gap-3">
-              <Button variant="secondary" className="flex-1" onClick={onGoToSquad}>Adjust Squad</Button>
-              <Button className="flex-1" onClick={continueToNext}>{nextStageName} →</Button>
-            </div>
+            <Button className="w-full" onClick={continueToNext}>{nextStageName} →</Button>
           )
         ) : (
           <div className="space-y-2">
@@ -528,9 +521,6 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             )}
           </div>
         </div>
-        <Button size="sm" variant="secondary" onClick={onGoToSquad}>
-          Edit Squad
-        </Button>
       </div>
 
       {summary.isComplete ? (
@@ -540,9 +530,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/5 py-6 text-center">
           <p className="text-sm text-white/60">Your squad isn&apos;t complete yet.</p>
-          <Button className="mt-3" onClick={onGoToSquad}>
-            Build your squad
-          </Button>
+          <p className="mt-2 text-xs text-white/40">Go to the Squad tab to fill your lineup.</p>
         </div>
       )}
     </div>
