@@ -114,30 +114,30 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
         : 'text-orange-300';
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2.5">
       {/* Stat bar */}
-      <div className="flex items-stretch gap-2 rounded-2xl border border-white/10 bg-black/30 p-2">
-        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+      <div className="flex items-stretch gap-1.5 rounded-2xl border border-white/10 bg-black/30 p-1.5">
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-1.5">
           <div className="text-[9px] uppercase tracking-wide text-white/40">Rating</div>
-          <div className={cn('text-2xl font-black leading-none tabular-nums', ratingColor)}>
+          <div className={cn('text-xl font-black leading-none tabular-nums', ratingColor)}>
             {summary.rating || '—'}
           </div>
         </div>
-        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-1.5">
           <div className="text-[9px] uppercase tracking-wide text-white/40">Attack</div>
-          <div className="text-2xl font-black leading-none tabular-nums text-pl-pink">
+          <div className="text-xl font-black leading-none tabular-nums text-pl-pink">
             {summary.attackRating || '—'}
           </div>
         </div>
-        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-1.5">
           <div className="text-[9px] uppercase tracking-wide text-white/40">Defence</div>
-          <div className="text-2xl font-black leading-none tabular-nums text-pl-cyan">
+          <div className="text-xl font-black leading-none tabular-nums text-pl-cyan">
             {summary.defenceRating || '—'}
           </div>
         </div>
-        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-2">
+        <div className="flex flex-1 flex-col items-center justify-center rounded-xl bg-white/5 py-1.5">
           <div className="text-[9px] uppercase tracking-wide text-white/40">Players</div>
-          <div className="text-2xl font-black leading-none tabular-nums text-white">
+          <div className="text-xl font-black leading-none tabular-nums text-white">
             {summary.filledSlots}
             <span className="text-sm text-white/40">/{summary.totalSlots}</span>
           </div>
@@ -146,15 +146,12 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
 
       {/* Formation — locked to the manager's shape when one is appointed */}
       {manager ? (
-        <div className="flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5">
-          <div>
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Manager</div>
-            <div className="text-sm font-black text-white">
-              {manager.name}
-              <span className="ml-2 font-normal text-white/40">England {manager.era}</span>
-            </div>
+        <div className="flex items-center justify-between gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
+          <div className="text-xs font-black text-white">
+            {manager.name}
+            <span className="ml-2 font-normal text-white/40">England {manager.era}</span>
           </div>
-          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-sm font-black text-emerald-300">
+          <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-black text-emerald-300">
             {manager.formation}
           </span>
         </div>
@@ -181,7 +178,7 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
       )}
 
       {/* Pitch */}
-      <div className="relative mx-auto aspect-[3/4.2] w-full max-w-sm overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-900/50 via-pitch to-pitch-dark shadow-2xl">
+      <div className="relative mx-auto aspect-[3/3.5] w-full max-w-[21rem] overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-b from-emerald-900/50 via-pitch to-pitch-dark shadow-2xl">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{

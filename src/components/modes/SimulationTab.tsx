@@ -213,52 +213,39 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     const matchdayOther = otherGroupMatches[gameNumber - 1];
 
     return (
-      <div className="space-y-4">
-        {/* Headline — match result mid-group, qualification verdict after game 3 */}
-        {groupOver ? (
-          <div className={cn(
-            'rounded-2xl border-2 p-5 text-center',
-            qualified ? 'border-emerald-400 bg-emerald-400/10' : 'border-red-400/50 bg-red-400/10',
-          )}>
-            <h1 className="text-2xl font-black">
-              {qualified ? 'Qualified!' : 'Eliminated'}
-            </h1>
-            <p className="mt-1 text-sm text-white/60">
-              {viaThirdPlace
-                ? `Finished ${ordinal(position)} — squeezed through as one of the 8 best third-placed teams`
-                : qualified
-                  ? `Finished ${ordinal(position)} — through to the Round of 32`
-                  : position === 3
-                    ? `Finished 3rd — not among the 8 best third-placed teams`
-                    : `Finished ${ordinal(position)} — out of the World Cup`}
-            </p>
-          </div>
-        ) : (
-          <div className={cn(
-            'rounded-2xl border-2 p-5 text-center',
-            won ? 'border-emerald-400 bg-emerald-400/10'
+      <div className="space-y-3">
+        {/* Headline + score in one card */}
+        <div className={cn(
+          'rounded-2xl border-2 p-4 text-center',
+          groupOver
+            ? (qualified ? 'border-emerald-400 bg-emerald-400/10' : 'border-red-400/50 bg-red-400/10')
+            : won ? 'border-emerald-400 bg-emerald-400/10'
               : drew ? 'border-yellow-400/50 bg-yellow-400/10'
               : 'border-red-400/50 bg-red-400/10',
-          )}>
-            <h1 className="text-2xl font-black">
-              {won ? 'Victory!' : drew ? 'A Draw' : 'Defeat'}
-            </h1>
-            <p className="mt-1 text-sm text-white/60">
-              Group Game {gameNumber} of {GROUP_GAMES} · {points} pt{points !== 1 ? 's' : ''} · {ordinal(position)} in the group
-            </p>
+        )}>
+          <h1 className="text-xl font-black">
+            {groupOver
+              ? (qualified ? 'Qualified!' : 'Eliminated')
+              : won ? 'Victory!' : drew ? 'A Draw' : 'Defeat'}
+          </h1>
+          <p className="mt-0.5 text-xs text-white/60">
+            {groupOver
+              ? (viaThirdPlace
+                  ? `Finished ${ordinal(position)} — through as one of the 8 best 3rd-placed teams`
+                  : qualified
+                    ? `Finished ${ordinal(position)} — through to the Round of 32`
+                    : position === 3
+                      ? `Finished 3rd — not among the 8 best 3rd-placed teams`
+                      : `Finished ${ordinal(position)} — out of the World Cup`)
+              : `Game ${gameNumber} of ${GROUP_GAMES} · ${points} pt${points !== 1 ? 's' : ''} · ${ordinal(position)} in the group`}
+          </p>
+          <div className="mt-2.5">
+            <MatchCard match={m} />
           </div>
-        )}
-
-        {/* This matchday's results */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
-            Matchday {gameNumber}
-          </div>
-          <MatchCard match={m} />
           {matchdayOther && (
-            <div className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-black/10 px-4 py-2 text-xs text-white/50">
+            <div className="mt-1.5 flex items-center justify-center gap-2 text-[11px] text-white/40">
               <span>{matchdayOther.home.flag} {matchdayOther.home.name}</span>
-              <span className="font-black tabular-nums text-white/70">
+              <span className="font-black tabular-nums text-white/60">
                 {matchdayOther.homeGoals} – {matchdayOther.awayGoals}
               </span>
               <span>{matchdayOther.away.name} {matchdayOther.away.flag}</span>
@@ -271,26 +258,13 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
 
         {/* Next fixture teaser */}
         {!groupOver && groupOpponents[gameNumber] && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-[10px] uppercase tracking-widest text-white/40">
-              Next Fixture — Group Game {gameNumber + 1}
-            </div>
-            <div className="mt-1 flex items-center gap-2 text-lg font-black text-white">
-              <span className="text-2xl">{groupOpponents[gameNumber].flag}</span>
-              {groupOpponents[gameNumber].name}
-            </div>
-          </div>
+          <NextOpponentCard
+            title={`Next Fixture — Group Game ${gameNumber + 1}`}
+            opponent={groupOpponents[gameNumber]}
+          />
         )}
         {qualified && nextOpponent && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-[10px] uppercase tracking-widest text-white/40">
-              Up next in the Round of 32
-            </div>
-            <div className="mt-1 flex items-center gap-2 text-lg font-black text-white">
-              <span className="text-2xl">{nextOpponent.flag}</span>
-              {nextOpponent.name}
-            </div>
-          </div>
+          <NextOpponentCard title="Up Next — Round of 32" opponent={nextOpponent} />
         )}
 
         {eliminated ? (
@@ -317,46 +291,31 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     const wasFinale = playedStage === 'final';
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className={cn(
-          'rounded-2xl border-2 p-5 text-center',
+          'rounded-2xl border-2 p-4 text-center',
           won && wasFinale ? 'border-amber-400 bg-amber-400/10'
             : won ? 'border-emerald-400 bg-emerald-400/10'
             : 'border-red-400/50 bg-red-400/10',
         )}>
-          <h1 className="text-2xl font-black">
+          <h1 className="text-xl font-black">
             {won && wasFinale ? 'World Champions!' : won ? `${getStageLabel(playedStage)} — Won!` : 'Eliminated'}
           </h1>
-          {won && wasFinale && (
-            <p className="mt-1 text-sm text-white/60">
-              England are World Cup winners — incredible!
-            </p>
-          )}
-          {!won && (
-            <p className="mt-1 text-sm text-white/50">
-              England are out of the World Cup
-            </p>
-          )}
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
-            {getStageLabel(playedStage)}
+          <p className="mt-0.5 text-xs text-white/60">
+            {won && wasFinale
+              ? 'England are World Cup winners — incredible!'
+              : won
+                ? getStageLabel(playedStage)
+                : 'England are out of the World Cup'}
+          </p>
+          <div className="mt-2.5">
+            <MatchCard match={knockoutResult} />
           </div>
-          <MatchCard match={knockoutResult} />
         </div>
 
         {/* Next opponent teaser */}
         {won && !wasFinale && nextOpponent && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-[10px] uppercase tracking-widest text-white/40">
-              Up next in the {nextStageName}
-            </div>
-            <div className="mt-1 flex items-center gap-2 text-lg font-black text-white">
-              <span className="text-2xl">{nextOpponent.flag}</span>
-              {nextOpponent.name}
-            </div>
-          </div>
+          <NextOpponentCard title={`Up Next — ${nextStageName}`} opponent={nextOpponent} />
         )}
 
         {won ? (
@@ -436,20 +395,9 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const inGroupPhase = stageToSimulate === 'group';
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-black">{mode.name}</h1>
-        <p className="mt-1 text-white/60">{mode.description}</p>
-      </header>
-
-      <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/5 p-4 text-sm">
-        <span className="font-bold text-emerald-300">Objective: </span>
-        {mode.winConditionText}.
-      </div>
-
+    <div className="space-y-3">
       {/* Tournament progress */}
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-        <div className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Tournament Path</div>
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
         <div className="flex items-center gap-1">
           {STAGE_ORDER.map((s) => {
             const isDone = completedStages.includes(s);
@@ -499,36 +447,30 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       )}
 
       {/* Squad rating */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-5">
-        <div className="flex items-center gap-4">
-          <div className="text-center">
-            <div className="text-[10px] uppercase tracking-wide text-white/40">Squad Rating</div>
-            <div className={cn('text-4xl font-black tabular-nums', ratingColor)}>
-              {summary.rating || '—'}
-            </div>
+      <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5">
+        <div className="flex items-center gap-3">
+          <div className={cn('text-3xl font-black tabular-nums', ratingColor)}>
+            {summary.rating || '—'}
           </div>
-          <div className="h-10 w-px bg-white/10" />
-          <div className="text-sm text-white/60">
+          <div className="text-xs text-white/50 leading-tight">
             {summary.filledSlots}/{summary.totalSlots} players · {squad.formation}
             {manager && (
-              <div className="text-xs text-white/40">{manager.name}&apos;s XI</div>
+              <div className="text-white/35">{manager.name}&apos;s XI</div>
             )}
           </div>
         </div>
-        <Button variant="secondary" onClick={onGoToSquad}>
+        <Button size="sm" variant="secondary" onClick={onGoToSquad}>
           Edit Squad
         </Button>
       </div>
 
       {summary.isComplete ? (
-        <div className="flex justify-center">
-          <Button size="lg" className="w-full" onClick={simulate} disabled={!hydrated}>
-            {isFirstSim ? '🌍 Start the World Cup' : `⚽ Simulate ${stageLabel}`}
-          </Button>
-        </div>
+        <Button size="lg" className="w-full" onClick={simulate} disabled={!hydrated}>
+          {isFirstSim ? '🌍 Start the World Cup' : `⚽ Simulate ${stageLabel}`}
+        </Button>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/5 py-12 text-center">
-          <p className="text-white/60">Your squad isn&apos;t complete yet.</p>
+        <div className="rounded-2xl border border-white/10 bg-white/5 py-6 text-center">
+          <p className="text-sm text-white/60">Your squad isn&apos;t complete yet.</p>
           <Button className="mt-3" onClick={onGoToSquad}>
             Build your squad
           </Button>
@@ -544,25 +486,22 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
 
 function NextOpponentCard({ title, opponent }: { title: string; opponent: { name: string; flag: string; rating: number } }) {
   return (
-    <div className="rounded-2xl border-2 border-white/15 bg-white/5 p-4">
-      <div className="text-[10px] uppercase tracking-widest text-white/40">{title}</div>
-      <div className="mt-2 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl">{opponent.flag}</span>
-          <div>
-            <div className="text-xl font-black text-white">{opponent.name}</div>
-            <div className="text-xs text-white/40">Team rating {opponent.rating}</div>
-          </div>
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5">
+      <div>
+        <div className="text-[9px] uppercase tracking-widest text-white/40">{title}</div>
+        <div className="mt-0.5 flex items-center gap-2 text-base font-black text-white">
+          <span className="text-2xl">{opponent.flag}</span>
+          {opponent.name}
         </div>
-        <span className={cn(
-          'rounded-full px-3 py-1 text-xs font-black',
-          opponent.rating >= 88 ? 'bg-red-500/20 text-red-300'
-            : opponent.rating >= 81 ? 'bg-amber-500/20 text-amber-300'
-            : 'bg-emerald-500/20 text-emerald-300',
-        )}>
-          {opponent.rating >= 88 ? 'ELITE' : opponent.rating >= 81 ? 'TOUGH' : 'WINNABLE'}
-        </span>
       </div>
+      <span className={cn(
+        'rounded-full px-3 py-1 text-[10px] font-black',
+        opponent.rating >= 88 ? 'bg-red-500/20 text-red-300'
+          : opponent.rating >= 81 ? 'bg-amber-500/20 text-amber-300'
+          : 'bg-emerald-500/20 text-emerald-300',
+      )}>
+        {opponent.rating >= 88 ? 'ELITE' : opponent.rating >= 81 ? 'TOUGH' : 'WINNABLE'}
+      </span>
     </div>
   );
 }
@@ -570,7 +509,7 @@ function NextOpponentCard({ title, opponent }: { title: string; opponent: { name
 function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: string }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-      <div className="flex items-baseline justify-between px-4 pt-4 pb-2">
+      <div className="flex items-baseline justify-between px-3 pt-2.5 pb-1.5">
         <span className="text-[10px] uppercase tracking-widest text-white/40">
           England&apos;s Group
         </span>
@@ -579,14 +518,14 @@ function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: st
       <table className="w-full">
         <thead>
           <tr className="border-b border-white/10 text-[10px] uppercase text-white/30">
-            <th className="px-3 py-1.5 text-left">#</th>
-            <th className="px-3 py-1.5 text-left">Team</th>
-            <th className="px-2 py-1.5 text-right">P</th>
-            <th className="px-2 py-1.5 text-right">W</th>
-            <th className="px-2 py-1.5 text-right">D</th>
-            <th className="px-2 py-1.5 text-right">L</th>
-            <th className="px-2 py-1.5 text-right">GD</th>
-            <th className="px-3 py-1.5 text-right font-black">Pts</th>
+            <th className="px-2.5 py-1 text-left">#</th>
+            <th className="px-2.5 py-1 text-left">Team</th>
+            <th className="px-1.5 py-1 text-right">P</th>
+            <th className="px-1.5 py-1 text-right">W</th>
+            <th className="px-1.5 py-1 text-right">D</th>
+            <th className="px-1.5 py-1 text-right">L</th>
+            <th className="px-1.5 py-1 text-right">GD</th>
+            <th className="px-2.5 py-1 text-right font-black">Pts</th>
           </tr>
         </thead>
         <tbody>
@@ -602,7 +541,7 @@ function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: st
                   row.isEngland && 'bg-emerald-500/10',
                 )}
               >
-                <td className="px-3 py-2">
+                <td className="px-2.5 py-1.5">
                   <div className="flex items-center gap-1.5">
                     <span className={cn(
                       'h-3.5 w-1 shrink-0 rounded-full',
@@ -611,21 +550,21 @@ function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: st
                     <span className="tabular-nums text-white/40">{pos}</span>
                   </div>
                 </td>
-                <td className={cn('px-3 py-2 font-bold', row.isEngland ? 'text-emerald-300' : 'text-white')}>
+                <td className={cn('px-2.5 py-1.5 font-bold', row.isEngland ? 'text-emerald-300' : 'text-white')}>
                   <span className="mr-1.5">{row.flag}</span>
                   {row.name}
                 </td>
-                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.played}</td>
-                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.won}</td>
-                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.drawn}</td>
-                <td className="px-2 py-2 text-right tabular-nums text-white/70">{row.lost}</td>
+                <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.played}</td>
+                <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.won}</td>
+                <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.drawn}</td>
+                <td className="px-1.5 py-1.5 text-right tabular-nums text-white/70">{row.lost}</td>
                 <td className={cn(
-                  'px-2 py-2 text-right tabular-nums',
+                  'px-1.5 py-1.5 text-right tabular-nums',
                   gd > 0 ? 'text-emerald-400' : gd < 0 ? 'text-red-400' : 'text-white/40',
                 )}>
                   {gd > 0 ? '+' : ''}{gd}
                 </td>
-                <td className={cn('px-3 py-2 text-right tabular-nums font-black', row.isEngland ? 'text-emerald-300' : 'text-white')}>
+                <td className={cn('px-2.5 py-1.5 text-right tabular-nums font-black', row.isEngland ? 'text-emerald-300' : 'text-white')}>
                   {row.pts}
                 </td>
               </tr>
