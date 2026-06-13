@@ -83,7 +83,7 @@ export default function HomePage() {
         </div>
 
         {/* Stats row */}
-        {hydrated && played > 0 && (
+        {hydrated && (
           <div className="flex border-t border-white/10">
             <div className="flex flex-1 flex-col items-center py-3">
               <span className="text-lg font-black text-amber-300">{wins}</span>
