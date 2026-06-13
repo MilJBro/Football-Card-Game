@@ -109,6 +109,7 @@ const PLAYERS: PlayerSource[] = [
   sr('gerrard',     'Steven Gerrard',  'MID', ['CM'], 91, '2006, 2010, 2014'),
   sr('decrice',     'Declan Rice',     'MID', ['CM'], 88, '2022'),
   sr('nstiles',     'Nobby Stiles',    'MID', ['CM'], 80, '1966'),
+  sr('geastham',    'George Eastham',  'MID', ['CM'], 77, '1966'),
   sr('aball',       'Alan Ball',       'MID', ['CM'], 83, '1966, 1970'),
   sr('mpeters',     'Martin Peters',   'MID', ['CM'], 82, '1966, 1970'),
   sr('amullery',    'Alan Mullery',    'MID', ['CM'], 77, '1970'),
