@@ -1,10 +1,45 @@
 'use client';
 
-import type { PlayerCardDef } from '@/store/types';
+import type { PlayerCardDef, PackCategory } from '@/store/types';
 import { getEffectiveCardData } from '@/data/players';
-import { cn, PACK_STYLES } from '@/lib/ui';
+import { cn } from '@/lib/ui';
 
 export type Size = 'sm' | 'md' | 'lg';
+
+// WC-themed accent per pack — matches the game's colour tokens.
+const PACK_THEME: Record<PackCategory, {
+  border: string; glow: string; text: string; accentBg: string;
+}> = {
+  GK:  { border: '#3CAC3B', glow: '0 0 22px rgba(60,172,59,0.50)',   text: '#72CB71', accentBg: 'rgba(60,172,59,0.13)'   },
+  DEF: { border: '#7AAEF7', glow: '0 0 22px rgba(122,174,247,0.50)', text: '#7AAEF7', accentBg: 'rgba(122,174,247,0.13)' },
+  MID: { border: '#7AAEF7', glow: '0 0 22px rgba(122,174,247,0.50)', text: '#7AAEF7', accentBg: 'rgba(122,174,247,0.13)' },
+  ATT: { border: '#E61D25', glow: '0 0 22px rgba(230,29,37,0.50)',   text: '#ff6b6b', accentBg: 'rgba(230,29,37,0.13)'   },
+};
+
+const SIZES: Record<Size, {
+  w: string; stripH: string; ratingPt: string; rating: string;
+  pillPx: string; pillText: string; footerPx: string; footerPb: string;
+  label: string; val: string; name: string;
+}> = {
+  sm: {
+    w: 'w-24',       stripH: 'h-1',    ratingPt: 'pt-3 pb-2',
+    rating: 'text-3xl', pillPx: 'px-2 py-px', pillText: 'text-[7px]',
+    footerPx: 'px-2', footerPb: 'pb-2',
+    label: 'text-[5.5px]', val: 'text-[7.5px]', name: 'text-[8.5px]',
+  },
+  md: {
+    w: 'w-36',       stripH: 'h-1.5',  ratingPt: 'pt-5 pb-3',
+    rating: 'text-5xl', pillPx: 'px-2.5 py-0.5', pillText: 'text-[9px]',
+    footerPx: 'px-3', footerPb: 'pb-2.5',
+    label: 'text-[7px]', val: 'text-[9px]', name: 'text-[10px]',
+  },
+  lg: {
+    w: 'w-44',       stripH: 'h-2',    ratingPt: 'pt-6 pb-4',
+    rating: 'text-6xl', pillPx: 'px-3 py-1', pillText: 'text-[11px]',
+    footerPx: 'px-4', footerPb: 'pb-3',
+    label: 'text-[8px]', val: 'text-[11px]', name: 'text-xs',
+  },
+};
 
 interface PlayerCardProps {
   card: PlayerCardDef;
@@ -13,24 +48,13 @@ interface PlayerCardProps {
   foil?: boolean;
   selected?: boolean;
   dimmed?: boolean;
-  /** Rating override for out-of-position display in squad picker. */
+  /** Rating override for out-of-position display. */
   displayRating?: number;
-  /** Show only the last word of the player name (for compact picker cards). */
+  /** Show only surname in compact contexts. */
   showLastNameOnly?: boolean;
   onClick?: () => void;
   className?: string;
 }
-
-const SIZES: Record<Size, {
-  w: string; rating: string; pos: string;
-  label: string; val: string; name: string;
-  pad: string; dot: string; rowPy: string;
-}> = {
-  sm: { w: 'w-24',  rating: 'text-3xl', pos: 'text-[9px]',  label: 'text-[6px]',  val: 'text-[8px]',  name: 'text-[9px]',  pad: 'p-2',   dot: 'h-2 w-2',    rowPy: 'py-0.5' },
-  md: { w: 'w-36',  rating: 'text-4xl', pos: 'text-[11px]', label: 'text-[7px]',  val: 'text-[10px]', name: 'text-[11px]', pad: 'p-2.5', dot: 'h-2.5 w-2.5', rowPy: 'py-1'   },
-  lg: { w: 'w-44',  rating: 'text-5xl', pos: 'text-[13px]', label: 'text-[8px]',  val: 'text-[12px]', name: 'text-sm',     pad: 'p-3',   dot: 'h-3 w-3',    rowPy: 'py-1.5' },
-};
-
 
 export function PlayerCard({
   card,
@@ -44,95 +68,92 @@ export function PlayerCard({
   onClick,
   className,
 }: PlayerCardProps) {
-  const packStyle = PACK_STYLES[card.pack];
+  const theme = PACK_THEME[card.pack];
   const s = SIZES[size];
   const eff = getEffectiveCardData(card, upgradeLevel);
   const rating = displayRating ?? eff.rating;
   const downgraded = displayRating !== undefined && displayRating < eff.rating;
+  const ratingColor = downgraded ? '#f87171' : theme.text;
 
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={!onClick}
+      style={{
+        border: `2px solid ${theme.border}`,
+        boxShadow: selected
+          ? `0 0 0 3px ${theme.border}, ${theme.glow}`
+          : theme.glow,
+        background: 'linear-gradient(175deg, #0F1E3A 0%, #060D1E 100%)',
+      }}
       className={cn(
-        'group relative flex aspect-[5/7] flex-col overflow-hidden rounded-2xl border-2 text-left transition-transform',
-        'bg-[#1c0d00]',
-        packStyle.border,
-        packStyle.glow,
+        'group relative flex aspect-[5/7] flex-col overflow-hidden rounded-2xl text-left transition-transform',
         s.w,
-        s.pad,
         onClick && 'cursor-pointer hover:scale-[1.04]',
-        selected && cn('ring-4', packStyle.ring),
         dimmed && 'opacity-40 grayscale',
         className,
       )}
     >
       {foil && <div className="foil-overlay absolute inset-0 animate-shimmer" />}
 
-      {/* Rating + upgrade dots */}
-      <div className="relative flex items-start justify-between">
-        <div>
-          <div className={cn(
-            'font-black leading-none tabular-nums',
-            s.rating,
-            downgraded ? 'text-red-400' : 'text-amber-400',
-          )}>
-            {rating}
-          </div>
-          <div className={cn(
-            'mt-0.5 font-bold',
-            s.pos,
-            downgraded ? 'text-red-400' : 'text-amber-500/80',
-          )}>
-            {eff.positions.join(' · ')}
-            {downgraded && <span className="ml-1">▼</span>}
-          </div>
+      {/* Pack colour strip */}
+      <div className={s.stripH} style={{ background: theme.border }} />
+
+      {/* Rating + position pill */}
+      <div className={cn('flex flex-col items-center justify-center', s.ratingPt)}>
+        <div
+          className={cn('font-black leading-none tabular-nums', s.rating)}
+          style={{ color: ratingColor }}
+        >
+          {rating}
+          {downgraded && <span className="ml-1 text-sm align-middle">▼</span>}
         </div>
-        {/* Two dots = two upgrade steps */}
-        <div className="flex gap-0.5 pt-0.5">
-          {([0, 1] as const).map((i) => (
-            <div
-              key={i}
-              className={cn(
-                'rounded-full',
-                s.dot,
-                upgradeLevel > i ? 'bg-amber-400' : 'bg-white/20',
-              )}
-            />
-          ))}
+        <div
+          className={cn('mt-1.5 rounded-full font-black uppercase tracking-widest', s.pillPx, s.pillText)}
+          style={{ background: theme.accentBg, color: theme.text, border: `1px solid ${theme.border}` }}
+        >
+          {eff.positions.join(' · ')}
         </div>
       </div>
 
       <div className="flex-1" />
 
-      {/* SEASON / CLUB / NATION rows */}
-      <div className="relative">
-        {([
-          { label: 'WC',     value: eff.season            },
-          { label: 'CLUB',   value: eff.club             },
-          { label: 'NATION', value: card.nationality     },
-        ] as const).map(({ label, value }) => (
-          <div key={label}>
-            <div className="h-px w-full bg-white/10" />
-            <div className={cn('flex items-center justify-between', s.rowPy)}>
-              <span className={cn('font-bold uppercase tracking-wider text-amber-900/90', s.label)}>
-                {label}
-              </span>
-              <span className={cn('font-bold text-white', s.val)}>{value}</span>
-            </div>
+      {/* Footer info */}
+      <div className={cn(s.footerPx, s.footerPb)}>
+        <div className="h-px w-full" style={{ background: `${theme.border}40` }} />
+        <div className="mt-1 space-y-0.5">
+          <div className="flex items-center justify-between">
+            <span
+              className={cn('font-bold uppercase tracking-widest', s.label)}
+              style={{ color: `${theme.text}70` }}
+            >
+              WC
+            </span>
+            <span className={cn('font-bold text-white tabular-nums', s.val)}>
+              {eff.season}
+            </span>
           </div>
-        ))}
-      </div>
-
-      {/* Player name */}
-      <div className={cn(
-        'relative mt-1.5 border-t border-white/10 pt-1.5 text-center font-black uppercase tracking-tight text-white',
-        s.name,
-      )}>
-        {showLastNameOnly
-          ? card.playerName.split(' ').at(-1)
-          : card.playerName}
+          <div className="flex items-center justify-between">
+            <span
+              className={cn('font-bold uppercase tracking-widest', s.label)}
+              style={{ color: `${theme.text}70` }}
+            >
+              Nation
+            </span>
+            <span className={cn('font-bold text-white', s.val)}>
+              {card.nationality}
+            </span>
+          </div>
+        </div>
+        <div className="mt-1 h-px w-full" style={{ background: `${theme.border}40` }} />
+        <div
+          className={cn('mt-1.5 text-center font-black uppercase tracking-wide text-white', s.name)}
+        >
+          {showLastNameOnly
+            ? card.playerName.split(' ').at(-1)
+            : card.playerName}
+        </div>
       </div>
     </button>
   );
