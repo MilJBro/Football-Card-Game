@@ -83,12 +83,17 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
 
   function onFlipComplete() {
     if (!activeSlot || !drawnCard) return;
-    assign(activeSlot, drawnCard.id);
+    const slotId = activeSlot;
+    const cardId = drawnCard.id;
+    // Hold the revealed card in place, then assign + close together in one
+    // render so the drawer never swaps to the filled-slot layout while open
+    // (that swap repositions the card and causes a visible shift).
     setTimeout(() => {
+      assign(slotId, cardId);
       setActiveSlot(null);
       setIsFlipping(false);
       setDrawnCard(null);
-    }, 350);
+    }, 600);
   }
 
   const activeSlotDef = activeSlot
@@ -274,6 +279,7 @@ export function SquadBuilder({ squad, onChange, manager }: SquadBuilderProps) {
                           position: 'absolute',
                           inset: 0,
                         }}
+                        className="flex items-center justify-center"
                       >
                         <PlayerCard card={drawnCard} upgradeLevel={0} size="sm" />
                       </div>
