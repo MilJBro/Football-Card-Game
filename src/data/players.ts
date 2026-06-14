@@ -54,6 +54,7 @@ const PLAYERS: PlayerSource[] = [
   sr('scarson',   'Scott Carson',   'GK', ['GK'], 73, '2006'),
   sr('djames',    'David James',    'GK', ['GK'], 78, '2002, 2006, 2010'),
   sr('jhart',     'Joe Hart',       'GK', ['GK'], 83, '2010, 2014'),
+  sr('rgreen',    'Rob Green',      'GK', ['GK'], 75, '2010'),
   sr('npope',     'Nick Pope',      'GK', ['GK'], 79, '2018, 2022'),
 
   // ── RB ──────────────────────────────────────────────────────────────────────
@@ -98,6 +99,7 @@ const PLAYERS: PlayerSource[] = [
   sr('wbrown',      'Wes Brown',       'DEF', ['CB'], 74, '2002'),
   sr('lking',       'Ledley King',     'DEF', ['CB'], 80, '2010'),
   sr('mupson',      'Matthew Upson',   'DEF', ['CB'], 76, '2010'),
+  sr('mdawson',     'Michael Dawson',  'DEF', ['CB'], 75, '2010'),
   sr('csmallingg',  'Chris Smalling',  'DEF', ['CB'], 75, '2014'),
   sr('philjones',   'Phil Jones',      'DEF', ['CB'], 73, '2014'),
   sr('gcahill',     'Gary Cahill',     'DEF', ['CB'], 81, '2014, 2018'),
@@ -109,6 +111,7 @@ const PLAYERS: PlayerSource[] = [
   sr('stuartpearce','Stuart Pearce',   'DEF', ['LB'], 86, '1990'),
   sr('tdorigo',    'Tony Dorigo',     'DEF', ['LB'], 76, '1990'),
   sr('ashleycole',  'Ashley Cole',     'DEF', ['LB'], 90, '2002, 2006, 2010'),
+  sr('swarnock',    'Stephen Warnock', 'DEF', ['LB'], 72, '2010'),
   sr('glesaux',     'Graeme Le Saux',  'DEF', ['LB'], 79, '1998'),
   sr('wbridge',     'Wayne Bridge',    'DEF', ['LB'], 77, '2002, 2006'),
   sr('lukeshaw',    'Luke Shaw',       'DEF', ['LB'], 86, '2018, 2022'),
