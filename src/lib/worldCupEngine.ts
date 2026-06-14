@@ -417,3 +417,62 @@ export function simulateTournamentEnd(eliminator?: Nation, eliminatedAt?: Tourna
   const final = simulateNeutral(neutralWinner(sf[0]), neutralWinner(sf[1]));
   return { qf, sf, final, champion: neutralWinner(final) };
 }
+
+// ---------------------------------------------------------------------------
+// Run conclusion — what happened after England were knocked out.
+// Follows the team that eliminated England (or a neutral elite bracket when
+// England went out in the group) through to the eventual champion.
+// ---------------------------------------------------------------------------
+
+export interface ConclusionMatch {
+  stage: TournamentStage;
+  result: NeutralResult;
+}
+
+export interface RunConclusion {
+  /** Stages played after England's exit, in order. */
+  conclusion: ConclusionMatch[];
+  champion: Nation;
+}
+
+const KNOCKOUT_ORDER: Exclude<TournamentStage, 'group'>[] = ['r32', 'r16', 'qf', 'sf', 'final'];
+
+/** Build the post-England story.
+ *  - eliminator known (knockout exit): follow them forward to the title, or to
+ *    whoever knocks them out, ending on the real champion.
+ *  - eliminator null (group exit): show a neutral elite bracket from the QFs. */
+export function simulateRunConclusion(
+  eliminator: Nation | null,
+  eliminatedAt: TournamentStage,
+): RunConclusion {
+  // Group exit — no single eliminator to follow. Show the latter rounds neutrally.
+  if (!eliminator || eliminatedAt === 'group') {
+    const end = simulateTournamentEnd();
+    return {
+      conclusion: [
+        ...end.qf.map((result): ConclusionMatch => ({ stage: 'qf', result })),
+        ...end.sf.map((result): ConclusionMatch => ({ stage: 'sf', result })),
+        { stage: 'final', result: end.final },
+      ],
+      champion: end.champion,
+    };
+  }
+
+  const startIdx = KNOCKOUT_ORDER.indexOf(eliminatedAt as Exclude<TournamentStage, 'group'>) + 1;
+  const remaining = KNOCKOUT_ORDER.slice(startIdx);
+
+  let current = eliminator;
+  const conclusion: ConclusionMatch[] = [];
+  for (const stage of remaining) {
+    let opponent = pickKnockoutOpponent(stage);
+    // Avoid the eliminator drawing itself.
+    let guard = 0;
+    while (opponent.name === current.name && guard++ < 8) opponent = pickKnockoutOpponent(stage);
+    const result = simulateNeutral(current, opponent);
+    conclusion.push({ stage, result });
+    current = neutralWinner(result);
+  }
+
+  // If England lost the final, `remaining` is empty and the eliminator is champion.
+  return { conclusion, champion: current };
+}

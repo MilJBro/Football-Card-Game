@@ -57,6 +57,12 @@ export interface OtherGroupMatch {
   awayGoals: number;
 }
 
+/** One of England's knockout ties, tagged with the stage it was played at. */
+export interface KnockoutMatch {
+  stage: TournamentStage;
+  match: MatchResult;
+}
+
 
 // ---------------------------------------------------------------------------
 // Cards

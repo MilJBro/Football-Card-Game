@@ -15,14 +15,14 @@ import {
   pickKnockoutOpponent,
   thirdPlaceQualifies,
   groupPoints,
-  simulateTournamentEnd,
+  simulateRunConclusion,
   GROUP_GAMES,
   GROUP_QUALIFY_SPOTS,
   getStageLabel,
   getNextStage,
   matchWon,
   type GroupTableRow,
-  type TournamentEndSummary,
+  type RunConclusion,
   type NeutralResult,
 } from '@/lib/worldCupEngine';
 import { useGameStore } from '@/store/useGameStore';
@@ -51,6 +51,8 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const recordGroupMatch = useGameStore((s) => s.recordGroupMatch);
   const otherGroupMatches = useGameStore((s) => s.otherGroupMatches);
   const recordOtherGroupMatch = useGameStore((s) => s.recordOtherGroupMatch);
+  const knockoutMatches = useGameStore((s) => s.knockoutMatches);
+  const recordKnockoutMatch = useGameStore((s) => s.recordKnockoutMatch);
   const nextOpponent = useGameStore((s) => s.nextOpponent);
   const setNextOpponent = useGameStore((s) => s.setNextOpponent);
   const tournamentWon = useGameStore((s) => s.tournamentWon);
@@ -73,7 +75,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const [knockoutResult, setKnockoutResult] = useState<MatchResult | null>(null);
   /** Stage the result on screen belongs to — currentStage may have already advanced. */
   const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
-  const [tournamentEnd, setTournamentEnd] = useState<TournamentEndSummary | null>(null);
+  const [recap, setRecap] = useState<RunConclusion | null>(null);
   const [goalTimeline, setGoalTimeline] = useState<Array<'england' | 'opponent'>>([]);
   const [shownGoals, setShownGoals] = useState(0);
   const [feedDone, setFeedDone] = useState(true);
@@ -184,6 +186,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       } else {
         const opponent = nextOpponent ?? pickKnockoutOpponent(stage);
         const result = simulateKnockoutMatch(effAtk, effDef, opponent);
+        recordKnockoutMatch(stage, result);
         setKnockoutResult(result);
         setPhase('knockout-result');
 
@@ -316,7 +319,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
               variant="secondary"
               className="w-full"
               onClick={() => {
-                setTournamentEnd(simulateTournamentEnd());
+                setRecap(simulateRunConclusion(null, 'group'));
                 setPhase('how-it-ended');
               }}
             >
@@ -438,7 +441,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
               variant="secondary"
               className="w-full"
               onClick={() => {
-                setTournamentEnd(simulateTournamentEnd(knockoutResult.opponent, playedStage));
+                setRecap(simulateRunConclusion(knockoutResult.opponent, playedStage));
                 setPhase('how-it-ended');
               }}
             >
@@ -492,7 +495,12 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
           className="w-full"
           variant="secondary"
           onClick={() => {
-            setTournamentEnd(simulateTournamentEnd());
+            const lastKo = knockoutMatches[knockoutMatches.length - 1];
+            setRecap(
+              lastKo
+                ? simulateRunConclusion(lastKo.match.opponent, lastKo.stage)
+                : simulateRunConclusion(null, 'group'),
+            );
             setPhase('how-it-ended');
           }}
         >
@@ -506,27 +514,70 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   }
 
   // ---------------------------------------------------------------- How it ended
-  if (phase === 'how-it-ended' && tournamentEnd) {
-    const { qf, sf, final, champion } = tournamentEnd;
+  if (phase === 'how-it-ended' && recap) {
+    const { conclusion, champion } = recap;
+    const eliminator = knockoutMatches[knockoutMatches.length - 1]?.match.opponent ?? null;
+    const englandWonFinal = champion.name === 'England';
+
     return (
       <div className="space-y-3">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p className="mb-3 text-[10px] uppercase tracking-widest text-white/40">Quarter-Finals</p>
-          <div className="space-y-2">
-            {qf.map((r, i) => <NeutralMatchRow key={i} result={r} />)}
-          </div>
-          <p className="mb-3 mt-4 text-[10px] uppercase tracking-widest text-white/40">Semi-Finals</p>
-          <div className="space-y-2">
-            {sf.map((r, i) => <NeutralMatchRow key={i} result={r} />)}
-          </div>
-          <p className="mb-3 mt-4 text-[10px] uppercase tracking-widest text-white/40">The Final</p>
-          <NeutralMatchRow result={final} />
+        {/* England's actual run */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <p className="text-[10px] uppercase tracking-widest text-white/40">England&apos;s Run</p>
+
+          {groupMatches.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-white/30">Group Stage</p>
+              {groupMatches.map((m, i) => <MatchCard key={`g${i}`} match={m} />)}
+            </div>
+          )}
+
+          {knockoutMatches.map(({ stage, match }, i) => (
+            <div key={`k${i}`} className="space-y-2">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-white/30">
+                {getStageLabel(stage)}
+              </p>
+              <MatchCard match={match} />
+            </div>
+          ))}
         </div>
 
+        {/* What happened after England went out */}
+        {conclusion.length > 0 && (
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="mb-3 text-[10px] uppercase tracking-widest text-white/40">
+              {eliminator ? `After England went out` : `How the rest unfolded`}
+            </p>
+            {conclusion.map(({ stage, result }, i) => {
+              const showHeader = i === 0 || conclusion[i - 1].stage !== stage;
+              return (
+                <div key={i} className="space-y-2">
+                  {showHeader && (
+                    <p className={cn(
+                      'text-[10px] font-bold uppercase tracking-wide text-white/30',
+                      i > 0 && 'mt-3',
+                    )}>
+                      {getStageLabel(stage)}
+                    </p>
+                  )}
+                  <NeutralMatchRow result={result} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Champion */}
         <div className="rounded-2xl border-2 border-amber-400 bg-amber-400/10 p-5 text-center">
           <div className="text-5xl">{champion.flag}</div>
           <p className="mt-2 text-xl font-black text-amber-300">{champion.name}</p>
-          <p className="mt-1 text-sm text-white/50">are the 2026 World Champions</p>
+          <p className="mt-1 text-sm text-white/50">
+            {englandWonFinal
+              ? 'are the 2026 World Champions'
+              : eliminator && champion.name === eliminator.name
+                ? 'beat England, then went all the way'
+                : 'are the 2026 World Champions'}
+          </p>
         </div>
 
         <Button size="lg" variant="danger" className="w-full" onClick={restart}>

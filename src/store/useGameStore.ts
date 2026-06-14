@@ -9,6 +9,7 @@ import type {
   TournamentStage,
   MatchResult,
   OtherGroupMatch,
+  KnockoutMatch,
   Nation,
   EnglandManager,
 } from '@/store/types';
@@ -39,6 +40,8 @@ export interface GameState {
   groupMatches: MatchResult[];
   /** The other two teams' fixtures, one per matchday — feeds the live table. */
   otherGroupMatches: OtherGroupMatch[];
+  /** England's knockout ties this tournament — used for the end-of-run recap. */
+  knockoutMatches: KnockoutMatch[];
   /** Pre-drawn opponent for the next knockout stage. */
   nextOpponent: Nation | null;
   tournamentWon: boolean;
@@ -64,6 +67,7 @@ export interface GameState {
   setGroupOpponents: (nations: Nation[]) => void;
   recordGroupMatch: (match: MatchResult) => void;
   recordOtherGroupMatch: (match: OtherGroupMatch) => void;
+  recordKnockoutMatch: (stage: TournamentStage, match: MatchResult) => void;
   setNextOpponent: (nation: Nation | null) => void;
   advanceStage: (nextStage: TournamentStage | null) => void;
   eliminateFromTournament: () => void;
@@ -88,6 +92,7 @@ const initialState = {
   groupOpponents: [] as Nation[],
   groupMatches: [] as MatchResult[],
   otherGroupMatches: [] as OtherGroupMatch[],
+  knockoutMatches: [] as KnockoutMatch[],
   nextOpponent: null as Nation | null,
   tournamentWon: false,
   tournamentEliminated: false,
@@ -137,6 +142,7 @@ export const useGameStore = create<GameState>()(
           currentStage: 'group',
           groupMatches: [],
           otherGroupMatches: [],
+          knockoutMatches: [],
           nextOpponent: null,
           tournamentWon: false,
           tournamentEliminated: false,
@@ -149,6 +155,9 @@ export const useGameStore = create<GameState>()(
 
       recordOtherGroupMatch: (match) =>
         set((s) => ({ otherGroupMatches: [...s.otherGroupMatches, match] })),
+
+      recordKnockoutMatch: (stage, match) =>
+        set((s) => ({ knockoutMatches: [...s.knockoutMatches, { stage, match }] })),
 
       setNextOpponent: (nation) => set({ nextOpponent: nation }),
 
@@ -170,6 +179,7 @@ export const useGameStore = create<GameState>()(
           groupOpponents: [],
           groupMatches: [],
           otherGroupMatches: [],
+          knockoutMatches: [],
           nextOpponent: null,
           tournamentWon: false,
           tournamentEliminated: false,
@@ -186,6 +196,7 @@ export const useGameStore = create<GameState>()(
           groupOpponents: [],
           groupMatches: [],
           otherGroupMatches: [],
+          knockoutMatches: [],
           nextOpponent: null,
           tournamentWon: false,
           tournamentEliminated: false,
