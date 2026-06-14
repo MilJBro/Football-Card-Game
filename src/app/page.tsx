@@ -12,7 +12,11 @@ const STAGE_LABELS: Record<string, string> = {
   qf: 'Quarter-Final',
   sf: 'Semi-Final',
   final: 'The Final',
+  won: 'Champions',
 };
+
+// Worst → best, for ranking the furthest stage ever reached.
+const STAGE_ORDER = ['group', 'r32', 'r16', 'qf', 'sf', 'final', 'won'];
 
 export default function HomePage() {
   const hydrated = useHydrated();
@@ -30,6 +34,17 @@ export default function HomePage() {
   const wins = completion?.timesCompleted ?? 0;
   const played = hydrated ? history.length : 0;
   const bestRating = completion?.bestSquadRating ?? 0;
+
+  const modeRuns = hydrated ? history.filter((r) => r.modeId === mode.id) : [];
+  const furthestIdx = modeRuns.reduce(
+    (max, r) => Math.max(max, STAGE_ORDER.indexOf(r.reachedStage)),
+    -1,
+  );
+  const furthestStage = furthestIdx >= 0 ? STAGE_ORDER[furthestIdx] : null;
+  const winRate =
+    modeRuns.length > 0
+      ? Math.round((modeRuns.filter((r) => r.success).length / modeRuns.length) * 100)
+      : 0;
 
   return (
     /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
@@ -100,6 +115,26 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Best run + win rate — appears once at least one tournament is played */}
+      {hydrated && modeRuns.length > 0 && (
+        <div className="flex overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <div className="flex flex-1 flex-col items-center gap-0.5 py-3">
+            <span className="text-[10px] uppercase tracking-wide text-white/40">Best Run</span>
+            <span
+              className={`text-sm font-black ${
+                furthestStage === 'won' ? 'text-amber-300' : 'text-emerald-300'
+              }`}
+            >
+              {furthestStage ? STAGE_LABELS[furthestStage] : '—'}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col items-center gap-0.5 border-l border-white/10 py-3">
+            <span className="text-[10px] uppercase tracking-wide text-white/40">Win Rate</span>
+            <span className="text-sm font-black text-white">{winRate}%</span>
+          </div>
+        </div>
+      )}
 
     </div>
   );
