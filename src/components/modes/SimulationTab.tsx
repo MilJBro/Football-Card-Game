@@ -10,6 +10,7 @@ import {
   simulateOtherGroupMatch,
   drawGroupOpponents,
   drawRealisticGroup,
+  getGroupByYear,
   otherFixtureForMatchday,
   computeGroupTable,
   englandGroupPosition,
@@ -49,7 +50,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const groupOpponents = useGameStore((s) => s.groupOpponents);
   const groupLabel = useGameStore((s) => s.groupLabel);
   const setGroupOpponents = useGameStore((s) => s.setGroupOpponents);
-  const realisticGroups = useGameStore((s) => s.realisticGroups);
+  const realisticGroupsYear = useGameStore((s) => s.realisticGroupsYear);
   const groupMatches = useGameStore((s) => s.groupMatches);
   const recordGroupMatch = useGameStore((s) => s.recordGroupMatch);
   const otherGroupMatches = useGameStore((s) => s.otherGroupMatches);
@@ -89,8 +90,8 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     if (!hydrated || tournamentWon || tournamentEliminated) return;
     const inGroupPhase = currentStage === null || currentStage === 'group';
     if (inGroupPhase && groupOpponents.length < GROUP_GAMES) {
-      if (realisticGroups) {
-        const g = drawRealisticGroup();
+      if (realisticGroupsYear !== null) {
+        const g = getGroupByYear(realisticGroupsYear) ?? drawRealisticGroup();
         setGroupOpponents(g.opponents, g.label);
       } else {
         setGroupOpponents(drawGroupOpponents(), null);
@@ -99,7 +100,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     if (currentStage && currentStage !== 'group' && !nextOpponent) {
       setNextOpponent(pickKnockoutOpponent(currentStage));
     }
-  }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated, realisticGroups]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated, realisticGroupsYear]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kick off goal feed when knockoutResult changes
   useEffect(() => {
@@ -159,8 +160,8 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       if (stage === 'group') {
         let opponents = groupOpponents;
         if (opponents.length < GROUP_GAMES) {
-          if (realisticGroups) {
-            const g = drawRealisticGroup();
+          if (realisticGroupsYear !== null) {
+            const g = getGroupByYear(realisticGroupsYear) ?? drawRealisticGroup();
             opponents = g.opponents;
             setGroupOpponents(opponents, g.label);
           } else {

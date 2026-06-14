@@ -26,8 +26,8 @@ export interface GameState {
   teamName: string;
 
   // ---- Settings ----
-  /** When on, England's group is one of their real past World Cup groups. */
-  realisticGroups: boolean;
+  /** Null = random draw; a year number = use that specific England World Cup group. */
+  realisticGroupsYear: number | null;
 
   // ---- Active run ----
   activeModeId: string | null;
@@ -64,7 +64,7 @@ export interface GameState {
   setTeamName: (name: string) => void;
 
   // ---- Actions: settings ----
-  setRealisticGroups: (on: boolean) => void;
+  setRealisticGroupsYear: (year: number | null) => void;
 
   // ---- Actions: active run ----
   setActiveModeId: (modeId: string | null) => void;
@@ -94,7 +94,7 @@ const initialState = {
   completions: {} as Record<string, ModeCompletion>,
   history: [] as TournamentRunResult[],
   teamName: '',
-  realisticGroups: false,
+  realisticGroupsYear: null as number | null,
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
   manager: null as EnglandManager | null,
@@ -143,7 +143,7 @@ export const useGameStore = create<GameState>()(
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
 
-      setRealisticGroups: (on) => set({ realisticGroups: on }),
+      setRealisticGroupsYear: (year) => set({ realisticGroupsYear: year }),
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
@@ -222,8 +222,8 @@ export const useGameStore = create<GameState>()(
         })),
     }),
     {
-      name: 'football-card-game-v4',
-      version: 4,
+      name: 'football-card-game-v5',
+      version: 5,
     }
   )
 );

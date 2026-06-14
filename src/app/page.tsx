@@ -5,6 +5,7 @@ import { GAME_MODES } from '@/data/gameModes';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { cn } from '@/lib/ui';
+import { ENGLAND_WC_YEARS } from '@/lib/worldCupEngine';
 
 const STAGE_LABELS: Record<string, string> = {
   group: 'Group Stage',
@@ -27,8 +28,8 @@ export default function HomePage() {
   const tournamentWon = useGameStore((s) => s.tournamentWon);
   const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
   const manager = useGameStore((s) => s.manager);
-  const realisticGroups = useGameStore((s) => s.realisticGroups);
-  const setRealisticGroups = useGameStore((s) => s.setRealisticGroups);
+  const realisticGroupsYear = useGameStore((s) => s.realisticGroupsYear);
+  const setRealisticGroupsYear = useGameStore((s) => s.setRealisticGroupsYear);
   const mode = GAME_MODES[0];
   const completion = hydrated ? completions[mode.id] : undefined;
 
@@ -119,39 +120,48 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Realistic groups toggle */}
+      {/* Realistic groups year picker */}
       {hydrated && (
-        <div className="rounded-2xl border border-white/10 bg-white/5">
-          <button
-            onClick={() => setRealisticGroups(!realisticGroups)}
-            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-          >
-            <div className="min-w-0">
-              <div className="text-sm font-black text-white">Realistic Groups</div>
-              <div className="truncate text-[11px] text-white/40">
-                {realisticGroups
-                  ? "Play one of England's real World Cup groups"
-                  : 'Random group draw from seeding pots'}
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+          <div className="mb-2.5 flex items-center justify-between">
+            <div>
+              <div className="text-sm font-black text-white">Group Stage</div>
+              <div className="text-[11px] text-white/40">
+                {realisticGroupsYear !== null
+                  ? `England's ${realisticGroupsYear} World Cup group`
+                  : 'Random draw from seeding pots'}
               </div>
             </div>
-            <span
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              onClick={() => setRealisticGroupsYear(null)}
               className={cn(
-                'relative h-6 w-11 shrink-0 rounded-full transition-colors',
-                realisticGroups ? 'bg-emerald-500' : 'bg-white/15',
+                'rounded-full px-3 py-1 text-xs font-bold transition-colors',
+                realisticGroupsYear === null
+                  ? 'bg-emerald-500 text-emerald-950'
+                  : 'bg-white/10 text-white/60 hover:bg-white/15',
               )}
             >
-              <span
+              Random
+            </button>
+            {ENGLAND_WC_YEARS.map((year) => (
+              <button
+                key={year}
+                onClick={() => setRealisticGroupsYear(year)}
                 className={cn(
-                  'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
-                  realisticGroups ? 'translate-x-[22px]' : 'translate-x-0.5',
+                  'rounded-full px-3 py-1 text-xs font-bold transition-colors',
+                  realisticGroupsYear === year
+                    ? 'bg-emerald-500 text-emerald-950'
+                    : 'bg-white/10 text-white/60 hover:bg-white/15',
                 )}
-              />
-            </span>
-          </button>
+              >
+                {year}
+              </button>
+            ))}
+          </div>
           {runInProgress && (
-            <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/30">
-              Takes effect on your next tournament
-            </p>
+            <p className="mt-2 text-[10px] text-white/30">Takes effect on your next tournament</p>
           )}
         </div>
       )}

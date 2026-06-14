@@ -237,6 +237,14 @@ export const ENGLAND_WORLD_CUP_GROUPS: HistoricGroup[] = [
   ] },
 ];
 
+/** All years England have appeared in a World Cup group stage. */
+export const ENGLAND_WC_YEARS = ENGLAND_WORLD_CUP_GROUPS.map((g) => parseInt(g.label));
+
+/** Look up England's real group by year. Returns undefined if not found. */
+export function getGroupByYear(year: number): HistoricGroup | undefined {
+  return ENGLAND_WORLD_CUP_GROUPS.find((g) => parseInt(g.label) === year);
+}
+
 /** Pick one of England's real World Cup groups at random. */
 export function drawRealisticGroup(): HistoricGroup {
   return pickRandom(ENGLAND_WORLD_CUP_GROUPS);
