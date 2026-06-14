@@ -92,6 +92,10 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
     const card2 = getRandomCardForPosition(position, new Set(Array.from(excludeIds).concat(card1.id)));
     const cards = card2 ? [card1, card2] : [card1];
 
+    // Add both to ownedCards now (same approach as the old single-card flow)
+    // so the store is settled before the user picks and assign() runs.
+    addCards(cards.map((c) => c.id));
+
     setDrawnCards(cards);
     setFlipsDone(0);
     setIsFlipping(true);
@@ -109,7 +113,6 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
 
   function pickCard(card: PlayerCardDef) {
     if (!activeSlot) return;
-    addCards([card.id]);
     assign(activeSlot, card.id);
     closeDrawer();
   }
