@@ -1,11 +1,15 @@
 'use client';
 
+import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { GAME_MODES } from '@/data/gameModes';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { cn } from '@/lib/ui';
 import { ENGLAND_WC_YEARS } from '@/lib/worldCupEngine';
+
+// null = random draw, number = specific WC year
+const ALL_YEAR_OPTIONS: (number | null)[] = [null, ...ENGLAND_WC_YEARS];
 
 const STAGE_LABELS: Record<string, string> = {
   group: 'Group Stage',
@@ -49,6 +53,24 @@ export default function HomePage() {
     modeRuns.length > 0
       ? Math.round((modeRuns.filter((r) => r.success).length / modeRuns.length) * 100)
       : 0;
+
+  const yearScrollRef = useRef<HTMLDivElement>(null);
+  const firstScrollRef = useRef(true);
+
+  // Keep the selected item centred in the wheel
+  useEffect(() => {
+    if (!hydrated || !yearScrollRef.current) return;
+    const idx = ALL_YEAR_OPTIONS.indexOf(realisticGroupsYear);
+    if (idx < 0) return;
+    const ITEM_W = 56; // w-14
+    const left = idx * ITEM_W;
+    if (firstScrollRef.current) {
+      yearScrollRef.current.scrollLeft = left;
+      firstScrollRef.current = false;
+    } else {
+      yearScrollRef.current.scrollTo({ left, behavior: 'smooth' });
+    }
+  }, [realisticGroupsYear, hydrated]);
 
   return (
     /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
@@ -120,48 +142,53 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Realistic groups year picker */}
+      {/* Group stage wheel */}
       {hydrated && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-          <div className="mb-2.5 flex items-center justify-between">
-            <div>
-              <div className="text-sm font-black text-white">Group Stage</div>
-              <div className="text-[11px] text-white/40">
-                {realisticGroupsYear !== null
-                  ? `England's ${realisticGroupsYear} World Cup group`
-                  : 'Random draw from seeding pots'}
-              </div>
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <div className="flex items-baseline justify-between px-4 pb-1 pt-3">
+            <div className="text-sm font-black text-white">Group Stage</div>
+            <div className="text-[11px] text-white/40">
+              {realisticGroupsYear !== null ? `${realisticGroupsYear} World Cup` : 'Random draw'}
             </div>
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              onClick={() => setRealisticGroupsYear(null)}
-              className={cn(
-                'rounded-full px-3 py-1 text-xs font-bold transition-colors',
-                realisticGroupsYear === null
-                  ? 'bg-emerald-500 text-emerald-950'
-                  : 'bg-white/10 text-white/60 hover:bg-white/15',
-              )}
+
+          {/* Wheel */}
+          <div className="relative py-1">
+            {/* Centre selection ring */}
+            <div className="pointer-events-none absolute inset-y-1 left-1/2 z-10 w-14 -translate-x-1/2 rounded-lg border border-emerald-500/30 bg-emerald-500/10" />
+            {/* Left fade */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 bg-gradient-to-r from-[#060D1E] to-transparent" />
+            {/* Right fade */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 bg-gradient-to-l from-[#060D1E] to-transparent" />
+
+            <div
+              ref={yearScrollRef}
+              className="no-scrollbar flex overflow-x-scroll"
+              style={{
+                scrollSnapType: 'x mandatory',
+                paddingInline: 'calc(50% - 28px)',
+              }}
             >
-              Random
-            </button>
-            {ENGLAND_WC_YEARS.map((year) => (
-              <button
-                key={year}
-                onClick={() => setRealisticGroupsYear(year)}
-                className={cn(
-                  'rounded-full px-3 py-1 text-xs font-bold transition-colors',
-                  realisticGroupsYear === year
-                    ? 'bg-emerald-500 text-emerald-950'
-                    : 'bg-white/10 text-white/60 hover:bg-white/15',
-                )}
-              >
-                {year}
-              </button>
-            ))}
+              {ALL_YEAR_OPTIONS.map((year) => (
+                <button
+                  key={year ?? 'rnd'}
+                  onClick={() => setRealisticGroupsYear(year)}
+                  className={cn(
+                    'w-14 flex-none py-2 text-center text-xs font-bold transition-colors duration-150',
+                    realisticGroupsYear === year ? 'text-emerald-400' : 'text-white/30',
+                  )}
+                  style={{ scrollSnapAlign: 'center' }}
+                >
+                  {year ?? 'RND'}
+                </button>
+              ))}
+            </div>
           </div>
+
           {runInProgress && (
-            <p className="mt-2 text-[10px] text-white/30">Takes effect on your next tournament</p>
+            <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/30">
+              Takes effect on your next tournament
+            </p>
           )}
         </div>
       )}
