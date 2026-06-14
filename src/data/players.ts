@@ -55,6 +55,8 @@ const PLAYERS: PlayerSource[] = [
   sr('djames',    'David James',    'GK', ['GK'], 78, '2002, 2006, 2010'),
   sr('jhart',     'Joe Hart',       'GK', ['GK'], 83, '2010, 2014'),
   sr('rgreen',    'Rob Green',      'GK', ['GK'], 75, '2010'),
+  sr('fforster',  'Fraser Forster', 'GK', ['GK'], 78, '2014'),
+  sr('bfoster',   'Ben Foster',     'GK', ['GK'], 76, '2014'),
   sr('npope',     'Nick Pope',      'GK', ['GK'], 79, '2018, 2022'),
 
   // ── RB ──────────────────────────────────────────────────────────────────────
@@ -103,6 +105,7 @@ const PLAYERS: PlayerSource[] = [
   sr('csmallingg',  'Chris Smalling',  'DEF', ['CB'], 75, '2014'),
   sr('philjones',   'Phil Jones',      'DEF', ['CB'], 73, '2014'),
   sr('gcahill',     'Gary Cahill',     'DEF', ['CB'], 81, '2014, 2018'),
+  sr('pjagielka',  'Phil Jagielka',   'DEF', ['CB'], 76, '2014'),
   sr('jstones',     'John Stones',     'DEF', ['CB'], 83, '2018, 2022'),
   sr('hmaguire',    'Harry Maguire',   'DEF', ['CB'], 80, '2018, 2022'),
   sr('edier',       'Eric Dier',       'DEF', ['CB'], 77, '2018, 2022'),
@@ -121,6 +124,7 @@ const PLAYERS: PlayerSource[] = [
   sr('ksansom',     'Kenny Sansom',    'DEF', ['LB'], 81, '1982, 1986'),
 
   sr('lbaines',     'Leighton Baines', 'DEF', ['LB'], 79, '2014'),
+  sr('lukeshaw',    'Luke Shaw',       'DEF', ['LB'], 79, '2014'),
   sr('drose',       'Danny Rose',      'DEF', ['LB'], 76, '2018'),
   sr('ayoung',      'Ashley Young',    'DEF', ['LB'], 74, '2018'),
   sr('bchilwell',   'Ben Chilwell',    'DEF', ['LB'], 77, '2022'),
@@ -162,9 +166,11 @@ const PLAYERS: PlayerSource[] = [
   sr('jcole',       'Joe Cole',        'MID', ['CM'], 80, '2002, 2006, 2010'),
   sr('jjenas',      'Jermaine Jenas',  'MID', ['CM'], 74, '2006'),
   sr('mcarrick',    'Michael Carrick', 'MID', ['CM'], 79, '2006, 2010'),
-  sr('gbarry',      'Gareth Barry',    'MID', ['CM'], 78, '2010, 2014'),
+  sr('gbarry',      'Gareth Barry',    'MID', ['CM'], 78, '2010'),
   sr('jmilner',     'James Milner',    'MID', ['CM'], 78, '2010, 2014'),
   sr('jwilshere',   'Jack Wilshere',   'MID', ['CM'], 79, '2014'),
+  sr('rbarkley',    'Ross Barkley',    'MID', ['CM'], 76, '2014'),
+  sr('alallana',    'Adam Lallana',    'MID', ['CM'], 78, '2014'),
   sr('jhenderson',  'Jordan Henderson','MID', ['CM'], 81, '2014, 2018, 2022'),
   sr('dalli',       'Dele Alli',       'MID', ['CM'], 79, '2018'),
   sr('jbellingham', 'Jude Bellingham', 'MID', ['CM'], 90, '2022'),
@@ -196,7 +202,7 @@ const PLAYERS: PlayerSource[] = [
   // ── LW ──────────────────────────────────────────────────────────────────────
   sr('grix',          'Graham Rix',        'ATT', ['LW'], 74, '1982'),
   sr('johnbarnes',    'John Barnes',      'ATT', ['LW'], 88, '1986, 1990'),
-  sr('sterling',      'Raheem Sterling',  'ATT', ['LW'], 88, '2018, 2022'),
+  sr('sterling',      'Raheem Sterling',  'ATT', ['LW'], 88, '2014, 2018, 2022'),
   sr('rashford',      'Marcus Rashford',  'ATT', ['LW'], 87, '2018, 2022'),
 
   sr('pbeardsley',    'Peter Beardsley',  'ATT', ['LW'], 83, '1986, 1990'),
