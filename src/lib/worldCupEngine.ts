@@ -162,6 +162,86 @@ export function drawGroupOpponents(): Nation[] {
   ];
 }
 
+// ---------------------------------------------------------------------------
+// Realistic groups — England's actual World Cup group-stage opponents.
+// Ratings reflect each side's relative strength in that tournament.
+// ---------------------------------------------------------------------------
+
+export interface HistoricGroup {
+  /** Tournament label, e.g. "2014 World Cup". */
+  label: string;
+  /** England's three real group opponents. */
+  opponents: Nation[];
+}
+
+export const ENGLAND_WORLD_CUP_GROUPS: HistoricGroup[] = [
+  { label: '1966 World Cup', opponents: [
+    { name: 'Uruguay', flag: '🇺🇾', rating: 78 },
+    { name: 'Mexico', flag: '🇲🇽', rating: 68 },
+    { name: 'France', flag: '🇫🇷', rating: 75 },
+  ] },
+  { label: '1970 World Cup', opponents: [
+    { name: 'Brazil', flag: '🇧🇷', rating: 92 },
+    { name: 'Romania', flag: '🇷🇴', rating: 68 },
+    { name: 'Czechoslovakia', flag: '🇨🇿', rating: 72 },
+  ] },
+  { label: '1982 World Cup', opponents: [
+    { name: 'France', flag: '🇫🇷', rating: 85 },
+    { name: 'Czechoslovakia', flag: '🇨🇿', rating: 74 },
+    { name: 'Kuwait', flag: '🇰🇼', rating: 60 },
+  ] },
+  { label: '1986 World Cup', opponents: [
+    { name: 'Portugal', flag: '🇵🇹', rating: 80 },
+    { name: 'Morocco', flag: '🇲🇦', rating: 72 },
+    { name: 'Poland', flag: '🇵🇱', rating: 76 },
+  ] },
+  { label: '1990 World Cup', opponents: [
+    { name: 'Rep. Ireland', flag: '🇮🇪', rating: 74 },
+    { name: 'Netherlands', flag: '🇳🇱', rating: 86 },
+    { name: 'Egypt', flag: '🇪🇬', rating: 68 },
+  ] },
+  { label: '1998 World Cup', opponents: [
+    { name: 'Romania', flag: '🇷🇴', rating: 76 },
+    { name: 'Colombia', flag: '🇨🇴', rating: 78 },
+    { name: 'Tunisia', flag: '🇹🇳', rating: 68 },
+  ] },
+  { label: '2002 World Cup', opponents: [
+    { name: 'Sweden', flag: '🇸🇪', rating: 78 },
+    { name: 'Argentina', flag: '🇦🇷', rating: 90 },
+    { name: 'Nigeria', flag: '🇳🇬', rating: 74 },
+  ] },
+  { label: '2006 World Cup', opponents: [
+    { name: 'Paraguay', flag: '🇵🇾', rating: 72 },
+    { name: 'Trinidad & Tobago', flag: '🇹🇹', rating: 62 },
+    { name: 'Sweden', flag: '🇸🇪', rating: 78 },
+  ] },
+  { label: '2010 World Cup', opponents: [
+    { name: 'USA', flag: '🇺🇸', rating: 78 },
+    { name: 'Algeria', flag: '🇩🇿', rating: 70 },
+    { name: 'Slovenia', flag: '🇸🇮', rating: 68 },
+  ] },
+  { label: '2014 World Cup', opponents: [
+    { name: 'Italy', flag: '🇮🇹', rating: 84 },
+    { name: 'Uruguay', flag: '🇺🇾', rating: 84 },
+    { name: 'Costa Rica', flag: '🇨🇷', rating: 72 },
+  ] },
+  { label: '2018 World Cup', opponents: [
+    { name: 'Belgium', flag: '🇧🇪', rating: 86 },
+    { name: 'Tunisia', flag: '🇹🇳', rating: 70 },
+    { name: 'Panama', flag: '🇵🇦', rating: 64 },
+  ] },
+  { label: '2022 World Cup', opponents: [
+    { name: 'USA', flag: '🇺🇸', rating: 78 },
+    { name: 'Iran', flag: '🇮🇷', rating: 72 },
+    { name: 'Wales', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', rating: 72 },
+  ] },
+];
+
+/** Pick one of England's real World Cup groups at random. */
+export function drawRealisticGroup(): HistoricGroup {
+  return pickRandom(ENGLAND_WORLD_CUP_GROUPS);
+}
+
 export function otherFixtureForMatchday(opponents: Nation[], matchday: number): [Nation, Nation] {
   const [a, b, c] = opponents;
   if (matchday === 0) return [b, c];

@@ -9,6 +9,7 @@ import {
   simulateKnockoutMatch,
   simulateOtherGroupMatch,
   drawGroupOpponents,
+  drawRealisticGroup,
   otherFixtureForMatchday,
   computeGroupTable,
   englandGroupPosition,
@@ -46,7 +47,9 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const recordRun = useGameStore((s) => s.recordRun);
   const currentStage = useGameStore((s) => s.currentStage);
   const groupOpponents = useGameStore((s) => s.groupOpponents);
+  const groupLabel = useGameStore((s) => s.groupLabel);
   const setGroupOpponents = useGameStore((s) => s.setGroupOpponents);
+  const realisticGroups = useGameStore((s) => s.realisticGroups);
   const groupMatches = useGameStore((s) => s.groupMatches);
   const recordGroupMatch = useGameStore((s) => s.recordGroupMatch);
   const otherGroupMatches = useGameStore((s) => s.otherGroupMatches);
@@ -86,12 +89,17 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     if (!hydrated || tournamentWon || tournamentEliminated) return;
     const inGroupPhase = currentStage === null || currentStage === 'group';
     if (inGroupPhase && groupOpponents.length < GROUP_GAMES) {
-      setGroupOpponents(drawGroupOpponents());
+      if (realisticGroups) {
+        const g = drawRealisticGroup();
+        setGroupOpponents(g.opponents, g.label);
+      } else {
+        setGroupOpponents(drawGroupOpponents(), null);
+      }
     }
     if (currentStage && currentStage !== 'group' && !nextOpponent) {
       setNextOpponent(pickKnockoutOpponent(currentStage));
     }
-  }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated, realisticGroups]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kick off goal feed when knockoutResult changes
   useEffect(() => {
@@ -151,8 +159,14 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       if (stage === 'group') {
         let opponents = groupOpponents;
         if (opponents.length < GROUP_GAMES) {
-          opponents = drawGroupOpponents();
-          setGroupOpponents(opponents);
+          if (realisticGroups) {
+            const g = drawRealisticGroup();
+            opponents = g.opponents;
+            setGroupOpponents(opponents, g.label);
+          } else {
+            opponents = drawGroupOpponents();
+            setGroupOpponents(opponents, null);
+          }
         }
 
         const matchday = groupMatches.length;
@@ -299,7 +313,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         </div>
 
         {/* Live group table */}
-        <GroupTable table={groupTable} />
+        <GroupTable table={groupTable} label={groupLabel} />
 
         {/* Next fixture teaser */}
         {!groupOver && groupOpponents[gameNumber] && (
@@ -632,6 +646,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       {inGroupPhase && groupOpponents.length === GROUP_GAMES && (
         <GroupTable
           table={groupTable}
+          label={groupLabel}
           subtitle={
             groupMatches.length === 0
               ? `The draw is made — top ${GROUP_QUALIFY_SPOTS} qualify, 3rd might sneak in`
@@ -756,12 +771,17 @@ function NextOpponentCard({ title, opponent }: { title: string; opponent: { name
   );
 }
 
-function GroupTable({ table, subtitle }: { table: GroupTableRow[]; subtitle?: string }) {
+function GroupTable({ table, subtitle, label }: { table: GroupTableRow[]; subtitle?: string; label?: string | null }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
       <div className="flex items-baseline justify-between px-3 pt-2.5 pb-1.5">
-        <span className="text-[10px] uppercase tracking-widest text-white/40">
+        <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-white/40">
           England&apos;s Group
+          {label && (
+            <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-black tracking-normal text-emerald-300">
+              {label}
+            </span>
+          )}
         </span>
         {subtitle && <span className="text-[10px] text-white/30">{subtitle}</span>}
       </div>

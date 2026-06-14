@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { GAME_MODES } from '@/data/gameModes';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
+import { cn } from '@/lib/ui';
 
 const STAGE_LABELS: Record<string, string> = {
   group: 'Group Stage',
@@ -26,6 +27,8 @@ export default function HomePage() {
   const tournamentWon = useGameStore((s) => s.tournamentWon);
   const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
   const manager = useGameStore((s) => s.manager);
+  const realisticGroups = useGameStore((s) => s.realisticGroups);
+  const setRealisticGroups = useGameStore((s) => s.setRealisticGroups);
   const mode = GAME_MODES[0];
   const completion = hydrated ? completions[mode.id] : undefined;
 
@@ -115,6 +118,43 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      {/* Realistic groups toggle */}
+      {hydrated && (
+        <div className="rounded-2xl border border-white/10 bg-white/5">
+          <button
+            onClick={() => setRealisticGroups(!realisticGroups)}
+            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+          >
+            <div className="min-w-0">
+              <div className="text-sm font-black text-white">Realistic Groups</div>
+              <div className="truncate text-[11px] text-white/40">
+                {realisticGroups
+                  ? "Play one of England's real World Cup groups"
+                  : 'Random group draw from seeding pots'}
+              </div>
+            </div>
+            <span
+              className={cn(
+                'relative h-6 w-11 shrink-0 rounded-full transition-colors',
+                realisticGroups ? 'bg-emerald-500' : 'bg-white/15',
+              )}
+            >
+              <span
+                className={cn(
+                  'absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform',
+                  realisticGroups ? 'translate-x-[22px]' : 'translate-x-0.5',
+                )}
+              />
+            </span>
+          </button>
+          {runInProgress && (
+            <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/30">
+              Takes effect on your next tournament
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Best run + win rate — appears once at least one tournament is played */}
       {hydrated && modeRuns.length > 0 && (

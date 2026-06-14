@@ -25,6 +25,10 @@ export interface GameState {
   // ---- Identity ----
   teamName: string;
 
+  // ---- Settings ----
+  /** When on, England's group is one of their real past World Cup groups. */
+  realisticGroups: boolean;
+
   // ---- Active run ----
   activeModeId: string | null;
   activeSquad: Squad | null;
@@ -36,6 +40,8 @@ export interface GameState {
   currentStage: TournamentStage | null;
   /** England's three group opponents, drawn before the tournament starts. */
   groupOpponents: Nation[];
+  /** Source label when the group is a real World Cup group (else null). */
+  groupLabel: string | null;
   /** Group matches played so far this tournament (max 3). */
   groupMatches: MatchResult[];
   /** The other two teams' fixtures, one per matchday — feeds the live table. */
@@ -57,6 +63,9 @@ export interface GameState {
   // ---- Actions: identity ----
   setTeamName: (name: string) => void;
 
+  // ---- Actions: settings ----
+  setRealisticGroups: (on: boolean) => void;
+
   // ---- Actions: active run ----
   setActiveModeId: (modeId: string | null) => void;
   setActiveSquad: (squad: Squad | null) => void;
@@ -64,7 +73,7 @@ export interface GameState {
 
   // ---- Actions: tournament progression ----
   startTournament: () => void;
-  setGroupOpponents: (nations: Nation[]) => void;
+  setGroupOpponents: (nations: Nation[], label?: string | null) => void;
   recordGroupMatch: (match: MatchResult) => void;
   recordOtherGroupMatch: (match: OtherGroupMatch) => void;
   recordKnockoutMatch: (stage: TournamentStage, match: MatchResult) => void;
@@ -85,11 +94,13 @@ const initialState = {
   completions: {} as Record<string, ModeCompletion>,
   history: [] as TournamentRunResult[],
   teamName: '',
+  realisticGroups: false,
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
   manager: null as EnglandManager | null,
   currentStage: null as TournamentStage | null,
   groupOpponents: [] as Nation[],
+  groupLabel: null as string | null,
   groupMatches: [] as MatchResult[],
   otherGroupMatches: [] as OtherGroupMatch[],
   knockoutMatches: [] as KnockoutMatch[],
@@ -132,6 +143,8 @@ export const useGameStore = create<GameState>()(
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
 
+      setRealisticGroups: (on) => set({ realisticGroups: on }),
+
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
       setManager: (manager) => set({ manager }),
@@ -148,7 +161,8 @@ export const useGameStore = create<GameState>()(
           tournamentEliminated: false,
         }),
 
-      setGroupOpponents: (nations) => set({ groupOpponents: nations }),
+      setGroupOpponents: (nations, label = null) =>
+        set({ groupOpponents: nations, groupLabel: label }),
 
       recordGroupMatch: (match) =>
         set((s) => ({ groupMatches: [...s.groupMatches, match] })),
@@ -177,6 +191,7 @@ export const useGameStore = create<GameState>()(
           manager: null,
           currentStage: null,
           groupOpponents: [],
+          groupLabel: null,
           groupMatches: [],
           otherGroupMatches: [],
           knockoutMatches: [],
@@ -194,6 +209,7 @@ export const useGameStore = create<GameState>()(
           manager: null,
           currentStage: null,
           groupOpponents: [],
+          groupLabel: null,
           groupMatches: [],
           otherGroupMatches: [],
           knockoutMatches: [],
