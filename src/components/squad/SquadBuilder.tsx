@@ -63,10 +63,30 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
   }
 
   function openSlot(slotId: string) {
+    const slotDef = formation.slots.find((s) => s.slotId === slotId);
+    if (!slotDef) return;
+
     setActiveSlot(slotId);
-    setIsFlipping(false);
-    setDrawnCards([]);
     setFlipsDone(0);
+
+    // Empty slot — draw two cards immediately, no button needed
+    if (!squad.assignments[slotId]) {
+      const excludeIds = new Set(
+        Object.entries(squad.assignments)
+          .filter(([id, cardId]) => id !== slotId && cardId)
+          .map(([, cardId]) => cardId as string)
+      );
+      const card1 = getRandomCardForPosition(slotDef.naturalPosition, excludeIds);
+      if (!card1) { setDrawnCards([]); setIsFlipping(false); return; }
+      const card2 = getRandomCardForPosition(slotDef.naturalPosition, new Set(Array.from(excludeIds).concat(card1.id)));
+      const cards = card2 ? [card1, card2] : [card1];
+      addCards(cards.map((c) => c.id));
+      setDrawnCards(cards);
+      setIsFlipping(true);
+    } else {
+      setDrawnCards([]);
+      setIsFlipping(false);
+    }
   }
 
   function closeDrawer() {
@@ -78,27 +98,6 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
 
   function assign(slotId: string, cardId: string) {
     onChange({ ...squad, assignments: { ...squad.assignments, [slotId]: cardId } });
-  }
-
-  function drawTwoCards(slotId: string, position: Position) {
-    const excludeIds = new Set(
-      Object.entries(squad.assignments)
-        .filter(([id, cardId]) => id !== slotId && cardId)
-        .map(([, cardId]) => cardId as string)
-    );
-
-    const card1 = getRandomCardForPosition(position, excludeIds);
-    if (!card1) return;
-    const card2 = getRandomCardForPosition(position, new Set(Array.from(excludeIds).concat(card1.id)));
-    const cards = card2 ? [card1, card2] : [card1];
-
-    // Add both to ownedCards now (same approach as the old single-card flow)
-    // so the store is settled before the user picks and assign() runs.
-    addCards(cards.map((c) => c.id));
-
-    setDrawnCards(cards);
-    setFlipsDone(0);
-    setIsFlipping(true);
   }
 
   function handleFlipComplete(totalCards: number) {
@@ -298,66 +297,44 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
 
                 {/* Card area */}
                 <div className="flex justify-center gap-4">
-                  {drawnCards.length > 0 ? (
-                    drawnCards.map((card, i) => (
-                      <div
-                        key={card.id}
-                        onClick={() => { if (!isFlipping) pickCard(card); }}
-                        style={{ width: 120, height: 168, flexShrink: 0, cursor: isFlipping ? 'default' : 'pointer' }}
-                        className={!isFlipping ? 'transition-transform hover:scale-105 active:scale-95' : ''}
-                      >
-                        {isFlipping ? (
-                          <div style={{ perspective: 800, width: 120, height: 168 }}>
-                            <motion.div
-                              initial={{ rotateY: 0 }}
-                              animate={{ rotateY: 900 }}
-                              transition={{ duration: 2.2, delay: i * 0.15, ease: [0.15, 0.05, 0.2, 1] }}
-                              onAnimationComplete={() => handleFlipComplete(drawnCards.length)}
-                              style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
+                  {drawnCards.map((card, i) => (
+                    <div
+                      key={card.id}
+                      onClick={() => { if (!isFlipping) pickCard(card); }}
+                      style={{ width: 120, height: 168, flexShrink: 0, cursor: isFlipping ? 'default' : 'pointer' }}
+                      className={!isFlipping ? 'transition-transform hover:scale-105 active:scale-95' : ''}
+                    >
+                      {isFlipping ? (
+                        <div style={{ perspective: 800, width: 120, height: 168 }}>
+                          <motion.div
+                            initial={{ rotateY: 0 }}
+                            animate={{ rotateY: 900 }}
+                            transition={{ duration: 2.2, delay: i * 0.15, ease: [0.15, 0.05, 0.2, 1] }}
+                            onAnimationComplete={() => handleFlipComplete(drawnCards.length)}
+                            style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
+                          >
+                            <div
+                              style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                              className="flex items-center justify-center rounded-xl border-2 border-white/20 bg-gradient-to-br from-emerald-900 to-pitch-dark"
                             >
-                              <div
-                                style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
-                                className="flex items-center justify-center rounded-xl border-2 border-white/20 bg-gradient-to-br from-emerald-900 to-pitch-dark"
-                              >
-                                <span className="text-3xl font-black text-white/20">⚽</span>
-                              </div>
-                              <div
-                                style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0 }}
-                                className="flex items-center justify-center"
-                              >
-                                <PlayerCard card={card} upgradeLevel={0} size="sm" />
-                              </div>
-                            </motion.div>
-                          </div>
-                        ) : (
-                          <div style={{ width: 120, height: 168, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <PlayerCard card={card} upgradeLevel={0} size="sm" />
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
-                    /* Idle placeholders */
-                    <>
-                      <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
-                        <span className="text-4xl text-white/20">?</span>
-                      </div>
-                      <div className="flex h-[168px] w-[120px] items-center justify-center rounded-xl border-2 border-dashed border-white/20">
-                        <span className="text-4xl text-white/20">?</span>
-                      </div>
-                    </>
-                  )}
+                              <span className="text-3xl font-black text-white/20">⚽</span>
+                            </div>
+                            <div
+                              style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)', position: 'absolute', inset: 0, pointerEvents: 'none' }}
+                              className="flex items-center justify-center"
+                            >
+                              <PlayerCard card={card} upgradeLevel={0} size="sm" />
+                            </div>
+                          </motion.div>
+                        </div>
+                      ) : (
+                        <div style={{ width: 120, height: 168, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                          <PlayerCard card={card} upgradeLevel={0} size="sm" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-
-                {drawnCards.length === 0 && (
-                  <Button
-                    size="lg"
-                    className="w-full"
-                    onClick={() => drawTwoCards(activeSlotDef.slotId, activeSlotDef.naturalPosition)}
-                  >
-                    Get Cards
-                  </Button>
-                )}
               </div>
             )}
           </div>
