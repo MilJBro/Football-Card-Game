@@ -297,15 +297,15 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
                 <div className="flex justify-center gap-4">
                   {drawnCards.length > 0 ? (
                     drawnCards.map((card, i) => (
-                      <div key={card.id} style={{ width: 120, height: 168, flexShrink: 0 }}>
+                      <div key={card.id} style={{ width: 120, height: 168, flexShrink: 0, position: 'relative' }}>
                         {isFlipping ? (
-                          <div style={{ perspective: 800, width: 120, height: 168 }}>
+                          <div style={{ perspective: 800, position: 'absolute', inset: 0 }}>
                             <motion.div
                               initial={{ rotateY: 0 }}
                               animate={{ rotateY: 900 }}
                               transition={{ duration: 2.2, delay: i * 0.15, ease: [0.15, 0.05, 0.2, 1] }}
                               onAnimationComplete={() => handleFlipComplete(drawnCards.length)}
-                              style={{ transformStyle: 'preserve-3d', position: 'relative', width: 120, height: 168 }}
+                              style={{ transformStyle: 'preserve-3d', position: 'absolute', inset: 0 }}
                             >
                               <div
                                 style={{ backfaceVisibility: 'hidden', position: 'absolute', inset: 0 }}
@@ -324,7 +324,7 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
                         ) : (
                           <button
                             onClick={() => pickCard(card)}
-                            style={{ width: 120, height: 168, display: 'block' }}
+                            style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             className="transition-transform hover:scale-105 active:scale-95"
                           >
                             <PlayerCard card={card} upgradeLevel={0} size="sm" />
