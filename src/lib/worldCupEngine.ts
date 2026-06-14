@@ -5,7 +5,7 @@ import type { Nation, MatchResult, OtherGroupMatch, TournamentStage } from '@/st
 // ============================================================================
 
 const GOAL_BASE = 1.3;
-const RATING_SCALE = 0.025;
+const RATING_SCALE = 0.05;
 
 function poisson(lambda: number): number {
   const L = Math.exp(-lambda);
