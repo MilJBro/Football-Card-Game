@@ -66,7 +66,7 @@ const PLAYERS: PlayerSource[] = [
   sr('pneal',     'Phil Neal',              'DEF', ['RB'], 80, '1982'),
   sr('vanderson', 'Viv Anderson',           'DEF', ['RB'], 77, '1982, 1986'),
   sr('gstevens',  'Gary M. Stevens',         'DEF', ['RB'], 76, '1986, 1990'),
-  sr('ldixon',    'Lee Dixon',               'DEF', ['RB'], 78, '1990'),
+
   sr('pparker',   'Paul Parker',            'DEF', ['RB'], 75, '1990'),
   sr('dmills',    'Danny Mills',            'DEF', ['RB'], 72, '2002'),
   sr('kwalker',   'Kyle Walker',            'DEF', ['RB'], 84, '2018, 2022'),
@@ -88,7 +88,7 @@ const PLAYERS: PlayerSource[] = [
   sr('tbutcher',    'Terry Butcher',   'DEF', ['CB'], 83, '1982, 1986, 1990'),
   sr('mwright',     'Mark Wright',     'DEF', ['CB'], 79, '1986, 1990'),
   sr('dwalker',     'Des Walker',      'DEF', ['CB'], 80, '1990'),
-  sr('tadams',      'Tony Adams',      'DEF', ['CB'], 85, '1990, 1998'),
+  sr('tadams',      'Tony Adams',      'DEF', ['CB'], 85, '1998'),
   sr('southgate',   'Gareth Southgate','DEF', ['CB'], 79, '1998'),
   sr('jterry',      'John Terry',      'DEF', ['CB'], 87, '2006, 2010'),
   sr('carragher',   'Jamie Carragher', 'DEF', ['CB'], 80, '2002, 2006, 2010'),
@@ -136,10 +136,10 @@ const PLAYERS: PlayerSource[] = [
   sr('amartin',     'Alvin Martin',    'MID', ['CM'], 76, '1986'),
   sr('gstevenss',   'Gary A. Stevens', 'MID', ['CM'], 75, '1986'),
   sr('shodge',      'Steve Hodge',     'MID', ['CM'], 75, '1986, 1990'),
-  sr('gcowans',     'Gordon Cowans',   'MID', ['CM'], 74, '1990'),
+
   sr('smcmahon',    'Steve McMahon',   'MID', ['CM'], 78, '1990'),
   sr('nwebb',       'Neil Webb',       'MID', ['CM'], 77, '1990'),
-  sr('mthomas',     'Michael Thomas',  'MID', ['CM'], 76, '1990'),
+
   sr('preid',       'Peter Reid',      'MID', ['CM'], 76, '1986'),
   sr('gascoigne',   'Paul Gascoigne',  'MID', ['CM'], 89, '1990, 1998'),
   sr('dplatt',      'David Platt',     'MID', ['CM'], 79, '1990'),
@@ -173,8 +173,8 @@ const PLAYERS: PlayerSource[] = [
   sr('scoppell',   'Steve Coppell',          'ATT', ['RW'], 75, '1982'),
   sr('cwaddle',    'Chris Waddle',           'ATT', ['RW'], 82, '1986, 1990'),
   sr('tsteven',    'Trevor Steven',          'ATT', ['RW'], 76, '1986, 1990'),
-  sr('drocastle',  'David Rocastle',         'ATT', ['RW'], 78, '1990'),
-  sr('tdaley',     'Tony Daley',             'ATT', ['RW'], 74, '1990'),
+
+
   sr('tsinclairr', 'Trevor Sinclair',        'ATT', ['RW'], 73, '2002'),
   sr('swp',        'Shaun Wright-Phillips',  'ATT', ['RW'], 76, '2006, 2010'),
   sr('alennon',    'Aaron Lennon',           'ATT', ['RW'], 74, '2006, 2010'),
