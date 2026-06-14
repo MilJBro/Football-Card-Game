@@ -121,35 +121,26 @@ const GROUP_POT4 = ALL_NATIONS.filter((n) => n.rating < 68);
 // Match simulation
 // ---------------------------------------------------------------------------
 
-export function simulateGroupMatch(englandRating: number, opponent: Nation): MatchResult {
-  const { englandLambda, opponentLambda } = expectedGoals(englandRating, opponent.rating);
-  return {
-    opponent,
-    englandGoals: poisson(englandLambda),
-    opponentGoals: poisson(opponentLambda),
-  };
+export function simulateGroupMatch(englandAttack: number, englandDefense: number, opponent: Nation): MatchResult {
+  const englandLambda = Math.max(0.3, GOAL_BASE + (englandAttack - opponent.rating) * RATING_SCALE);
+  const opponentLambda = Math.max(0.3, GOAL_BASE + (opponent.rating - englandDefense) * RATING_SCALE);
+  return { opponent, englandGoals: poisson(englandLambda), opponentGoals: poisson(opponentLambda) };
 }
 
-export function simulateKnockoutMatch(englandRating: number, opponent: Nation): MatchResult {
-  const { englandLambda, opponentLambda } = expectedGoals(englandRating, opponent.rating);
+export function simulateKnockoutMatch(englandAttack: number, englandDefense: number, opponent: Nation): MatchResult {
+  const englandLambda = Math.max(0.3, GOAL_BASE + (englandAttack - opponent.rating) * RATING_SCALE);
+  const opponentLambda = Math.max(0.3, GOAL_BASE + (opponent.rating - englandDefense) * RATING_SCALE);
   const englandGoals = poisson(englandLambda);
   const opponentGoals = poisson(opponentLambda);
-
-  if (englandGoals !== opponentGoals) {
-    return { opponent, englandGoals, opponentGoals };
-  }
-
-  const diff = englandRating - opponent.rating;
-  const penWinProb = Math.max(0.3, Math.min(0.7, 0.5 + diff * 0.005));
+  if (englandGoals !== opponentGoals) return { opponent, englandGoals, opponentGoals };
+  const avg = Math.round((englandAttack + englandDefense) / 2);
+  const penWinProb = Math.max(0.3, Math.min(0.7, 0.5 + (avg - opponent.rating) * 0.005));
   const penWin = Math.random() < penWinProb;
   const [winPens, losePens] = simulatePenShootout();
   return {
-    opponent,
-    englandGoals,
-    opponentGoals,
-    penaltiesWin: penWin,
-    penaltiesLoss: !penWin,
-    englandPens:  penWin ? winPens : losePens,
+    opponent, englandGoals, opponentGoals,
+    penaltiesWin: penWin, penaltiesLoss: !penWin,
+    englandPens: penWin ? winPens : losePens,
     opponentPens: penWin ? losePens : winPens,
   };
 }

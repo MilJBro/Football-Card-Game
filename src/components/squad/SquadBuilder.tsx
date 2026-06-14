@@ -7,7 +7,7 @@ import type { Position } from '@/store/types';
 import { FORMATION_LIST, getFormation } from '@/data/formations';
 import { getCard, getEffectiveCardData, ALL_CARDS } from '@/data/players';
 import { useGameStore } from '@/store/useGameStore';
-import { emptySquad, summariseSquad, penaltyForCardInSlot } from '@/lib/squadUtils';
+import { emptySquad, summariseSquad, penaltyForCardInSlot, computeBonuses } from '@/lib/squadUtils';
 import { PlayerCard } from '@/components/cards/PlayerCard';
 import { PitchToken, EmptyToken } from '@/components/squad/PitchToken';
 import { Button } from '@/components/ui/Button';
@@ -42,6 +42,10 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
   const addCards = useGameStore((s) => s.addCards);
   const formation = getFormation(squad.formation);
   const summary = useMemo(() => summariseSquad(squad, ownedCards), [squad, ownedCards]);
+  const bonuses = useMemo(
+    () => computeBonuses(squad, ownedCards, manager ?? null),
+    [squad, ownedCards, manager],
+  );
 
   const [activeSlot, setActiveSlot] = useState<string | null>(null);
   const [isFlipping, setIsFlipping] = useState(false);
@@ -156,6 +160,28 @@ export function SquadBuilder({ squad, onChange, manager, onGoToSimulation }: Squ
           </div>
         </div>
       </div>
+
+      {/* Chemistry + manager fit indicators */}
+      {summary.filledSlots > 0 && (
+        <div className="flex gap-2 flex-wrap">
+          <div className="rounded-xl bg-white/5 px-2.5 py-1 flex items-center gap-1.5">
+            <span className="text-[9px] uppercase tracking-wide text-white/40">Chemistry</span>
+            <span className={cn('text-[9px] font-black', bonuses.chemistryBonus > 0 ? 'text-emerald-300' : 'text-white/25')}>
+              {bonuses.dominantEra
+                ? `${bonuses.dominantEra}: ${bonuses.dominantEraCount}/11${bonuses.chemistryBonus > 0 ? ` +${bonuses.chemistryBonus}` : ''}`
+                : 'mixed'}
+            </span>
+          </div>
+          {manager && (
+            <div className="rounded-xl bg-white/5 px-2.5 py-1 flex items-center gap-1.5">
+              <span className="text-[9px] uppercase tracking-wide text-white/40">Fit</span>
+              <span className={cn('text-[9px] font-black', bonuses.managerFitBonus > 0 ? 'text-amber-300' : 'text-white/25')}>
+                {bonuses.managerFitCount}/11{bonuses.managerFitBonus > 0 ? ` +${bonuses.managerFitBonus}` : ''}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Formation — locked to the manager's shape when one is appointed */}
       {manager ? (

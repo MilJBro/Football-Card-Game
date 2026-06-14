@@ -1,4 +1,4 @@
-import type { OwnedCard, Position, PositionCategory, Squad } from '@/store/types';
+import type { OwnedCard, Position, PositionCategory, Squad, EnglandManager } from '@/store/types';
 import { getCard, getEffectiveCardData } from '@/data/players';
 import { getFormation } from '@/data/formations';
 
@@ -162,4 +162,62 @@ export function emptySquad(formation: Squad['formation']): Squad {
     assignments[s.slotId] = null;
   });
   return { formation, assignments };
+}
+
+function extractYears(era: string): number[] {
+  return (era.match(/\d{4}/g) ?? []).map(Number);
+}
+
+export interface SquadBonuses {
+  chemistryBonus: number;
+  managerFitBonus: number;
+  managerFitCount: number;
+  dominantEra: string | null;
+  dominantEraCount: number;
+}
+
+export function computeBonuses(
+  squad: Squad,
+  ownedCards: Record<string, OwnedCard>,
+  manager: EnglandManager | null,
+): SquadBonuses {
+  const formation = getFormation(squad.formation);
+  const yearCounts: Record<number, number> = {};
+  let managerFitCount = 0;
+
+  const mgrYears = manager ? extractYears(manager.era) : [];
+  const mgrStart = mgrYears[0] ?? 0;
+  const mgrEnd = mgrYears[1] ?? mgrYears[0] ?? 9999;
+
+  for (const slot of formation.slots) {
+    const cardId = squad.assignments[slot.slotId];
+    if (!cardId) continue;
+    const card = getCard(cardId);
+    if (!card) continue;
+
+    const years = extractYears(card.era);
+    const seen = new Set<number>();
+    for (const y of years) {
+      if (!seen.has(y)) { yearCounts[y] = (yearCounts[y] ?? 0) + 1; seen.add(y); }
+    }
+    if (manager && years.some((y) => y >= mgrStart && y <= mgrEnd)) {
+      managerFitCount++;
+    }
+  }
+
+  let dominantEra: string | null = null;
+  let dominantEraCount = 0;
+  for (const [year, count] of Object.entries(yearCounts)) {
+    if (count > dominantEraCount) { dominantEraCount = count; dominantEra = year; }
+  }
+
+  const tier = (n: number) => n >= 10 ? 4 : n >= 8 ? 3 : n >= 6 ? 2 : n >= 4 ? 1 : 0;
+
+  return {
+    chemistryBonus: tier(dominantEraCount),
+    managerFitBonus: tier(managerFitCount),
+    managerFitCount,
+    dominantEra,
+    dominantEraCount,
+  };
 }

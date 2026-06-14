@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { GameModeDef, Squad, TournamentStage, MatchResult } from '@/store/types';
-import { summariseSquad } from '@/lib/squadUtils';
+import { summariseSquad, computeBonuses } from '@/lib/squadUtils';
 import {
   simulateGroupMatch,
   simulateKnockoutMatch,
@@ -89,6 +89,10 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const summary = summariseSquad(squad, ownedCards);
+  const bonuses = computeBonuses(squad, ownedCards, manager ?? null);
+  const totalBonus = bonuses.chemistryBonus + bonuses.managerFitBonus;
+  const effectiveAttack = summary.attackRating + totalBonus;
+  const effectiveDefense = summary.defenceRating + totalBonus;
   const stageToSimulate = currentStage ?? 'group';
   const groupGameNumber = Math.min(groupMatches.length + 1, GROUP_GAMES);
   const stageLabel =
@@ -105,6 +109,10 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
 
     setTimeout(() => {
       const sum = summariseSquad(squad, ownedCards);
+      const b = computeBonuses(squad, ownedCards, manager ?? null);
+      const totalB = b.chemistryBonus + b.managerFitBonus;
+      const effAtk = sum.attackRating + totalB;
+      const effDef = sum.defenceRating + totalB;
       const stage = isFirst ? 'group' : (currentStage ?? 'group');
       setPlayedStage(stage);
 
@@ -116,7 +124,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         }
 
         const matchday = groupMatches.length;
-        const result = simulateGroupMatch(sum.rating, opponents[matchday]);
+        const result = simulateGroupMatch(effAtk, effDef, opponents[matchday]);
         recordGroupMatch(result);
         const [home, away] = otherFixtureForMatchday(opponents, matchday);
         const otherResult = simulateOtherGroupMatch(home, away);
@@ -145,7 +153,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         }
       } else {
         const opponent = nextOpponent ?? pickKnockoutOpponent(stage);
-        const result = simulateKnockoutMatch(sum.rating, opponent);
+        const result = simulateKnockoutMatch(effAtk, effDef, opponent);
         setKnockoutResult(result);
         setPhase('knockout-result');
 
@@ -512,19 +520,57 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
         />
       )}
 
-      {/* Squad rating */}
-      <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5">
-        <div className="flex items-center gap-3">
-          <div className={cn('text-3xl font-black tabular-nums', ratingColor)}>
-            {summary.rating || '—'}
+      {/* Squad stats & bonuses */}
+      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 space-y-2.5">
+        <div className="flex items-center gap-4">
+          <div className="shrink-0 text-center">
+            <div className="text-[9px] uppercase tracking-widest text-white/40">Rating</div>
+            <div className={cn('text-3xl font-black tabular-nums leading-none mt-0.5', ratingColor)}>
+              {summary.rating || '—'}
+            </div>
           </div>
-          <div className="text-xs text-white/50 leading-tight">
-            {summary.filledSlots}/{summary.totalSlots} players · {squad.formation}
-            {manager && (
-              <div className="text-white/35">{manager.name}&apos;s XI</div>
-            )}
+          <div className="h-10 w-px bg-white/10 shrink-0" />
+          <div className="flex flex-1 justify-around text-center">
+            <div>
+              <div className="text-[9px] uppercase tracking-widest text-white/40">Attack</div>
+              <div className="text-lg font-black tabular-nums text-pl-pink mt-0.5">
+                {effectiveAttack || '—'}
+              </div>
+            </div>
+            <div>
+              <div className="text-[9px] uppercase tracking-widest text-white/40">Defence</div>
+              <div className="text-lg font-black tabular-nums text-pl-cyan mt-0.5">
+                {effectiveDefense || '—'}
+              </div>
+            </div>
           </div>
         </div>
+        <div className="text-xs text-white/40">
+          {summary.filledSlots}/{summary.totalSlots} players · {squad.formation}
+          {manager && <span> · {manager.name}&apos;s XI</span>}
+        </div>
+        {summary.filledSlots > 0 && (
+          <div className="space-y-1 border-t border-white/10 pt-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-white/40">
+                Era chemistry{bonuses.dominantEra ? ` · ${bonuses.dominantEra}: ${bonuses.dominantEraCount}/11` : ''}
+              </span>
+              <span className={cn('text-[10px] font-black', bonuses.chemistryBonus > 0 ? 'text-emerald-300' : 'text-white/25')}>
+                {bonuses.chemistryBonus > 0 ? `+${bonuses.chemistryBonus}` : '+0'}
+              </span>
+            </div>
+            {manager && (
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] text-white/40">
+                  Manager fit · {bonuses.managerFitCount}/11 match {manager.name}&apos;s era
+                </span>
+                <span className={cn('text-[10px] font-black', bonuses.managerFitBonus > 0 ? 'text-amber-300' : 'text-white/25')}>
+                  {bonuses.managerFitBonus > 0 ? `+${bonuses.managerFitBonus}` : '+0'}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {summary.isComplete ? (
