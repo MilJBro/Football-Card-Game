@@ -165,3 +165,14 @@ export function CrownIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+/** Clock arrow — History. */
+export function HistoryIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <circle {...stroke} cx="12" cy="12" r="8.5" />
+      <path {...stroke} d="M12 7.5V12l3 2" />
+      <path {...stroke} strokeWidth={1.5} d="M4.5 4 2 6.5M4.5 4H8M4.5 4V7.5" />
+    </svg>
+  );
+}

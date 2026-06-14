@@ -9,6 +9,7 @@ import { emptySquad } from '@/lib/squadUtils';
 import { SquadBuilder } from '@/components/squad/SquadBuilder';
 import { ManagerWheel } from '@/components/squad/ManagerWheel';
 import { SimulationTab } from '@/components/modes/SimulationTab';
+import { HistoryTab } from '@/components/modes/HistoryTab';
 import { BottomTabs, type ChallengeTab } from '@/components/modes/BottomTabs';
 
 export function ModeRunner({ modeId }: { modeId: string }) {
@@ -87,6 +88,7 @@ export function ModeRunner({ modeId }: { modeId: string }) {
           />
         )
       )}
+      {tab === 'history' && <HistoryTab modeId={mode.id} />}
 
       <BottomTabs active={tab} onChange={setTab} />
     </div>

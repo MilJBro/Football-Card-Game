@@ -151,6 +151,7 @@ export interface TournamentRunResult {
   reachedStage: TournamentStage | 'won';
   squadRating: number;
   playedAt: number;
+  managerName?: string;
 }
 
 export interface ModeCompletion {

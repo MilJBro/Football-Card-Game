@@ -74,6 +74,9 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   /** Stage the result on screen belongs to — currentStage may have already advanced. */
   const [playedStage, setPlayedStage] = useState<TournamentStage>('group');
   const [tournamentEnd, setTournamentEnd] = useState<TournamentEndSummary | null>(null);
+  const [goalTimeline, setGoalTimeline] = useState<Array<'england' | 'opponent'>>([]);
+  const [shownGoals, setShownGoals] = useState(0);
+  const [feedDone, setFeedDone] = useState(true);
 
   // Draw the group before kick-off so the player can see it; backfill a missing
   // knockout opponent (e.g. saves from before opponents were pre-drawn).
@@ -87,6 +90,33 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       setNextOpponent(pickKnockoutOpponent(currentStage));
     }
   }, [hydrated, currentStage, groupOpponents.length, nextOpponent, tournamentWon, tournamentEliminated]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Kick off goal feed when knockoutResult changes
+  useEffect(() => {
+    if (!knockoutResult) return;
+    const events: Array<'england' | 'opponent'> = [
+      ...Array(knockoutResult.englandGoals).fill('england' as const),
+      ...Array(knockoutResult.opponentGoals).fill('opponent' as const),
+    ];
+    for (let i = events.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [events[i], events[j]] = [events[j], events[i]];
+    }
+    setGoalTimeline(events);
+    setShownGoals(0);
+    setFeedDone(events.length === 0);
+  }, [knockoutResult]);
+
+  // Tick through goals
+  useEffect(() => {
+    if (feedDone) return;
+    if (shownGoals >= goalTimeline.length) {
+      const t = setTimeout(() => setFeedDone(true), 700);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setShownGoals((n) => n + 1), 900);
+    return () => clearTimeout(t);
+  }, [shownGoals, goalTimeline.length, feedDone]);
 
   const summary = summariseSquad(squad, ownedCards);
   const bonuses = computeBonuses(squad, ownedCards, manager ?? null);
@@ -148,7 +178,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
             setNextOpponent(pickKnockoutOpponent('r32'));
           } else {
             eliminateFromTournament();
-            recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now() });
+            recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now(), managerName: manager?.name });
           }
         }
       } else {
@@ -159,10 +189,10 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
 
         if (!matchWon(result)) {
           eliminateFromTournament();
-          recordRun({ modeId: mode.id, success: false, reachedStage: stage, squadRating: sum.rating, playedAt: Date.now() });
+          recordRun({ modeId: mode.id, success: false, reachedStage: stage, squadRating: sum.rating, playedAt: Date.now(), managerName: manager?.name });
         } else if (stage === 'final') {
           winTournament();
-          recordRun({ modeId: mode.id, success: true, reachedStage: 'won', squadRating: sum.rating, playedAt: Date.now() });
+          recordRun({ modeId: mode.id, success: true, reachedStage: 'won', squadRating: sum.rating, playedAt: Date.now(), managerName: manager?.name });
         } else {
           const next = getNextStage(stage);
           advanceStage(next);
@@ -311,6 +341,59 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
     const nextAfterPlayed = getNextStage(playedStage);
     const nextStageName = nextAfterPlayed ? getStageLabel(nextAfterPlayed) : '';
     const wasFinale = playedStage === 'final';
+
+    // Compute visible score from feed position
+    const displayEngGoals = goalTimeline.slice(0, shownGoals).filter((e) => e === 'england').length;
+    const displayOppGoals = goalTimeline.slice(0, shownGoals).filter((e) => e === 'opponent').length;
+    const lastGoalTeam = shownGoals > 0 ? goalTimeline[shownGoals - 1] : null;
+
+    if (!feedDone) {
+      return (
+        <div className="space-y-3">
+          <div className="rounded-2xl border-2 border-white/15 bg-white/5 px-6 py-8 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-widest text-white/40">
+              <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
+              <span>Live · {getStageLabel(playedStage)}</span>
+            </div>
+            <div className="mt-6 flex items-center justify-around gap-2">
+              <div className="text-center">
+                <div className="text-3xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+                <div className="mt-1 text-[11px] font-bold text-white">England</div>
+              </div>
+              <motion.div
+                key={`${displayEngGoals}-${displayOppGoals}`}
+                initial={{ scale: 1.25 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.2 }}
+                className="text-6xl font-black tabular-nums text-white"
+              >
+                {displayEngGoals} – {displayOppGoals}
+              </motion.div>
+              <div className="text-center">
+                <div className="text-3xl">{knockoutResult.opponent.flag}</div>
+                <div className="mt-1 text-[11px] font-bold text-white">{knockoutResult.opponent.name}</div>
+              </div>
+            </div>
+            <div className="mt-5 h-5">
+              {lastGoalTeam && (
+                <motion.p
+                  key={shownGoals}
+                  initial={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 0, y: -6 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                  className={cn(
+                    'text-sm font-black',
+                    lastGoalTeam === 'england' ? 'text-emerald-300' : 'text-red-400',
+                  )}
+                >
+                  GOAL! {lastGoalTeam === 'england' ? 'England' : knockoutResult.opponent.name}
+                </motion.p>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="space-y-3">

@@ -1,9 +1,9 @@
 'use client';
 
 import { cn } from '@/lib/ui';
-import { WhistleIcon, BenchIcon } from '@/components/ui/icons';
+import { WhistleIcon, BenchIcon, HistoryIcon } from '@/components/ui/icons';
 
-export type ChallengeTab = 'simulation' | 'squad';
+export type ChallengeTab = 'simulation' | 'squad' | 'history';
 
 const TABS: {
   id: ChallengeTab;
@@ -12,6 +12,7 @@ const TABS: {
 }[] = [
   { id: 'simulation', label: 'Simulation', Icon: WhistleIcon },
   { id: 'squad', label: 'Squad', Icon: BenchIcon },
+  { id: 'history', label: 'History', Icon: HistoryIcon },
 ];
 
 export function BottomTabs({
