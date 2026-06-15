@@ -626,7 +626,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
       {/* Tournament progress */}
       <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
         <div className="flex items-center gap-1">
-          {STAGE_ORDER.map((s) => {
+          {STAGE_ORDER.filter((s) => !(s === 'r32' && (tournamentFormat ?? '48') === '32')).map((s) => {
             const isDone = completedStages.includes(s);
             const isCurrent = s === stageToSimulate;
             return (
