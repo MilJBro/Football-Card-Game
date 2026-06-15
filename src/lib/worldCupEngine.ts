@@ -467,54 +467,60 @@ function neutralWinner(r: NeutralResult): Nation {
   return r.homeGoals > r.awayGoals || r.pens === 'home' ? r.home : r.away;
 }
 
-/** Simulate QF → SF → Final.
- *  If `eliminator` is provided it is seeded into the bracket at the
- *  appropriate entry point:
- *  - eliminated at group/r32/r16/qf → seeded into QF1
- *  - eliminated at sf               → seeded directly into SF1 (bypasses QF) */
-export function simulateTournamentEnd(eliminator?: Nation, eliminatedAt?: TournamentStage): TournamentEndSummary {
-  const qfCandidates = [...ALL_NATIONS.filter((n) => n.rating >= 78)].sort(() => Math.random() - 0.5);
-  const sfCandidates = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
+/** Simulate the remaining tournament rounds starting from `startFrom`.
+ *  Each round's winners advance to the next — no team can appear in a later
+ *  round unless they won their earlier match.
+ *  `eliminator` (if provided) is guaranteed a slot in the first round shown. */
+export function simulateTournamentEnd(
+  eliminator?: Nation,
+  startFrom: 'qf' | 'sf' | 'final' = 'qf',
+): TournamentEndSummary {
+  const qfPool = [...ALL_NATIONS.filter((n) => n.rating >= 78)].sort(() => Math.random() - 0.5);
+  const sfPool = [...ALL_NATIONS.filter((n) => n.rating >= 82)].sort(() => Math.random() - 0.5);
+  const finalPool = [...ALL_NATIONS.filter((n) => n.rating >= 85)].sort(() => Math.random() - 0.5);
 
-  // ---- Quarter-finals (8 teams) ----
-  let qfTeams: Nation[];
-  if (eliminator && eliminatedAt !== 'sf') {
-    const rest = qfCandidates.filter((n) => n.name !== eliminator.name).slice(0, 7);
-    qfTeams = [eliminator, ...rest];
-  } else {
-    qfTeams = qfCandidates.slice(0, 8);
+  function seed(pool: Nation[], total: number): Nation[] {
+    if (!eliminator) return pool.slice(0, total);
+    const rest = pool.filter((n) => n.name !== eliminator.name).slice(0, total - 1);
+    return [eliminator, ...rest];
   }
 
-  const qf = [
-    simulateNeutral(qfTeams[0], qfTeams[1]),
-    simulateNeutral(qfTeams[2], qfTeams[3]),
-    simulateNeutral(qfTeams[4], qfTeams[5]),
-    simulateNeutral(qfTeams[6], qfTeams[7]),
-  ];
+  let qf: NeutralResult[] = [];
+  let sf: NeutralResult[] = [];
+  let final: NeutralResult;
 
-  // ---- Semi-finals (4 teams) ----
-  let sfTeams: Nation[];
-  if (eliminator && eliminatedAt === 'sf') {
-    // Eliminator goes straight into SF1 alongside elite opponents
-    const rest = sfCandidates.filter((n) => n.name !== eliminator.name);
-    sfTeams = [eliminator, rest[0], rest[1], rest[2]];
+  if (startFrom === 'qf') {
+    const teams = seed(qfPool, 8);
+    qf = [
+      simulateNeutral(teams[0], teams[1]),
+      simulateNeutral(teams[2], teams[3]),
+      simulateNeutral(teams[4], teams[5]),
+      simulateNeutral(teams[6], teams[7]),
+    ];
+    const sfTeams = qf.map(neutralWinner);
+    sf = [
+      simulateNeutral(sfTeams[0], sfTeams[1]),
+      simulateNeutral(sfTeams[2], sfTeams[3]),
+    ];
+    final = simulateNeutral(neutralWinner(sf[0]), neutralWinner(sf[1]));
+  } else if (startFrom === 'sf') {
+    const teams = seed(sfPool, 4);
+    sf = [
+      simulateNeutral(teams[0], teams[1]),
+      simulateNeutral(teams[2], teams[3]),
+    ];
+    final = simulateNeutral(neutralWinner(sf[0]), neutralWinner(sf[1]));
   } else {
-    sfTeams = qf.map(neutralWinner);
+    const home = eliminator ?? finalPool[0];
+    const away = finalPool.find((n) => n.name !== home.name) ?? finalPool[1];
+    final = simulateNeutral(home, away);
   }
 
-  const sf = [
-    simulateNeutral(sfTeams[0], sfTeams[1]),
-    simulateNeutral(sfTeams[2], sfTeams[3]),
-  ];
-
-  const final = simulateNeutral(neutralWinner(sf[0]), neutralWinner(sf[1]));
   return { qf, sf, final, champion: neutralWinner(final) };
 }
 
 // ---------------------------------------------------------------------------
 // Run conclusion — what happened after England were knocked out.
-// Follows the team that eliminated England (or a neutral elite bracket when
-// England went out in the group) through to the eventual champion.
 // ---------------------------------------------------------------------------
 
 export interface ConclusionMatch {
@@ -523,49 +529,34 @@ export interface ConclusionMatch {
 }
 
 export interface RunConclusion {
-  /** Stages played after England's exit, in order. */
   conclusion: ConclusionMatch[];
   champion: Nation;
 }
 
-const KNOCKOUT_ORDER: Exclude<TournamentStage, 'group'>[] = ['r32', 'r16', 'qf', 'sf', 'final'];
-
-/** Build the post-England story.
- *  - eliminator known (knockout exit): follow them forward to the title, or to
- *    whoever knocks them out, ending on the real champion.
- *  - eliminator null (group exit): show a neutral elite bracket from the QFs. */
+/** Build the post-England bracket.
+ *  The eliminator is seeded into the first remaining stage so they always
+ *  appear. Each subsequent round is populated from the previous round's
+ *  winners — no team can appear in a later round without winning earlier. */
 export function simulateRunConclusion(
   eliminator: Nation | null,
   eliminatedAt: TournamentStage,
 ): RunConclusion {
-  // Group exit — no single eliminator to follow. Show the latter rounds neutrally.
-  if (!eliminator || eliminatedAt === 'group') {
-    const end = simulateTournamentEnd();
-    return {
-      conclusion: [
-        ...end.qf.map((result): ConclusionMatch => ({ stage: 'qf', result })),
-        ...end.sf.map((result): ConclusionMatch => ({ stage: 'sf', result })),
-        { stage: 'final', result: end.final },
-      ],
-      champion: end.champion,
-    };
+  if (eliminatedAt === 'final') {
+    return { conclusion: [], champion: eliminator! };
   }
 
-  const startIdx = KNOCKOUT_ORDER.indexOf(eliminatedAt as Exclude<TournamentStage, 'group'>) + 1;
-  const remaining = KNOCKOUT_ORDER.slice(startIdx);
+  // Which round does the eliminator enter next?
+  const startFrom: 'qf' | 'sf' | 'final' =
+    eliminatedAt === 'qf' ? 'sf' :
+    eliminatedAt === 'sf' ? 'final' : 'qf';
 
-  let current = eliminator;
-  const conclusion: ConclusionMatch[] = [];
-  for (const stage of remaining) {
-    let opponent = pickKnockoutOpponent(stage);
-    // Avoid the eliminator drawing itself.
-    let guard = 0;
-    while (opponent.name === current.name && guard++ < 8) opponent = pickKnockoutOpponent(stage);
-    const result = simulateNeutral(current, opponent);
-    conclusion.push({ stage, result });
-    current = neutralWinner(result);
-  }
+  const end = simulateTournamentEnd(eliminator ?? undefined, startFrom);
 
-  // If England lost the final, `remaining` is empty and the eliminator is champion.
-  return { conclusion, champion: current };
+  const conclusion: ConclusionMatch[] = [
+    ...end.qf.map((result): ConclusionMatch => ({ stage: 'qf', result })),
+    ...end.sf.map((result): ConclusionMatch => ({ stage: 'sf', result })),
+    { stage: 'final', result: end.final },
+  ];
+
+  return { conclusion, champion: end.champion };
 }
