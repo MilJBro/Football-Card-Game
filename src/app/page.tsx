@@ -191,7 +191,7 @@ export default function HomePage() {
                   )}
                   style={{ scrollSnapAlign: 'center' }}
                 >
-                  {year ?? 'RND'}
+                  {year ?? 'Random'}
                 </div>
               ))}
             </div>
