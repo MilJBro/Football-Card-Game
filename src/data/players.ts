@@ -129,14 +129,14 @@ const PLAYERS: PlayerSource[] = [
   sr('swarnock',    'Stephen Warnock', 'DEF', ['LB'], 72, '2010'),
   sr('glesaux',     'Graeme Le Saux',  'DEF', ['LB'], 79, '1998'),
   sr('wbridge',     'Wayne Bridge',    'DEF', ['LB'], 77, '2002, 2006'),
-  sr('lukeshaw',    'Luke Shaw',       'DEF', ['LB'], 86, '2014, 2022'),
+  sr('lukeshaw',    'Luke Shaw',       'DEF', ['LB'], 84, '2014, 2022'),
   sr('noreilly',    'Nico O\'Reilly',  'DEF', ['LB'], 74, '2026'),
   sr('rwilson',     'Ray Wilson',      'DEF', ['LB'], 84, '1966'),
   sr('gbyrne',      'Gerry Byrne',     'DEF', ['LB'], 74, '1966'),
   sr('tcooper',     'Terry Cooper',    'DEF', ['LB'], 82, '1970'),
   sr('ksansom',     'Kenny Sansom',    'DEF', ['LB'], 81, '1982, 1986'),
 
-  sr('lbaines',     'Leighton Baines', 'DEF', ['LB'], 79, '2014'),
+  sr('lbaines',     'Leighton Baines', 'DEF', ['LB'], 81, '2014'),
 
   sr('drose',       'Danny Rose',      'DEF', ['LB'], 76, '2018'),
   sr('fdelph',      'Fabian Delph',    'DEF', ['LB'], 75, '2018'),
