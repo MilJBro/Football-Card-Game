@@ -56,6 +56,7 @@ export default function HomePage() {
 
   const yearScrollRef = useRef<HTMLDivElement>(null);
   const firstScrollRef = useRef(true);
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Keep the selected item centred in the wheel
   useEffect(() => {
@@ -71,6 +72,17 @@ export default function HomePage() {
       yearScrollRef.current.scrollTo({ left, behavior: 'smooth' });
     }
   }, [realisticGroupsYear, hydrated]);
+
+  function handleYearScroll(e: React.UIEvent<HTMLDivElement>) {
+    const el = e.currentTarget;
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
+    scrollTimerRef.current = setTimeout(() => {
+      const ITEM_W = 56;
+      const idx = Math.round(el.scrollLeft / ITEM_W);
+      const clamped = Math.max(0, Math.min(idx, ALL_YEAR_OPTIONS.length - 1));
+      setRealisticGroupsYear(ALL_YEAR_OPTIONS[clamped]);
+    }, 120);
+  }
 
   return (
     /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
@@ -164,15 +176,15 @@ export default function HomePage() {
             <div
               ref={yearScrollRef}
               className="no-scrollbar flex overflow-x-scroll"
+              onScroll={handleYearScroll}
               style={{
                 scrollSnapType: 'x mandatory',
                 paddingInline: 'calc(50% - 28px)',
               }}
             >
               {ALL_YEAR_OPTIONS.map((year) => (
-                <button
+                <div
                   key={year ?? 'rnd'}
-                  onClick={() => setRealisticGroupsYear(year)}
                   className={cn(
                     'w-14 flex-none py-2 text-center text-xs font-bold transition-colors duration-150',
                     realisticGroupsYear === year ? 'text-emerald-400' : 'text-white/30',
@@ -180,7 +192,7 @@ export default function HomePage() {
                   style={{ scrollSnapAlign: 'center' }}
                 >
                   {year ?? 'RND'}
-                </button>
+                </div>
               ))}
             </div>
           </div>

@@ -146,9 +146,9 @@ export const useGameStore = create<GameState>()(
       setRealisticGroupsYear: (year) =>
         set((s) => ({
           realisticGroupsYear: year,
-          // Clear stored opponents so they're re-drawn for the new year.
-          // Only safe when no match is in progress (group stage actively playing).
-          ...(s.currentStage === null || s.currentStage !== 'group'
+          // Clear stored opponents when year changes so they're re-drawn correctly.
+          // Skip during active group play to avoid disrupting a match in progress.
+          ...(year !== s.realisticGroupsYear && s.currentStage !== 'group'
             ? { groupOpponents: [], groupLabel: null }
             : {}),
         })),
