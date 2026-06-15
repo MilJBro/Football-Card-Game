@@ -45,7 +45,7 @@ const PLAYERS: PlayerSource[] = [
   sr('jbutland',  'Jack Butland',   'GK', ['GK'], 76, '2018'),
   sr('gbanks',    'Gordon Banks',   'GK', ['GK'], 92, '1966, 1970'),
   sr('bonetti',   'Peter Bonetti',  'GK', ['GK'], 74, '1966, 1970'),
-  sr('astepney',  'Alex Stepney',   'GK', ['GK'], 78, '1970'),
+  sr('astepney',  'Alex Stepney',   'GK', ['GK'], 75, '1970'),
   sr('rspringett','Ron Springett',  'GK', ['GK'], 73, '1962, 1966'),
   sr('clemence',  'Ray Clemence',   'GK', ['GK'], 86, '1982'),
   sr('jcorrigan', 'Joe Corrigan',   'GK', ['GK'], 74, '1982'),
