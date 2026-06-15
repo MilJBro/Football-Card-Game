@@ -34,7 +34,7 @@ export default function HomePage() {
   const manager = useGameStore((s) => s.manager);
   const realisticGroupsYear = useGameStore((s) => s.realisticGroupsYear);
   const setRealisticGroupsYear = useGameStore((s) => s.setRealisticGroupsYear);
-  const tournamentFormat = useGameStore((s) => s.tournamentFormat);
+  const tournamentFormat = useGameStore((s) => s.tournamentFormat) ?? '48';
   const setTournamentFormat = useGameStore((s) => s.setTournamentFormat);
   const mode = GAME_MODES[0];
   const completion = hydrated ? completions[mode.id] : undefined;
@@ -196,7 +196,7 @@ export default function HomePage() {
               onClick={() => setTournamentFormat('48')}
               className={cn(
                 'flex-1 py-2 text-[11px] font-black transition-colors',
-                tournamentFormat === '48' ? 'text-emerald-400' : 'text-white/30',
+                tournamentFormat === '48' ? 'bg-emerald-500/15 text-emerald-400' : 'text-white/40',
               )}
             >
               48 Teams
@@ -206,7 +206,7 @@ export default function HomePage() {
               onClick={() => setTournamentFormat('32')}
               className={cn(
                 'flex-1 py-2 text-[11px] font-black transition-colors',
-                tournamentFormat === '32' ? 'text-emerald-400' : 'text-white/30',
+                tournamentFormat === '32' ? 'bg-emerald-500/15 text-emerald-400' : 'text-white/40',
               )}
             >
               32 Teams
