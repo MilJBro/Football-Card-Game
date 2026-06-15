@@ -34,6 +34,8 @@ export default function HomePage() {
   const manager = useGameStore((s) => s.manager);
   const realisticGroupsYear = useGameStore((s) => s.realisticGroupsYear);
   const setRealisticGroupsYear = useGameStore((s) => s.setRealisticGroupsYear);
+  const tournamentFormat = useGameStore((s) => s.tournamentFormat);
+  const setTournamentFormat = useGameStore((s) => s.setTournamentFormat);
   const mode = GAME_MODES[0];
   const completion = hydrated ? completions[mode.id] : undefined;
 
@@ -49,10 +51,6 @@ export default function HomePage() {
     -1,
   );
   const furthestStage = furthestIdx >= 0 ? STAGE_ORDER[furthestIdx] : null;
-  const winRate =
-    modeRuns.length > 0
-      ? Math.round((modeRuns.filter((r) => r.success).length / modeRuns.length) * 100)
-      : 0;
 
   const yearScrollRef = useRef<HTMLDivElement>(null);
   const firstScrollRef = useRef(true);
@@ -100,10 +98,8 @@ export default function HomePage() {
             <span className="relative text-[6.5rem] leading-none drop-shadow-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
           </div>
 
-          {/* Title + status chips */}
+          {/* Status chips */}
           <div className="flex flex-col items-center gap-2">
-            <h2 className="text-2xl font-black">Golden XI</h2>
-
             {hydrated && runInProgress && manager && (
               <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1">
                 <span className="text-xs font-bold text-white/70">{manager.name}</span>
@@ -113,9 +109,9 @@ export default function HomePage() {
               </div>
             )}
 
-            {hydrated && (tournamentWon || tournamentEliminated) && (
-              <span className={`rounded-full px-3 py-1 text-xs font-black ${tournamentWon ? 'bg-amber-500/20 text-amber-300' : 'bg-red-500/20 text-red-300'}`}>
-                {tournamentWon ? '🏆 Champions' : '💔 Eliminated'}
+            {hydrated && tournamentWon && (
+              <span className="rounded-full px-3 py-1 text-xs font-black bg-amber-500/20 text-amber-300">
+                🏆 Champions
               </span>
             )}
 
@@ -154,7 +150,7 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Group stage wheel */}
+      {/* Group stage wheel + format toggle */}
       {hydrated && (
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
           <div className="flex items-baseline justify-between px-4 pb-1 pt-3">
@@ -164,13 +160,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Wheel */}
+          {/* Year wheel */}
           <div className="relative py-1">
-            {/* Centre selection ring */}
             <div className="pointer-events-none absolute inset-y-1 left-1/2 z-10 w-14 -translate-x-1/2 rounded-lg border border-emerald-500/30 bg-emerald-500/10" />
-            {/* Left fade */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 bg-gradient-to-r from-[#060D1E] to-transparent" />
-            {/* Right fade */}
             <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 bg-gradient-to-l from-[#060D1E] to-transparent" />
 
             <div
@@ -197,6 +190,29 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Format toggle */}
+          <div className="flex border-t border-white/10">
+            <button
+              onClick={() => setTournamentFormat('48')}
+              className={cn(
+                'flex-1 py-2 text-[11px] font-black transition-colors',
+                tournamentFormat === '48' ? 'text-emerald-400' : 'text-white/30',
+              )}
+            >
+              48 Teams
+            </button>
+            <div className="w-px bg-white/10" />
+            <button
+              onClick={() => setTournamentFormat('32')}
+              className={cn(
+                'flex-1 py-2 text-[11px] font-black transition-colors',
+                tournamentFormat === '32' ? 'text-emerald-400' : 'text-white/30',
+              )}
+            >
+              32 Teams
+            </button>
+          </div>
+
           {runInProgress && (
             <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/30">
               Takes effect on your next tournament
@@ -205,22 +221,14 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Best run + win rate — appears once at least one tournament is played */}
+      {/* Best run — appears once at least one tournament is played */}
       {hydrated && modeRuns.length > 0 && (
         <div className="flex overflow-hidden rounded-2xl border border-white/10 bg-white/5">
           <div className="flex flex-1 flex-col items-center gap-0.5 py-3">
             <span className="text-[10px] uppercase tracking-wide text-white/40">Best Run</span>
-            <span
-              className={`text-sm font-black ${
-                furthestStage === 'won' ? 'text-amber-300' : 'text-emerald-300'
-              }`}
-            >
+            <span className={`text-sm font-black ${furthestStage === 'won' ? 'text-amber-300' : 'text-emerald-300'}`}>
               {furthestStage ? STAGE_LABELS[furthestStage] : '—'}
             </span>
-          </div>
-          <div className="flex flex-1 flex-col items-center gap-0.5 border-l border-white/10 py-3">
-            <span className="text-[10px] uppercase tracking-wide text-white/40">Win Rate</span>
-            <span className="text-sm font-black text-white">{winRate}%</span>
           </div>
         </div>
       )}

@@ -28,6 +28,8 @@ export interface GameState {
   // ---- Settings ----
   /** Null = random draw; a year number = use that specific England World Cup group. */
   realisticGroupsYear: number | null;
+  /** '48' = 48-team format (Group → R32 → R16 …), '32' = 32-team (Group → R16 …). */
+  tournamentFormat: '32' | '48';
 
   // ---- Active run ----
   activeModeId: string | null;
@@ -65,6 +67,7 @@ export interface GameState {
 
   // ---- Actions: settings ----
   setRealisticGroupsYear: (year: number | null) => void;
+  setTournamentFormat: (format: '32' | '48') => void;
 
   // ---- Actions: active run ----
   setActiveModeId: (modeId: string | null) => void;
@@ -95,6 +98,7 @@ const initialState = {
   history: [] as TournamentRunResult[],
   teamName: '',
   realisticGroupsYear: null as number | null,
+  tournamentFormat: '48' as '32' | '48',
   activeModeId: null as string | null,
   activeSquad: null as Squad | null,
   manager: null as EnglandManager | null,
@@ -152,6 +156,8 @@ export const useGameStore = create<GameState>()(
             ? { groupOpponents: [], groupLabel: null }
             : {}),
         })),
+
+      setTournamentFormat: (format) => set({ tournamentFormat: format }),
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),

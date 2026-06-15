@@ -51,6 +51,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
   const groupLabel = useGameStore((s) => s.groupLabel);
   const setGroupOpponents = useGameStore((s) => s.setGroupOpponents);
   const realisticGroupsYear = useGameStore((s) => s.realisticGroupsYear);
+  const tournamentFormat = useGameStore((s) => s.tournamentFormat);
   const groupMatches = useGameStore((s) => s.groupMatches);
   const recordGroupMatch = useGameStore((s) => s.recordGroupMatch);
   const otherGroupMatches = useGameStore((s) => s.otherGroupMatches);
@@ -184,15 +185,18 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
           const finalTable = computeGroupTable(opponents, allMatches, [...otherGroupMatches, otherResult]);
           const position = englandGroupPosition(finalTable);
           const engRow = finalTable.find((r) => r.isEngland)!;
-          // Top 2 go straight through; a 3rd-place finish can survive as one
+          // 32-team format: only top 2 qualify, go straight to R16.
+          // 48-team format: top 2 go through + 3rd-place can survive as one
           // of the 8 best thirds (ranked against the other 11 groups).
-          const qualified =
-            position <= GROUP_QUALIFY_SPOTS ||
-            (position === 3 &&
-              thirdPlaceQualifies({ pts: engRow.pts, gd: engRow.gf - engRow.ga, gf: engRow.gf }));
+          const qualified = tournamentFormat === '32'
+            ? position <= GROUP_QUALIFY_SPOTS
+            : position <= GROUP_QUALIFY_SPOTS ||
+              (position === 3 &&
+                thirdPlaceQualifies({ pts: engRow.pts, gd: engRow.gf - engRow.ga, gf: engRow.gf }));
+          const firstKnockout = tournamentFormat === '32' ? 'r16' : 'r32';
           if (qualified) {
-            advanceStage('r32');
-            setNextOpponent(pickKnockoutOpponent('r32'));
+            advanceStage(firstKnockout);
+            setNextOpponent(pickKnockoutOpponent(firstKnockout));
           } else {
             eliminateFromTournament();
             recordRun({ modeId: mode.id, success: false, reachedStage: 'group', squadRating: sum.rating, playedAt: Date.now(), managerName: manager?.name });
@@ -293,7 +297,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
               ? (viaThirdPlace
                   ? `Finished ${ordinal(position)} — through as one of the 8 best 3rd-placed teams`
                   : qualified
-                    ? `Finished ${ordinal(position)} — through to the Round of 32`
+                    ? `Finished ${ordinal(position)} — through to the ${tournamentFormat === '32' ? 'Round of 16' : 'Round of 32'}`
                     : position === 3
                       ? `Finished 3rd — not among the 8 best 3rd-placed teams`
                       : `Finished ${ordinal(position)} — out of the World Cup`)
@@ -324,7 +328,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
           />
         )}
         {qualified && nextOpponent && (
-          <NextOpponentCard title="Up Next — Round of 32" opponent={nextOpponent} />
+          <NextOpponentCard title={`Up Next — ${tournamentFormat === '32' ? 'Round of 16' : 'Round of 32'}`} opponent={nextOpponent} />
         )}
 
         {eliminated ? (
@@ -346,7 +350,7 @@ export function SimulationTab({ mode, squad, onGoToSquad }: SimulationTabProps) 
           </div>
         ) : (
           <Button className="w-full" onClick={continueToNext}>
-            {qualified ? 'Round of 32 →' : `Group Game ${gameNumber + 1} →`}
+            {qualified ? `${tournamentFormat === '32' ? 'Round of 16' : 'Round of 32'} →` : `Group Game ${gameNumber + 1} →`}
           </Button>
         )}
       </div>
