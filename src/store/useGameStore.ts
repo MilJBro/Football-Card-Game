@@ -143,7 +143,15 @@ export const useGameStore = create<GameState>()(
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
 
-      setRealisticGroupsYear: (year) => set({ realisticGroupsYear: year }),
+      setRealisticGroupsYear: (year) =>
+        set((s) => ({
+          realisticGroupsYear: year,
+          // Clear stored opponents so they're re-drawn for the new year.
+          // Only safe when no match is in progress (group stage actively playing).
+          ...(s.currentStage === null || s.currentStage !== 'group'
+            ? { groupOpponents: [], groupLabel: null }
+            : {}),
+        })),
 
       setActiveModeId: (modeId) => set({ activeModeId: modeId }),
       setActiveSquad: (squad) => set({ activeSquad: squad }),
