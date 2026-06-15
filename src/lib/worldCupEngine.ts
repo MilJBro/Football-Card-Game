@@ -235,6 +235,11 @@ export const ENGLAND_WORLD_CUP_GROUPS: HistoricGroup[] = [
     { name: 'Iran', flag: '🇮🇷', rating: 72 },
     { name: 'Wales', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', rating: 72 },
   ] },
+  { label: '2026 World Cup', opponents: [
+    { name: 'Croatia', flag: '🇭🇷', rating: 80 },
+    { name: 'Ghana', flag: '🇬🇭', rating: 71 },
+    { name: 'Panama', flag: '🇵🇦', rating: 67 },
+  ] },
 ];
 
 /** All years England have appeared in a World Cup group stage. */
