@@ -9,28 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // FIFA 2026 World Cup brand palette.
+        // Premier League brand palette.
         pl: {
-          purple: '#0D1428', // dark navy — FOIL badge text
-          green: '#3CAC3B',  // WC green
-          pink: '#E61D25',   // WC red — attack stat, danger button
-          cyan: '#7AAEF7',   // light WC blue — defence stat, FOIL badge bg
+          purple: '#38003C', // PL deep purple — primary background
+          green:  '#00FF85', // PL bright green — highlights, selected
+          pink:   '#E90052', // PL pink/magenta — accents, CTAs
         },
-        // `pitch` = dark navy surfaces (panels, nav, modals, pitch).
+        // `pitch` = purple surfaces (panels, nav, modals).
         pitch: {
-          DEFAULT: '#0B1530',
-          dark: '#060D1E',
-          light: '#12213F',
+          DEFAULT: '#4a0050',
+          dark:    '#38003C',
+          light:   '#5c0064',
         },
-        // `emerald` overridden to WC green scale. Dark shades = near-black
-        // navy used for button text and card backs.
         emerald: {
-          300: '#72CB71',
-          400: '#3CAC3B',
-          500: '#349934',
-          700: '#1C6B1C',
-          900: '#0B1530',
-          950: '#060D1E',
+          300: '#66ffb2',
+          400: '#00FF85',
+          500: '#00e876',
+          700: '#00a856',
+          900: '#38003C',
+          950: '#2d0032',
         },
         tier: {
           rising: '#cd7f32', // bronze

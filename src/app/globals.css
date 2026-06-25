@@ -3,16 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --background: #060D1E;
-  --foreground: #EFF4FF;
+  --background: #38003C;
+  --foreground: #FFFFFF;
 }
 
 body {
   color: var(--foreground);
   background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(60, 172, 59, 0.13), transparent),
-    radial-gradient(900px 500px at 85% 110%, rgba(230, 29, 37, 0.10), transparent),
-    linear-gradient(180deg, #0B1530 0%, #060D1E 100%);
+    radial-gradient(900px 500px at 50% -5%, rgba(233, 0, 82, 0.12), transparent),
+    linear-gradient(160deg, #3d0042 0%, #38003C 60%, #2a002f 100%);
   min-height: 100vh;
 }
 
@@ -37,7 +36,7 @@ body {
   height: 8px;
 }
 .thin-scroll::-webkit-scrollbar-thumb {
-  background: #1C6B1C;
+  background: #00FF85;
   border-radius: 8px;
 }
 
