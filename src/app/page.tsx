@@ -51,7 +51,7 @@ export default function HomePage() {
         <div className="border-b border-white/10 px-3 py-2">
           <span className="text-[11px] font-black uppercase tracking-wider text-white/50">Premier League 2026/27</span>
         </div>
-        <div className="grid grid-cols-4 gap-1.5 p-1.5">
+        <div className="grid grid-cols-4 gap-2 p-2">
           {PL_CLUBS.map((club) => {
             const isSelected = hydrated && selectedClub === club.id;
             return (
@@ -59,7 +59,7 @@ export default function HomePage() {
                 key={club.id}
                 onClick={() => setSelectedClub(club.id)}
                 className={cn(
-                  'relative overflow-hidden rounded-xl px-2 py-2.5 text-left transition-all',
+                  'relative overflow-hidden rounded-xl px-2.5 py-3 text-left transition-all',
                   isSelected
                     ? 'ring-2 ring-[#00FF85] ring-offset-1 ring-offset-[#38003C]'
                     : 'ring-1 ring-white/10 hover:ring-white/20',
@@ -68,10 +68,10 @@ export default function HomePage() {
                   background: `linear-gradient(135deg, ${club.primary}cc 0%, ${club.secondary}55 100%)`,
                 }}
               >
-                <div className="text-[8px] font-black uppercase tracking-widest text-white/50">{club.short}</div>
-                <div className="text-[10px] font-black leading-tight text-white">{club.name}</div>
+                <div className="text-[9px] font-black uppercase tracking-widest text-white/50">{club.short}</div>
+                <div className="text-[11px] font-black leading-tight text-white">{club.name}</div>
                 {isSelected && (
-                  <div className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#00FF85]" />
+                  <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[#00FF85]" />
                 )}
               </button>
             );
