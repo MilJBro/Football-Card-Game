@@ -16,12 +16,12 @@ export default function HomePage() {
   const activeClub = hydrated ? PL_CLUBS.find((c) => c.id === selectedClub) : null;
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col gap-2">
+    <div className="mx-auto flex max-w-sm flex-col gap-2" style={{ height: 'calc(100svh - 69px)' }}>
 
       {/* Hero */}
       {hydrated && activeClub ? (
         <div
-          className="flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-white/10 px-4 py-3"
+          className="flex-none flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-white/10 px-4 py-3"
           style={{ background: `linear-gradient(135deg, ${activeClub.primary}ee 0%, ${activeClub.secondary}88 100%)` }}
         >
           <div className="min-w-0">
@@ -37,7 +37,7 @@ export default function HomePage() {
           </Link>
         </div>
       ) : (
-        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+        <div className="flex-none flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
           <span className="text-xl">⚽</span>
           <div>
             <p className="text-sm font-black text-white">Pick your club</p>
@@ -46,12 +46,12 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Club grid */}
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-        <div className="border-b border-white/10 px-3 py-2">
+      {/* Club grid — fills remaining height, all tiles identical size */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+        <div className="flex-none border-b border-white/10 px-3 py-2">
           <span className="text-[11px] font-black uppercase tracking-wider text-white/50">Premier League 2026/27</span>
         </div>
-        <div className="grid grid-cols-4 gap-2 p-2">
+        <div className="grid min-h-0 flex-1 grid-cols-4 grid-rows-5 gap-1.5 p-1.5">
           {PL_CLUBS.map((club) => {
             const isSelected = hydrated && selectedClub === club.id;
             return (
@@ -59,7 +59,7 @@ export default function HomePage() {
                 key={club.id}
                 onClick={() => setSelectedClub(club.id)}
                 className={cn(
-                  'relative overflow-hidden rounded-xl px-2.5 py-3 text-left transition-all',
+                  'relative flex flex-col justify-center gap-0.5 overflow-hidden rounded-xl px-2.5 text-left transition-all',
                   isSelected
                     ? 'ring-2 ring-[#00FF85] ring-offset-1 ring-offset-[#38003C]'
                     : 'ring-1 ring-white/10 hover:ring-white/20',
