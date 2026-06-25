@@ -1,237 +1,114 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { GAME_MODES } from '@/data/gameModes';
+import { PL_CLUBS } from '@/data/clubs';
 import { useGameStore } from '@/store/useGameStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import { cn } from '@/lib/ui';
-import { ENGLAND_WC_YEARS } from '@/lib/worldCupEngine';
-
-// null = random draw, number = specific WC year
-const ALL_YEAR_OPTIONS: (number | null)[] = [null, ...ENGLAND_WC_YEARS];
-
-const STAGE_LABELS: Record<string, string> = {
-  group: 'Group Stage',
-  r32: 'Round of 32',
-  r16: 'Round of 16',
-  qf: 'Quarter-Final',
-  sf: 'Semi-Final',
-  final: 'The Final',
-  won: 'Champions',
-};
-
-// Worst → best, for ranking the furthest stage ever reached.
-const STAGE_ORDER = ['group', 'r32', 'r16', 'qf', 'sf', 'final', 'won'];
 
 export default function HomePage() {
   const hydrated = useHydrated();
+  const selectedClub = useGameStore((s) => s.selectedClub);
+  const setSelectedClub = useGameStore((s) => s.setSelectedClub);
   const completions = useGameStore((s) => s.completions);
   const history = useGameStore((s) => s.history);
   const currentStage = useGameStore((s) => s.currentStage);
   const tournamentWon = useGameStore((s) => s.tournamentWon);
   const tournamentEliminated = useGameStore((s) => s.tournamentEliminated);
-  const manager = useGameStore((s) => s.manager);
-  const realisticGroupsYear = useGameStore((s) => s.realisticGroupsYear);
-  const setRealisticGroupsYear = useGameStore((s) => s.setRealisticGroupsYear);
-  const tournamentFormat = useGameStore((s) => s.tournamentFormat) ?? '48';
-  const setTournamentFormat = useGameStore((s) => s.setTournamentFormat);
+
   const mode = GAME_MODES[0];
   const completion = hydrated ? completions[mode.id] : undefined;
 
   const runInProgress = hydrated && currentStage && !tournamentWon && !tournamentEliminated;
-
   const wins = completion?.timesCompleted ?? 0;
   const played = hydrated ? history.length : 0;
-  const bestRating = completion?.bestSquadRating ?? 0;
 
-  const modeRuns = hydrated ? history.filter((r) => r.modeId === mode.id) : [];
-  const furthestIdx = modeRuns.reduce(
-    (max, r) => Math.max(max, STAGE_ORDER.indexOf(r.reachedStage)),
-    -1,
-  );
-  const furthestStage = furthestIdx >= 0 ? STAGE_ORDER[furthestIdx] : null;
-
-  const yearScrollRef = useRef<HTMLDivElement>(null);
-  const firstScrollRef = useRef(true);
-  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Keep the selected item centred in the wheel
-  useEffect(() => {
-    if (!hydrated || !yearScrollRef.current) return;
-    const idx = ALL_YEAR_OPTIONS.indexOf(realisticGroupsYear);
-    if (idx < 0) return;
-    const ITEM_W = 56; // w-14
-    const left = idx * ITEM_W;
-    if (firstScrollRef.current) {
-      yearScrollRef.current.scrollLeft = left;
-      firstScrollRef.current = false;
-    } else {
-      yearScrollRef.current.scrollTo({ left, behavior: 'smooth' });
-    }
-  }, [realisticGroupsYear, hydrated]);
-
-  function handleYearScroll(e: React.UIEvent<HTMLDivElement>) {
-    const el = e.currentTarget;
-    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
-    scrollTimerRef.current = setTimeout(() => {
-      const ITEM_W = 56;
-      const idx = Math.round(el.scrollLeft / ITEM_W);
-      const clamped = Math.max(0, Math.min(idx, ALL_YEAR_OPTIONS.length - 1));
-      setRealisticGroupsYear(ALL_YEAR_OPTIONS[clamped]);
-    }, 120);
-  }
+  const activeClub = hydrated ? PL_CLUBS.find((c) => c.id === selectedClub) : null;
 
   return (
-    /* 10.5rem = navbar (~3rem) + pt-6 (1.5rem) + pb-24 (6rem) */
     <div className="mx-auto flex max-w-sm flex-col gap-3" style={{ minHeight: 'calc(100svh - 10.5rem)' }}>
 
-      {/* Challenge card — grows to fill available space */}
-      <div className="relative flex flex-1 flex-col overflow-hidden rounded-3xl border-2 border-white/15 bg-gradient-to-b from-pitch-light to-pitch-dark shadow-xl">
-
-        {/* Main content — centred and evenly spaced */}
-        <div className="flex flex-1 flex-col items-center justify-evenly px-6 py-8 text-center">
-
-          {/* Flag */}
-          <div className="relative flex items-center justify-center">
-            <div className="absolute h-32 w-32 rounded-full bg-emerald-400/10 blur-2xl" />
-            <span className="relative text-[6.5rem] leading-none drop-shadow-2xl">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
+      {/* Selected club + play button */}
+      {hydrated && activeClub ? (
+        <div
+          className="relative flex flex-col items-center justify-center gap-4 overflow-hidden rounded-3xl border-2 border-white/15 px-6 py-10 shadow-xl"
+          style={{ background: `linear-gradient(135deg, ${activeClub.primary}cc 0%, ${activeClub.secondary}88 100%)` }}
+        >
+          <div className="text-center">
+            <div className="text-[11px] font-black uppercase tracking-widest text-white/50">{activeClub.short}</div>
+            <div className="text-2xl font-black text-white">{activeClub.name}</div>
           </div>
 
-          {/* Status chips */}
-          <div className="flex flex-col items-center gap-2">
-            {hydrated && runInProgress && manager && (
-              <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                <span className="text-xs font-bold text-white/70">{manager.name}</span>
-                <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300">
-                  {manager.formation}
-                </span>
-              </div>
-            )}
-
-            {hydrated && tournamentWon && (
-              <span className="rounded-full px-3 py-1 text-xs font-black bg-amber-500/20 text-amber-300">
-                🏆 Champions
-              </span>
-            )}
-
-            {hydrated && runInProgress && currentStage && (
-              <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-black text-emerald-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                {STAGE_LABELS[currentStage]}
-              </span>
-            )}
-          </div>
+          {hydrated && tournamentWon && (
+            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-black text-amber-300">
+              🏆 Champions
+            </span>
+          )}
 
           <Link
             href={`/modes/${mode.id}/`}
-            className="rounded-full bg-emerald-500 px-10 py-3 text-base font-black text-emerald-950 transition-transform hover:scale-105"
+            className="rounded-full bg-white px-10 py-3 text-base font-black transition-transform hover:scale-105"
+            style={{ color: activeClub.primary }}
           >
             {runInProgress ? 'Continue →' : 'Play →'}
           </Link>
-        </div>
 
-        {/* Stats row */}
-        {hydrated && (
-          <div className="flex border-t border-white/10">
-            <div className="flex flex-1 flex-col items-center py-3">
-              <span className="text-lg font-black text-amber-300">{wins}</span>
-              <span className="text-[10px] uppercase tracking-wide text-white/40">Wins</span>
+          {/* Stats */}
+          {(wins > 0 || played > 0) && (
+            <div className="flex w-full divide-x divide-white/20 rounded-2xl border border-white/20 bg-black/20">
+              <div className="flex flex-1 flex-col items-center py-3">
+                <span className="text-lg font-black text-amber-300">{wins}</span>
+                <span className="text-[10px] uppercase tracking-wide text-white/40">Wins</span>
+              </div>
+              <div className="flex flex-1 flex-col items-center py-3">
+                <span className="text-lg font-black text-white">{played}</span>
+                <span className="text-[10px] uppercase tracking-wide text-white/40">Played</span>
+              </div>
             </div>
-            <div className="flex flex-1 flex-col items-center border-x border-white/10 py-3">
-              <span className="text-lg font-black text-emerald-300">{bestRating || '—'}</span>
-              <span className="text-[10px] uppercase tracking-wide text-white/40">Best Rating</span>
-            </div>
-            <div className="flex flex-1 flex-col items-center py-3">
-              <span className="text-lg font-black text-white">{played}</span>
-              <span className="text-[10px] uppercase tracking-wide text-white/40">Played</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Group stage wheel + format toggle */}
-      {hydrated && (
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-          <div className="flex items-baseline justify-between px-4 pb-1 pt-3">
-            <div className="text-sm font-black text-white">Group Stage</div>
-            <div className="text-[11px] text-white/40">
-              {realisticGroupsYear !== null ? `${realisticGroupsYear} World Cup` : 'Random draw'}
-            </div>
-          </div>
-
-          {/* Year wheel */}
-          <div className="relative py-1">
-            <div className="pointer-events-none absolute inset-y-1 left-1/2 z-10 w-14 -translate-x-1/2 rounded-lg border border-emerald-500/30 bg-emerald-500/10" />
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-16 bg-gradient-to-r from-[#060D1E] to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-16 bg-gradient-to-l from-[#060D1E] to-transparent" />
-
-            <div
-              ref={yearScrollRef}
-              className="no-scrollbar flex overflow-x-scroll"
-              onScroll={handleYearScroll}
-              style={{
-                scrollSnapType: 'x mandatory',
-                paddingInline: 'calc(50% - 28px)',
-              }}
-            >
-              {ALL_YEAR_OPTIONS.map((year) => (
-                <div
-                  key={year ?? 'rnd'}
-                  className={cn(
-                    'w-14 flex-none py-2 text-center text-xs font-bold transition-colors duration-150',
-                    realisticGroupsYear === year ? 'text-emerald-400' : 'text-white/30',
-                  )}
-                  style={{ scrollSnapAlign: 'center' }}
-                >
-                  {year ?? 'Random'}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Format toggle */}
-          <div className="flex border-t border-white/10">
-            <button
-              onClick={() => setTournamentFormat('48')}
-              className={cn(
-                'flex-1 py-2 text-[11px] font-black transition-colors',
-                tournamentFormat === '48' ? 'bg-emerald-500/15 text-emerald-400' : 'text-white/40',
-              )}
-            >
-              48 Teams
-            </button>
-            <div className="w-px bg-white/10" />
-            <button
-              onClick={() => setTournamentFormat('32')}
-              className={cn(
-                'flex-1 py-2 text-[11px] font-black transition-colors',
-                tournamentFormat === '32' ? 'bg-emerald-500/15 text-emerald-400' : 'text-white/40',
-              )}
-            >
-              32 Teams
-            </button>
-          </div>
-
-          {runInProgress && (
-            <p className="border-t border-white/10 px-4 py-2 text-[10px] text-white/30">
-              Takes effect on your next tournament
-            </p>
           )}
         </div>
-      )}
-
-      {/* Best run — appears once at least one tournament is played */}
-      {hydrated && modeRuns.length > 0 && (
-        <div className="flex overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-          <div className="flex flex-1 flex-col items-center gap-0.5 py-3">
-            <span className="text-[10px] uppercase tracking-wide text-white/40">Best Run</span>
-            <span className={`text-sm font-black ${furthestStage === 'won' ? 'text-amber-300' : 'text-emerald-300'}`}>
-              {furthestStage ? STAGE_LABELS[furthestStage] : '—'}
-            </span>
-          </div>
+      ) : (
+        /* Placeholder before hydration or no club selected */
+        <div className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-white/15 bg-white/5 px-6 py-10 text-center">
+          <span className="text-3xl">⚽</span>
+          <p className="text-sm font-black text-white">Pick your club below</p>
+          <p className="text-xs text-white/40">Select a Premier League side to get started</p>
         </div>
       )}
+
+      {/* Club grid */}
+      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+        <div className="border-b border-white/10 px-4 py-3">
+          <span className="text-sm font-black text-white">Premier League</span>
+        </div>
+        <div className="grid grid-cols-2 gap-2 p-2">
+          {PL_CLUBS.map((club) => {
+            const isSelected = hydrated && selectedClub === club.id;
+            return (
+              <button
+                key={club.id}
+                onClick={() => setSelectedClub(club.id)}
+                className={cn(
+                  'relative overflow-hidden rounded-xl px-3 py-3 text-left transition-all',
+                  isSelected
+                    ? 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-[#060D1E]'
+                    : 'ring-1 ring-white/10 hover:ring-white/25',
+                )}
+                style={{
+                  background: `linear-gradient(135deg, ${club.primary}cc 0%, ${club.secondary}55 100%)`,
+                }}
+              >
+                <div className="text-[9px] font-black uppercase tracking-widest text-white/50">{club.short}</div>
+                <div className="text-xs font-black leading-tight text-white">{club.name}</div>
+                {isSelected && (
+                  <div className="absolute right-2 top-2 h-2 w-2 rounded-full bg-emerald-400" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
     </div>
   );

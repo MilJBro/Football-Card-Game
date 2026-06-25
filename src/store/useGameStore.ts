@@ -24,6 +24,8 @@ export interface GameState {
 
   // ---- Identity ----
   teamName: string;
+  /** The selected Premier League club id (e.g. 'arsenal'). */
+  selectedClub: string | null;
 
   // ---- Settings ----
   /** Null = random draw; a year number = use that specific England World Cup group. */
@@ -64,6 +66,7 @@ export interface GameState {
 
   // ---- Actions: identity ----
   setTeamName: (name: string) => void;
+  setSelectedClub: (clubId: string | null) => void;
 
   // ---- Actions: settings ----
   setRealisticGroupsYear: (year: number | null) => void;
@@ -97,6 +100,7 @@ const initialState = {
   completions: {} as Record<string, ModeCompletion>,
   history: [] as TournamentRunResult[],
   teamName: '',
+  selectedClub: null as string | null,
   realisticGroupsYear: null as number | null,
   tournamentFormat: '48' as '32' | '48',
   activeModeId: null as string | null,
@@ -146,6 +150,7 @@ export const useGameStore = create<GameState>()(
         }),
 
       setTeamName: (name) => set({ teamName: name.slice(0, 25) }),
+      setSelectedClub: (clubId) => set({ selectedClub: clubId }),
 
       setRealisticGroupsYear: (year) =>
         set((s) => ({
